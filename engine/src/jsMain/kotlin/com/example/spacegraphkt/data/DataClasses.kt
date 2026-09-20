@@ -236,7 +236,26 @@ data class SpaceGraphOptions(
     val uiElements: UiElements? = null,
     val layoutSettings: ForceLayoutSettings = ForceLayoutSettings(),
     val backgroundColor: Int = 0x000000,
-    val backgroundAlpha: Double = 0.0
+    val backgroundAlpha: Double = 0.0,
+    /**
+     * Read-only presentation mode (the landing page): no context menus, no delete, no link drawing, no
+     * contenteditable, no resize handles / node control buttons, no destructive or editing keyboard
+     * shortcuts, and the editor chrome (menu, confirm dialog, status toast) is never put in the document.
+     * Selection, focus, fly-to, pan, zoom, view history and Esc/back still work.
+     */
+    val readOnly: Boolean = false,
+    /** Whether the visitor may drag nodes around. Defaults to the opposite of [readOnly]. */
+    val draggableNodes: Boolean = !readOnly,
+    /** Click / tap on a node flies the camera to it (pushing view history). Defaults to [readOnly]. */
+    val focusOnTap: Boolean = readOnly,
+    /** Run the force layout. Turn it off when the host positions nodes itself (cards hung on bloom rings). */
+    val layoutEnabled: Boolean = true,
+    /** Semantic zoom thresholds; see [com.example.spacegraphkt.zui.LodThresholds]. */
+    val lod: com.example.spacegraphkt.zui.LodThresholds = com.example.spacegraphkt.zui.LodThresholds(),
+    /** Add the default ambient + directional light. bloom-three may want its own. */
+    val defaultLighting: Boolean = true,
+    /** Cap for the GPU canvas pixel ratio (phones report 3+, which quadruples fill cost for no visible gain). */
+    val maxPixelRatio: Double = 2.0,
 )
 
 /**

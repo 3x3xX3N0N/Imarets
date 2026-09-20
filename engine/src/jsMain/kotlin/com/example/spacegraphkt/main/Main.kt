@@ -4,6 +4,12 @@ import com.example.spacegraphkt.api.AgentAPI
 import com.example.spacegraphkt.core.NoteNode
 import com.example.spacegraphkt.core.SpaceGraph
 import com.example.spacegraphkt.data.NodeData
+import com.example.spacegraphkt.data.SpaceGraphOptions
+import com.example.spacegraphkt.zui.Route
+import com.example.spacegraphkt.zui.Tour
+import com.example.spacegraphkt.zui.TourStop
+import com.example.spacegraphkt.zui.ZuiNavigator
+import kotlinx.browser.document
 import com.example.spacegraphkt.data.Vector3D
 import kotlinx.browser.window
 import org.w3c.dom.HTMLElement
@@ -14,9 +20,15 @@ import org.w3c.dom.HTMLElement
  *
  * @param container positioned element that will host the GPU canvas + CSS3D layer
  * @param forceWebGL true = webgl rung, false = try WebGPU (three falls back to WebGL2 by itself)
+ * @param readOnly landing-page mode. Default: on when the page URL has `engine=readonly` in its query, so the
+ *   read-only ZUI (tap to fly, Esc back, `#pour/n1` deep links, tour via `window.sgTour`) can be tried by hand.
  */
-fun runEngineDemo(container: HTMLElement, forceWebGL: Boolean = true): SpaceGraph {
-    val spaceGraph = SpaceGraph(container, null, forceWebGL = forceWebGL)
+fun runEngineDemo(
+    container: HTMLElement,
+    forceWebGL: Boolean = true,
+    readOnly: Boolean = window.location.search.contains("engine=readonly"),
+): SpaceGraph {
+    val spaceGraph = SpaceGraph(container, null, SpaceGraphOptions(readOnly = readOnly), forceWebGL = forceWebGL)
 
     val agentApi = AgentAPI(spaceGraph)
     window.asDynamic().spaceGraphAgent = agentApi
@@ -81,6 +93,25 @@ fun runEngineDemo(container: HTMLElement, forceWebGL: Boolean = true): SpaceGrap
     spaceGraph.layoutEngine.runOnce(150)
 
     window.setTimeout({ spaceGraph.centerView(null, 0.8) }, 200)
+
+    if (readOnly) {
+        // progressive enhancement demo: a card that exists in the document is lifted into the graph
+        val card = document.createElement("article") as HTMLElement
+        card.id = "adopted-card"
+        card.textContent = "Adopted from the document"
+        card.style.width = "240px"
+        card.style.padding = "12px"
+        card.style.background = "#203020"
+        card.style.color = "#d0ffd0"
+        container.appendChild(card)
+        spaceGraph.adoptElement(card, Vector3D(260.0, 180.0, 0.0))
+
+        val tour = Tour(listOf("n1", "n2", "n3", "n4").map { TourStop(it, it, Route.Pour(it)) } + TourStop("adopted-card", "adopted", Route.Tab))
+        val navigator = ZuiNavigator(spaceGraph, tour)
+        window.setTimeout({ navigator.start() }, 400)
+        window.asDynamic().sgTour = tour
+        window.asDynamic().sgNavigator = navigator
+    }
 
     window.asDynamic().space = spaceGraph // for debugging from the console
     console.log("SpaceGraph Kotlin/JS engine demo initialised. Agent API at window.spaceGraphAgent")

@@ -1,321 +1,319 @@
 package com.example.spacegraphkt.core
 
+import bar.verdantbloom.three.THREE
 import com.example.spacegraphkt.data.CameraState
 import com.example.spacegraphkt.data.Vector3D
-import bar.verdantbloom.three.THREE
-import com.example.spacegraphkt.external.VecTween // Kotlin tween (replaces GSAP)
-import bar.verdantbloom.three.jsObject // For creating JS objects for GSAP
-import com.example.spacegraphkt.external.DEG2RAD_KT // Degree to Radian conversion constant
+import com.example.spacegraphkt.external.DEG2RAD_KT
+import com.example.spacegraphkt.external.VecTween
+import com.example.spacegraphkt.zui.Easing
+import com.example.spacegraphkt.zui.ViewMath
 import kotlinx.browser.window
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.events.MouseEvent // For pan events (could be PointerEvent)
-import org.w3c.dom.events.WheelEvent // For zoom events
+import org.w3c.dom.events.MouseEvent
+import org.w3c.dom.events.WheelEvent
+import kotlin.js.Date
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
-import kotlin.math.tan
+
+internal fun clamp(value: Double, minVal: Double, maxVal: Double): Double = max(minVal, min(maxVal, value))
 
 /**
- * Clamps a [value] between a [minVal] and [maxVal].
- * @return The clamped value.
- */
-internal fun clamp(value: Double, minVal: Double, maxVal: Double): Double {
-    return max(minVal, min(maxVal, value))
-}
-
-/**
- * Manages the Three.js camera, providing functionalities like panning, zooming,
- * smooth movement to targets, and view history.
+ * Camera of the ZUI: pan, zoom (wheel and pinch), eased programmatic moves, view history.
  *
- * @param camera The [THREE.PerspectiveCamera] instance to control.
- * @param domElement The HTML element to which event listeners for pan/zoom are attached (typically the canvas or graph container).
+ * The camera follows two targets ([targetPosition], [targetLookAt]) with a little damping. Programmatic moves
+ * ([moveTo], [flyTo], [back], [resetView]) tween the TARGETS with the Kotlin [VecTween] (ease-out cubic); user
+ * input (pan / zoom / pinch) edits them directly and cancels any running tween.
  *
- * @property isPanning True if a pan operation is currently active.
- * @property targetPosition The desired target position for the camera. Camera smoothly interpolates towards this.
- * @property targetLookAt The desired point in 3D space for the camera to look at. Camera smoothly interpolates its look-at direction.
- * @property viewHistory A list of saved [CameraState]s, enabling "back" navigation.
- * @property currentTargetNodeId Optional ID of the node the camera is currently focused on or moving towards.
- * @property initialState The initial [CameraState] (position and lookAt) saved when [setInitialState] is first called. Used for [resetView].
+ * @param camera the camera to drive
+ * @param domElement the graph container: its client rect is the viewport for every screen <-> world conversion
+ * @param autoLoop true = run an own requestAnimationFrame loop (standalone use). [SpaceGraph] passes false and
+ *   calls [update] from its single frame loop, so camera, frame listeners and rendering stay in one ordered tick.
  */
-class CameraController constructor(
+class CameraController(
     val camera: THREE.PerspectiveCamera,
-    val domElement: HTMLElement
+    val domElement: HTMLElement,
+    autoLoop: Boolean = true,
 ) {
     var isPanning: Boolean = false
-    internal val panStart: THREE.Vector2 = THREE.Vector2() // Stores mouse position at pan start
+        private set
+    internal val panStart: THREE.Vector2 = THREE.Vector2()
 
-    val targetPosition: THREE.Vector3 = camera.position.clone() // Target camera position for smooth damping
-    val targetLookAt: THREE.Vector3 = THREE.Vector3(0.0, 0.0, 0.0) // Target look-at point
-    internal val currentLookAt: THREE.Vector3 = targetLookAt.clone() // Current actual look-at point after damping
+    val targetPosition: THREE.Vector3 = camera.position.clone()
+    val targetLookAt: THREE.Vector3 = THREE.Vector3(0.0, 0.0, 0.0)
+    internal val currentLookAt: THREE.Vector3 = targetLookAt.clone()
 
-    // Configuration for camera controls
-    internal val zoomSpeed: Double = 0.0015
-    internal val panSpeed: Double = 0.8
-    internal val minZoomDist: Double = 20.0  // Minimum distance from camera to its look-at target
-    internal val maxZoomDist: Double = 15000.0 // Maximum distance
-    internal val dampingFactor: Double = 0.12 // Factor for smooth camera movement (lerp)
+    var zoomSpeed: Double = 0.0015
+    var panSpeed: Double = 0.8
+    var minZoomDist: Double = 20.0
+    var maxZoomDist: Double = 15000.0
 
-    internal var animationFrameId: Int? = null // ID for the camera's internal animation loop
+    /** Fraction of the remaining distance covered per 1/60 s. 1.0 = no damping. */
+    var dampingFactor: Double = 0.12
+
+    /** Easing of programmatic moves. */
+    var easing: Easing = Easing.OUT_CUBIC
+
+    /** true = programmatic moves cut instead of flying (prefers-reduced-motion); the site sets it. */
+    var reducedMotion: Boolean = false
 
     val viewHistory: MutableList<CameraState> = mutableListOf()
-    internal val maxHistory: Int = 20 // Max number of states in view history
-    var currentTargetNodeId: String? = null // ID of the node currently being focused on
-    var initialState: CameraState? = null // Saved initial camera state for reset
+    var maxHistory: Int = 20
+    var initialState: CameraState? = null
+
+    private val targetListeners = ArrayList<(String?) -> Unit>()
+
+    /** Id of the node the camera is focused on / flying to, null while the visitor roams freely. */
+    var currentTargetNodeId: String? = null
+        set(value) {
+            if (field == value) return
+            field = value
+            for (l in targetListeners.toList()) l(value)
+        }
+
+    val canGoBack: Boolean get() = viewHistory.isNotEmpty()
+
+    private var animationFrameId: Int? = null
+    private var lastUpdateMs: Double = 0.0
+    private var disposed = false
 
     init {
-        this.camera.lookAt(currentLookAt) // Ensure camera initially looks at the correct point
-        _updateLoop() // Start the internal loop for smooth camera movements
+        camera.lookAt(currentLookAt)
+        if (autoLoop) loop()
     }
 
-    /**
-     * Saves the current camera's target position and look-at point as the initial state.
-     * This state is used by [resetView]. Called once when first needed or explicitly.
-     */
+    private fun loop() {
+        if (disposed) return
+        update(Date.now())
+        animationFrameId = window.requestAnimationFrame { loop() }
+    }
+
+    /** Called whenever [currentTargetNodeId] changes (focus, back, reset, or null when the visitor pans / zooms away). */
+    fun addTargetListener(listener: (nodeId: String?) -> Unit): () -> Unit {
+        targetListeners.add(listener)
+        return { targetListeners.remove(listener) }
+    }
+
     fun setInitialState() {
-        if (initialState == null) {
-            initialState = CameraState(
-                position = Vector3D.fromThreeVector(targetPosition.clone()),
-                lookAt = Vector3D.fromThreeVector(targetLookAt.clone()),
-                targetNodeId = currentTargetNodeId // Capture if a node is targeted initially
-            )
-        }
+        if (initialState == null) initialState = snapshot()
     }
 
-    /**
-     * Starts a pan operation. Called on pointer/mouse down.
-     * Kills any ongoing GSAP animations for camera position and look-at.
-     * @param event The [MouseEvent] (or [PointerEvent]) that initiated the pan.
-     */
-    fun startPan(event: MouseEvent) {
-        if (event.button.toInt() != 0 || isPanning) return // Only pan with left mouse button
-        isPanning = true
-        panStart.set(event.clientX.toDouble(), event.clientY.toDouble())
-        domElement.classList.add("panning") // Add CSS class for cursor styling
-        VecTween.killTweensOf(targetPosition) // Stop programmatic movements
+    /** Re-captures the "home" view used by [resetView] from the current targets. */
+    fun captureInitialState() {
+        initialState = snapshot()
+    }
+
+    private fun snapshot() = CameraState(
+        Vector3D.fromThreeVector(targetPosition.clone()),
+        Vector3D.fromThreeVector(targetLookAt.clone()),
+        currentTargetNodeId,
+    )
+
+    private fun cancelTweens() {
+        VecTween.killTweensOf(targetPosition)
         VecTween.killTweensOf(targetLookAt)
-        currentTargetNodeId = null // Panning clears node focus
     }
 
-    /**
-     * Performs panning based on mouse movement. Called on pointer/mouse move if [isPanning] is true.
-     * Calculates pan displacement based on mouse delta and current view parameters.
-     * @param event The [MouseEvent] (or [PointerEvent]) providing the current mouse position.
-     */
-    fun pan(event: MouseEvent) {
+    // ---- user input -------------------------------------------------------------------------------------------
+
+    fun startPan(event: MouseEvent) {
+        if (event.button.toInt() != 0) return
+        startPanAt(event.clientX.toDouble(), event.clientY.toDouble())
+    }
+
+    fun startPanAt(clientX: Double, clientY: Double) {
+        if (isPanning) return
+        isPanning = true
+        panStart.set(clientX, clientY)
+        domElement.classList.add("panning")
+        cancelTweens()
+    }
+
+    fun pan(event: MouseEvent) = panTo(event.clientX.toDouble(), event.clientY.toDouble())
+
+    fun panTo(clientX: Double, clientY: Double) {
         if (!isPanning) return
+        panByPixels(clientX - panStart.x, clientY - panStart.y)
+        panStart.set(clientX, clientY)
+    }
 
-        val deltaX = event.clientX - panStart.x
-        val deltaY = event.clientY - panStart.y
-
-        val cameraDist = camera.position.distanceTo(currentLookAt) // Distance to the look-at point
-        val vFOV = camera.fov.toDouble() * DEG2RAD_KT // Vertical field of view in radians
-        val viewHeight = domElement.clientHeight.toDouble().coerceAtLeast(1.0) // Height of the viewport
-
-        // Calculate the visible height in the scene at the distance of the currentLookAt point
-        val heightAtLookAt = 2 * tan(vFOV / 2) * max(1.0, cameraDist)
-
-        // Calculate pan amounts proportional to mouse movement and visible height
-        val panXAmount = -(deltaX / viewHeight) * heightAtLookAt * panSpeed
-        val panYAmount = (deltaY / viewHeight) * heightAtLookAt * panSpeed
-
-        // Get camera's right and up vectors in world space
+    /** Moves the view by a screen-space delta (CSS px), e.g. the midpoint travel of a two-finger drag. */
+    fun panByPixels(deltaX: Double, deltaY: Double) {
+        if (deltaX == 0.0 && deltaY == 0.0) return
+        cancelTweens()
+        currentTargetNodeId = null
+        val cameraDist = camera.position.distanceTo(currentLookAt)
+        val worldPerPx = ViewMath.worldPerPixel(
+            max(1.0, cameraDist), camera.fov.toDouble() * DEG2RAD_KT, domElement.clientHeight.toDouble(),
+        )
         val right = THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0)
         val up = THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1)
-        // Calculate total pan offset vector
-        val panOffset = right.multiplyScalar(panXAmount).add(up.multiplyScalar(panYAmount))
-
-        // Apply pan offset to both target camera position and target look-at point
-        targetPosition.add(panOffset)
-        targetLookAt.add(panOffset)
-        panStart.set(event.clientX.toDouble(), event.clientY.toDouble()) // Update pan start for next delta
+        val offset = right.multiplyScalar(-deltaX * worldPerPx * panSpeed).add(up.multiplyScalar(deltaY * worldPerPx * panSpeed))
+        targetPosition.add(offset)
+        targetLookAt.add(offset)
     }
 
-    /**
-     * Ends the current pan operation. Called on pointer/mouse up.
-     */
     fun endPan() {
-        if (isPanning) {
-            isPanning = false
-            domElement.classList.remove("panning") // Remove panning cursor style
-        }
+        if (!isPanning) return
+        isPanning = false
+        domElement.classList.remove("panning")
     }
 
-    /**
-     * Performs zooming based on mouse wheel events.
-     * Adjusts the [targetPosition] of the camera along the direction towards the mouse cursor
-     * (projected onto the current look-at plane) or along the camera's view direction as a fallback.
-     * Kills any ongoing GSAP animations for camera position and look-at.
-     * @param event The [WheelEvent] providing zoom delta.
-     */
+    /** Wheel zoom towards the cursor. */
     fun zoom(event: WheelEvent) {
-        VecTween.killTweensOf(targetPosition) // Stop programmatic movements
-        VecTween.killTweensOf(targetLookAt)
-        currentTargetNodeId = null // Zooming clears node focus
-
-        val delta = -event.deltaY * zoomSpeed // Calculate zoom delta amount
-        val currentDist = targetPosition.distanceTo(targetLookAt)
-        var newDist = currentDist * (0.95.pow(delta * 12)) // Exponential zoom factor
-        newDist = clamp(newDist, minZoomDist, maxZoomDist) // Clamp within min/max zoom distance
-
-        val zoomFactorAmount = newDist - currentDist // The actual change in distance
-
-        // Determine direction for zooming: towards mouse cursor on the look-at plane
-        val mouseWorldPos = _getLookAtPlaneIntersection(event.clientX.toDouble(), event.clientY.toDouble())
-        val direction = THREE.Vector3()
-
-        if (mouseWorldPos != null) { // If mouse projection is successful
-            direction.copy(mouseWorldPos).sub(targetPosition).normalize() // Zoom towards mouse
-        } else { // Fallback: zoom along camera's current view direction
-            camera.getWorldDirection(direction)
+        // deltaMode 1 = lines, 2 = pages (Firefox with some mice); normalise to pixels
+        val unit = when (event.deltaMode) {
+            1 -> 16.0
+            2 -> domElement.clientHeight.toDouble().coerceAtLeast(1.0)
+            else -> 1.0
         }
-        targetPosition.addScaledVector(direction, zoomFactorAmount) // Apply zoom to target position
+        val delta = -event.deltaY * unit * zoomSpeed
+        dollyBy(1.0 / 0.95.pow(delta * 12), event.clientX.toDouble(), event.clientY.toDouble())
     }
 
     /**
-     * Calculates the intersection point of a ray cast from screen coordinates with the current camera's look-at plane.
-     * This point is used as the focal point for mouse-directed zoom operations.
-     * @param screenX The x-coordinate on the screen.
-     * @param screenY The y-coordinate on the screen.
-     * @return A [THREE.Vector3] representing the intersection point in world space, or null if no intersection.
-     * @internal
+     * Zooms by [scale] (> 1 = closer, < 1 = further) towards the world point under the client coordinates.
+     * Pinch gestures call this with the ratio of finger spans.
      */
-    fun _getLookAtPlaneIntersection(screenX: Double, screenY: Double): THREE.Vector3? {
-        val vecNDC = THREE.Vector2( // Convert screen coords to Normalized Device Coordinates
-            (screenX / window.innerWidth.toDouble()) * 2 - 1,
-            -(screenY / window.innerHeight.toDouble()) * 2 + 1
-        )
-        val raycaster = THREE.Raycaster()
-        raycaster.setFromCamera(vecNDC, camera) // Set raycaster from camera and NDCs
-
-        val camDir = THREE.Vector3()
-        camera.getWorldDirection(camDir) // Get camera's current look direction
-
-        // Create a plane at the targetLookAt point, with its normal opposite to camera's view direction
-        val planeNormal = camDir.clone().negate()
-        val plane = THREE.Plane().setFromNormalAndCoplanarPoint(planeNormal, targetLookAt)
-
-        val intersectPoint = THREE.Vector3() // To store the intersection result
-        return if (raycaster.ray.intersectPlane(plane, intersectPoint) != null) {
-            intersectPoint
-        } else {
-            null // No intersection
-        }
-    }
-
-    /**
-     * Smoothly moves the camera to a specified target position and look-at point using GSAP animation.
-     * Ensures [initialState] is set before the first programmed move.
-     * @param x Target x-coordinate for the camera.
-     * @param y Target y-coordinate for the camera.
-     * @param z Target z-coordinate for the camera.
-     * @param duration Duration of the animation in seconds.
-     * @param lookAt Optional [Vector3D] target for the camera to look at. If null, looks at `(x, y, 0)`.
-     */
-    fun moveTo(x: Double, y: Double, z: Double, duration: Double = 0.7, lookAt: Vector3D? = null) {
-        setInitialState() // Ensure initial state is captured if this is the first move
-
-        val targetPosVec = THREE.Vector3(x, y, z)
-        val targetLookVec = lookAt?.toThreeVector() ?: THREE.Vector3(x, y, 0.0) // Default lookAt if null
-
-        VecTween.killTweensOf(targetPosition) // Kill existing tweens for targetPosition
-        VecTween.killTweensOf(targetLookAt)   // Kill existing tweens for targetLookAt
-
-        // Animate targetPosition
-        VecTween.to(targetPosition, targetPosVec.x, targetPosVec.y, targetPosVec.z, duration)
-        // Animate targetLookAt
-        VecTween.to(targetLookAt, targetLookVec.x, targetLookVec.y, targetLookVec.z, duration)
-    }
-
-    /**
-     * Resets the camera to its saved [initialState] or a default view.
-     * Clears view history and current target node ID.
-     * @param duration Duration of the animation in seconds.
-     */
-    fun resetView(duration: Double = 0.7) {
-        initialState?.let { // If initial state is saved
-            moveTo(it.position.x, it.position.y, it.position.z, duration, it.lookAt)
-        } ?: moveTo(0.0, 0.0, 700.0, duration, Vector3D(0.0,0.0,0.0)) // Default initial view
-
-        viewHistory.clear()
+    fun dollyBy(scale: Double, clientX: Double, clientY: Double) {
+        if (scale <= 0.0 || scale == 1.0 || scale.isNaN()) return
+        cancelTweens()
         currentTargetNodeId = null
+        val currentDist = targetPosition.distanceTo(targetLookAt)
+        val newDist = clamp(currentDist / scale, minZoomDist, maxZoomDist)
+        val change = newDist - currentDist
+        if (change == 0.0) return
+
+        // view axis of the TARGET pose; kept fixed so zooming translates the view instead of swinging it round
+        val viewDir = THREE.Vector3().copy(targetLookAt).sub(targetPosition)
+        if (viewDir.length() < 1e-9) camera.getWorldDirection(viewDir) else viewDir.normalize()
+
+        val anchor = _getLookAtPlaneIntersection(clientX, clientY)
+        val direction = THREE.Vector3()
+        if (anchor != null) direction.copy(anchor).sub(targetPosition).normalize() else direction.copy(viewDir)
+        // change < 0 when zooming in: travel |change| towards the point under the cursor / between the fingers
+        targetPosition.addScaledVector(direction, -change)
+        targetLookAt.copy(targetPosition).addScaledVector(viewDir, newDist)
+    }
+
+    /** Client (viewport) coordinates -> point on the plane through [targetLookAt] facing the camera, or null. */
+    fun _getLookAtPlaneIntersection(screenX: Double, screenY: Double): THREE.Vector3? {
+        val rect = domElement.getBoundingClientRect()
+        val w = if (rect.width > 0.0) rect.width else window.innerWidth.toDouble()
+        val h = if (rect.height > 0.0) rect.height else window.innerHeight.toDouble()
+        val ndc = THREE.Vector2(((screenX - rect.left) / w) * 2 - 1, -((screenY - rect.top) / h) * 2 + 1)
+        val raycaster = THREE.Raycaster()
+        raycaster.setFromCamera(ndc, camera)
+        val camDir = THREE.Vector3()
+        camera.getWorldDirection(camDir)
+        val plane = THREE.Plane().setFromNormalAndCoplanarPoint(camDir.clone().negate(), targetLookAt)
+        val hit = THREE.Vector3()
+        return if (raycaster.ray.intersectPlane(plane, hit) != null) hit else null
+    }
+
+    // ---- programmatic moves -----------------------------------------------------------------------------------
+
+    /**
+     * Eased move of the camera targets.
+     * @param lookAt point to look at; null = (x, y, 0)
+     * @param onArrive called once when the tween finished (not when it was interrupted)
+     */
+    fun moveTo(x: Double, y: Double, z: Double, duration: Double = 0.7, lookAt: Vector3D? = null, onArrive: (() -> Unit)? = null) {
+        setInitialState()
+        val look = lookAt ?: Vector3D(x, y, 0.0)
+        val seconds = if (reducedMotion) 0.0 else duration
+        val now = Date.now()
+        cancelTweens()
+        VecTween.to(targetLookAt, look.x, look.y, look.z, seconds, easing, now)
+        VecTween.to(targetPosition, x, y, z, seconds, easing, now, onArrive)
+        if (seconds <= 0.0) snap()
     }
 
     /**
-     * Pushes the current camera's target state ([targetPosition], [targetLookAt], [currentTargetNodeId])
-     * onto the [viewHistory] stack. Limits history size to [maxHistory].
+     * Flies to a view of [lookAt] from [distance] straight in front of it (+z), remembering where the visitor
+     * came from so [back] / Esc returns there.
      */
-    fun pushState() {
-        if (viewHistory.size >= maxHistory) {
-            viewHistory.removeAt(0) // Remove oldest state if history is full
-        }
-        viewHistory.add(
-            CameraState(
-                Vector3D.fromThreeVector(targetPosition.clone()),
-                Vector3D.fromThreeVector(targetLookAt.clone()),
-                currentTargetNodeId
-            )
-        )
+    fun flyTo(lookAt: Vector3D, distance: Double, nodeId: String? = null, duration: Double = 0.6, pushHistory: Boolean = true, onArrive: (() -> Unit)? = null) {
+        if (pushHistory) pushState()
+        currentTargetNodeId = nodeId
+        moveTo(lookAt.x, lookAt.y, lookAt.z + clamp(distance, minZoomDist, maxZoomDist), duration, lookAt.copy(), onArrive)
     }
 
-    /**
-     * Pops a state from the [viewHistory] and moves the camera to it.
-     * If history is empty, resets the view using [resetView].
-     * @param duration Duration of the animation in seconds.
-     */
-    fun popState(duration: Double = 0.6) {
-        if (viewHistory.isNotEmpty()) {
-            val prevState = viewHistory.removeAt(viewHistory.lastIndex) // Get last state
-            moveTo(prevState.position.x, prevState.position.y, prevState.position.z, duration, prevState.lookAt)
-            currentTargetNodeId = prevState.targetNodeId // Restore targeted node ID
-        } else {
-            resetView(duration) // Reset if no history
-        }
-    }
-
-    /** @return The ID of the node currently targeted by camera focus/movement, or null. */
-    fun getCurrentTargetNodeId(): String? = currentTargetNodeId
-    /** Sets the ID of the node currently targeted by camera focus/movement. */
-    fun setCurrentTargetNodeId(nodeId: String?) {
-        this.currentTargetNodeId = nodeId
-    }
-
-    /**
-     * Internal animation loop for smoothly interpolating the camera's actual position and look-at point
-     * towards their respective targets ([targetPosition], [targetLookAt]) using damping.
-     * Runs continuously via `requestAnimationFrame`.
-     * @internal
-     */
-    fun _updateLoop() {
-        VecTween.update() // advance programmatic camera moves (was GSAP's own ticker)
-        val deltaPos = targetPosition.distanceTo(camera.position) // Distance to target position
-        val deltaLookAt = targetLookAt.distanceTo(currentLookAt) // Distance to target look-at
-
-        // Only update if there's a significant difference or panning is active
-        if (deltaPos > 0.01 || deltaLookAt > 0.01 || isPanning) {
-            camera.position.lerp(targetPosition, dampingFactor) // Interpolate camera position
-            currentLookAt.lerp(targetLookAt, dampingFactor)     // Interpolate look-at point
-            camera.lookAt(currentLookAt)                        // Apply look-at
-        } else if (!VecTween.isTweening(targetPosition) && !VecTween.isTweening(targetLookAt)) {
-            // If very close to targets and not animating, snap to final state to avoid tiny drifts
-            if (deltaPos > 0 || deltaLookAt > 0) {
-                camera.position.copy(targetPosition)
-                currentLookAt.copy(targetLookAt)
-                camera.lookAt(currentLookAt)
-            }
-        }
-        // Continue the loop
-        animationFrameId = window.requestAnimationFrame { _updateLoop() }
-    }
-
-    /**
-     * Disposes of the CameraController. Cancels its animation frame loop and kills any active GSAP tweens.
-     * Clears the view history.
-     */
-    fun dispose() {
-        animationFrameId?.let { window.cancelAnimationFrame(it) } // Stop internal loop
-        VecTween.killTweensOf(targetPosition) // Kill GSAP animations
-        VecTween.killTweensOf(targetLookAt)
+    /** Back to the initial view; clears the history. */
+    fun resetView(duration: Double = 0.7) {
+        val home = initialState
         viewHistory.clear()
-        console.log("CameraController disposed.")
+        if (home != null) moveTo(home.position.x, home.position.y, home.position.z, duration, home.lookAt)
+        else moveTo(0.0, 0.0, 700.0, duration, Vector3D(0.0, 0.0, 0.0))
+        currentTargetNodeId = home?.targetNodeId
+    }
+
+    fun reset(duration: Double = 0.7) = resetView(duration)
+
+    fun pushState() {
+        val state = snapshot()
+        // a double click on the same card must not stack two identical entries
+        if (viewHistory.lastOrNull() == state) return
+        if (viewHistory.size >= maxHistory) viewHistory.removeAt(0)
+        viewHistory.add(state)
+    }
+
+    /** Pops one history entry and flies there; with an empty history it resets the view. */
+    fun popState(duration: Double = 0.6) {
+        if (viewHistory.isEmpty()) {
+            resetView(duration)
+            return
+        }
+        val prev = viewHistory.removeAt(viewHistory.lastIndex)
+        moveTo(prev.position.x, prev.position.y, prev.position.z, duration, prev.lookAt)
+        currentTargetNodeId = prev.targetNodeId
+    }
+
+    /** View-history "back" (Esc). @return false when there was nothing to go back to (nothing happens). */
+    fun back(duration: Double = 0.6): Boolean {
+        if (viewHistory.isEmpty()) return false
+        popState(duration)
+        return true
+    }
+
+    fun getCurrentTargetNodeId(): String? = currentTargetNodeId
+    fun setCurrentTargetNodeId(nodeId: String?) {
+        currentTargetNodeId = nodeId
+    }
+
+    /** Puts the camera exactly on its targets (no damping tail). */
+    fun snap() {
+        camera.position.copy(targetPosition)
+        currentLookAt.copy(targetLookAt)
+        camera.lookAt(currentLookAt)
+    }
+
+    /** One tick: advance tweens, then damp the camera towards its targets. */
+    fun update(nowMs: Double = Date.now()) {
+        val dt = if (lastUpdateMs == 0.0) 1.0 / 60.0 else ((nowMs - lastUpdateMs) / 1000.0).coerceIn(0.0, 0.1)
+        lastUpdateMs = nowMs
+        VecTween.update(nowMs)
+
+        val deltaPos = targetPosition.distanceTo(camera.position)
+        val deltaLookAt = targetLookAt.distanceTo(currentLookAt)
+        if (deltaPos > 0.01 || deltaLookAt > 0.01) {
+            val k = if (reducedMotion) 1.0 else 1.0 - (1.0 - dampingFactor.coerceIn(0.001, 1.0)).pow(dt * 60.0)
+            camera.position.lerp(targetPosition, k)
+            currentLookAt.lerp(targetLookAt, k)
+            camera.lookAt(currentLookAt)
+        } else if ((deltaPos > 0.0 || deltaLookAt > 0.0) && !VecTween.isTweening(targetPosition) && !VecTween.isTweening(targetLookAt)) {
+            snap()
+        }
+    }
+
+    @Deprecated("use update()", ReplaceWith("update()"))
+    fun _updateLoop() = update()
+
+    fun dispose() {
+        disposed = true
+        animationFrameId?.let { window.cancelAnimationFrame(it) }
+        cancelTweens()
+        viewHistory.clear()
+        targetListeners.clear()
     }
 }

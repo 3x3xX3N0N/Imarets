@@ -21,6 +21,13 @@ class ForceLayout constructor(
     val fixedNodes: MutableSet<BaseNode> = HashSet()
 
     var isRunning: Boolean = false
+
+    /** false = the host positions nodes itself (SpaceGraphOptions.layoutEnabled); start / kick / runOnce become no-ops. */
+    var enabled: Boolean = true
+        set(value) {
+            field = value
+            if (!value) stop()
+        }
     internal var animationFrameId: Int? = null
     internal var energy: Double = Double.POSITIVE_INFINITY
     internal var lastKickTime: Double = 0.0
@@ -78,6 +85,7 @@ class ForceLayout constructor(
     }
 
     fun runOnce(steps: Int = 100) {
+        if (!enabled) return
         console.log("ForceLayout: Running $steps initial stabilization steps...")
         var i = 0
         for (s_i in 0 until steps) {
@@ -90,7 +98,7 @@ class ForceLayout constructor(
     }
 
     fun start() {
-        if (isRunning || nodes.size < 2) return
+        if (!enabled || isRunning || nodes.size < 2) return
         console.log("ForceLayout: Starting simulation.")
         isRunning = true
         lastKickTime = kotlin.js.Date.now()
@@ -121,7 +129,7 @@ class ForceLayout constructor(
     }
 
     fun kick(intensity: Double = 1.0) {
-        if (nodes.isEmpty()) return
+        if (!enabled || nodes.isEmpty()) return
         lastKickTime = kotlin.js.Date.now()
         energy = Double.POSITIVE_INFINITY
 

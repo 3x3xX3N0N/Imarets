@@ -10,13 +10,18 @@ import com.example.spacegraphkt.data.UiElements
 import com.example.spacegraphkt.data.Vector3D
 import com.example.spacegraphkt.external.DEG2RAD_KT
 import com.example.spacegraphkt.external.generateId
+import com.example.spacegraphkt.zui.LodLevel
+import com.example.spacegraphkt.zui.LodThresholds
+import com.example.spacegraphkt.zui.ViewMath
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
-import kotlin.math.tan
+import kotlin.js.Date
+import kotlin.js.Promise
+import kotlin.math.min
 
 /** Background colour (0xRRGGBB) + alpha of the GPU canvas. */
 data class GraphBackground(val color: Int, val alpha: Double)
@@ -31,6 +36,11 @@ data class GraphBackground(val color: Int, val alpha: Double)
  * Differences from the JS: the GPU renderer is three's WebGPURenderer (SPEC 4: one code path; pass
  * `forceWebGL = true` for the webgl rung), whose init is async, so rendering starts when [ready] resolves;
  * sizes come from the container, not the window.
+ *
+ * ENGINE AGENT additions (see engine/API.md): `options.readOnly`, touch gestures, ONE frame loop that also
+ * drives the camera, [flyTo] / [back] / [reset], semantic zoom (`data-lod`), [RendererFactory] with a clean
+ * failure signal ([ready]), and the extension points bloom-three needs: [scene] / [camera] / [gpuRenderer],
+ * [addFrameListener], [addPickHook], [renderOverride] and [adoptElement].
  */
 class SpaceGraph(
     val containerElement: HTMLElement,
@@ -76,10 +86,47 @@ class SpaceGraph(
     val cssScene: THREE.Scene = THREE.Scene()
     val _camera: THREE.PerspectiveCamera = THREE.PerspectiveCamera(70, aspect(), 1, 20000)
 
+    /** The shared perspective camera (same object as `_camera`, the name the ported files use). */
+    val camera: THREE.PerspectiveCamera get() = _camera
+
+    /** See [SpaceGraphOptions.readOnly]. Fixed for the lifetime of the graph. */
+    val readOnly: Boolean get() = options.readOnly
+
+    /** The rung this graph was asked to start. */
+    val rung: GpuRung = if (forceWebGL) GpuRung.WEBGL else GpuRung.WEBGPU
+
+    /** Semantic-zoom thresholds for every HTML node that has none of its own. */
+    var lodThresholds: LodThresholds = options.lod
+
     lateinit var gpuCanvas: HTMLCanvasElement
         private set
-    lateinit var gpuRenderer: THREE.WebGPURenderer
+
+    /** null only when three could not even construct the renderer (then [ready] resolves with ok = false). */
+    var gpuRenderer: THREE.WebGPURenderer? = null
         private set
+
+    /**
+     * Resolves (never rejects) once the GPU renderer finished `init()`. `ok = false` is the clean fallback
+     * signal: the caller should [dispose] this graph and start the next rung. The CSS3D layer keeps working
+     * either way, so a page that ignores the result still shows its cards.
+     */
+    lateinit var ready: Promise<GpuInitResult>
+        private set
+
+    /** What actually started; null until [ready] resolved. */
+    var gpuInit: GpuInitResult? = null
+        private set
+
+    /**
+     * Replaces the engine's `renderer.render(scene, camera)` call, e.g. with `THREE.PostProcessing.render()`
+     * for bloom-three's glow. Only called when the GPU is ready and the canvas is not 0x0.
+     */
+    var renderOverride: ((renderer: THREE.WebGPURenderer, scene: THREE.Scene, camera: THREE.PerspectiveCamera) -> Unit)? = null
+
+    private val frameListeners = ArrayList<FrameListener>()
+    private val pickHooks = ArrayList<PickHook>()
+    private val lodListeners = ArrayList<(HtmlNodeElement, LodLevel, LodLevel?) -> Unit>()
+    private var lastFrameMs = 0.0
     lateinit var css3dContainer: HTMLDivElement
         private set
     lateinit var cssRenderer: CSS3DRenderer
@@ -97,22 +144,31 @@ class SpaceGraph(
     private var disposed = false
     private var animationFrameId: Int? = null
     private val resizeListener: (Event) -> Unit = { _onWindowResize() }
+    private var resizeObserver: dynamic = null
 
     init {
         _camera.position.z = 700.0
         _setupRenderers()
         setBackground(background.color, background.alpha)
 
-        cameraController = CameraController(_camera, containerElement)
+        cameraController = CameraController(_camera, containerElement, autoLoop = false)
         layoutEngine = ForceLayout(this, options.layoutSettings)
+        layoutEngine.enabled = options.layoutEnabled
         uiManager = UIManager(this, options.uiElements)
 
-        _setupLighting()
+        if (options.defaultLighting) _setupLighting()
 
         centerView(null, 0.0)
         cameraController.setInitialState()
 
         window.addEventListener("resize", resizeListener)
+        // the container can change size without the window doing so (split panes, the address bar on phones)
+        val observerCtor = window.asDynamic().ResizeObserver
+        if (observerCtor != null) {
+            val callback: () -> Unit = { _onWindowResize() }
+            resizeObserver = js("new observerCtor(callback)")
+            resizeObserver.observe(containerElement)
+        }
 
         _animate()
         layoutEngine.start()
@@ -132,21 +188,22 @@ class SpaceGraph(
         gpuCanvas.style.asDynamic().inset = "0"
         gpuCanvas.style.zIndex = "1"
 
-        gpuRenderer = THREE.WebGPURenderer(jsObject {
-            this.canvas = gpuCanvas
-            this.antialias = true
-            this.alpha = true
-            this.forceWebGL = this@SpaceGraph.forceWebGL
-        })
-        gpuRenderer.setPixelRatio(window.devicePixelRatio)
-        gpuRenderer.setSize(width(), height())
-        gpuRenderer.init().then<Unit>(
-            { _: dynamic -> gpuReady = true },
-            { err: Throwable ->
+        val renderer = RendererFactory.create(gpuCanvas, rung)
+        gpuRenderer = renderer
+        if (renderer != null) {
+            renderer.setPixelRatio(pixelRatio())
+            renderer.setSize(width(), height())
+        }
+        ready = RendererFactory.init(renderer, rung).then { result ->
+            gpuInit = result
+            if (result.ok && !disposed) {
+                gpuReady = true
+            } else if (!result.ok) {
                 gpuFailed = true
-                console.error("SpaceGraph: GPU renderer failed to initialise; CSS3D layer only.", err)
-            },
-        )
+                console.warn("SpaceGraph: GPU rung '${rung.queryValue}' did not start (${result.reason}); CSS3D layer only.")
+            }
+            result
+        }
 
         css3dContainer = (containerElement.querySelector("#css3d-container") as? HTMLDivElement)
             ?: (document.createElement("div") as HTMLDivElement).also {
@@ -159,6 +216,10 @@ class SpaceGraph(
         css3dContainer.style.height = "100%"
         css3dContainer.style.asDynamic().pointerEvents = "none"
         css3dContainer.style.zIndex = "2"
+
+        // Touch: the graph owns gestures that START on it (pinch zoom, drag); everything outside the container
+        // scrolls normally because nothing is prevented at window level.
+        containerElement.style.asDynamic().touchAction = "none"
 
         cssRenderer = CSS3DRenderer()
         cssRenderer.setSize(width(), height())
@@ -174,7 +235,7 @@ class SpaceGraph(
 
     fun setBackground(color: Int = 0x000000, alpha: Double = 0.0) {
         background = GraphBackground(color, alpha)
-        gpuRenderer.setClearColor(color, alpha)
+        gpuRenderer?.setClearColor(color, alpha)
         gpuCanvas.style.backgroundColor =
             if (alpha == 0.0) "transparent" else "#" + color.toString(16).padStart(6, '0')
     }
@@ -183,6 +244,7 @@ class SpaceGraph(
         nodes[node.id]?.let { return it }
         nodes[node.id] = node
         node.spaceGraphInstance = this
+        if (node is HtmlNodeElement && readOnly) node.setReadOnly(true)
 
         when (node) {
             is HtmlNodeElement -> cssScene.add(node.css3dObject)
@@ -247,23 +309,120 @@ class SpaceGraph(
 
     internal fun _render() {
         // a hidden / zero-sized host gives a 0x0 drawing buffer; rendering into it spams GL_INVALID_FRAMEBUFFER_OPERATION
-        if (gpuReady && gpuCanvas.width > 0 && gpuCanvas.height > 0) gpuRenderer.render(scene, _camera)
+        val renderer = gpuRenderer
+        if (renderer != null && gpuReady && gpuCanvas.width > 0 && gpuCanvas.height > 0 && containerElement.clientWidth > 0 && containerElement.clientHeight > 0) {
+            val override = renderOverride
+            if (override != null) override(renderer, scene, _camera) else renderer.render(scene, _camera)
+        }
         cssRenderer.render(cssScene, _camera)
     }
 
+    /** The single frame loop: camera -> frame listeners -> nodes / edges / LOD -> draw. */
     internal fun _animate() {
         if (disposed) return
+        val now = Date.now()
+        val dt = if (lastFrameMs == 0.0) 1.0 / 60.0 else ((now - lastFrameMs) / 1000.0).coerceIn(0.0, 0.1)
+        lastFrameMs = now
+        cameraController.update(now)
+        _camera.updateMatrixWorld()
+        if (frameListeners.isNotEmpty()) {
+            for (l in frameListeners.toList()) {
+                try {
+                    l.onFrame(dt, now)
+                } catch (e: Throwable) {
+                    console.error("SpaceGraph: frame listener threw", e)
+                }
+            }
+        }
         _updateNodesAndEdges()
         _render()
         animationFrameId = window.requestAnimationFrame { _animate() }
     }
 
+    private fun pixelRatio(): Double = min(window.devicePixelRatio, options.maxPixelRatio).coerceAtLeast(1.0)
+
+    private var lastW = -1
+    private var lastH = -1
+
     internal fun _onWindowResize() {
+        if (disposed) return
+        val w = width()
+        val h = height()
+        if (w == lastW && h == lastH) return
+        lastW = w
+        lastH = h
         _camera.aspect = aspect()
         _camera.updateProjectionMatrix()
-        gpuRenderer.setSize(width(), height())
-        cssRenderer.setSize(width(), height())
+        gpuRenderer?.setPixelRatio(pixelRatio())
+        gpuRenderer?.setSize(w, h)
+        cssRenderer.setSize(w, h)
     }
+
+    // ---- extension points -------------------------------------------------------------------------------------
+
+    /** @return a function that removes the listener again. */
+    fun addFrameListener(listener: FrameListener): () -> Unit {
+        frameListeners.add(listener)
+        return { frameListeners.remove(listener) }
+    }
+
+    fun removeFrameListener(listener: FrameListener) {
+        frameListeners.remove(listener)
+    }
+
+    /** Registers an external picker that is asked BEFORE the engine's node / edge picking. See [PickHook]. */
+    fun addPickHook(hook: PickHook): () -> Unit {
+        pickHooks.add(hook)
+        return { pickHooks.remove(hook) }
+    }
+
+    fun removePickHook(hook: PickHook) {
+        pickHooks.remove(hook)
+    }
+
+    /** @return the first hook that answered true for [event], or null. */
+    internal fun askPickHooks(event: PickEvent): PickHook? {
+        for (hook in pickHooks.toList()) {
+            try {
+                if (hook.onPick(event)) return hook
+            } catch (e: Throwable) {
+                console.error("SpaceGraph: pick hook threw", e)
+            }
+        }
+        return null
+    }
+
+    internal val hasPickHooks: Boolean get() = pickHooks.isNotEmpty()
+
+    /** Called with (node, new level, previous level or null) whenever a node's `data-lod` changes. */
+    fun addLodListener(listener: (node: HtmlNodeElement, level: LodLevel, previous: LodLevel?) -> Unit): () -> Unit {
+        lodListeners.add(listener)
+        return { lodListeners.remove(listener) }
+    }
+
+    internal fun notifyLodChanged(node: HtmlNodeElement, level: LodLevel, previous: LodLevel?) {
+        for (l in lodListeners.toList()) l(node, level, previous)
+    }
+
+    /**
+     * Progressive enhancement: lifts an element that is already in the document into the graph as an HTML
+     * node (see [HtmlNodeElement.adopt]). Removing the node or disposing the graph puts the element back.
+     */
+    fun adoptElement(
+        element: HTMLElement,
+        position: Vector3D,
+        id: String = element.id.ifBlank { generateId("adopted") },
+        width: Double? = null,
+        height: Double? = null,
+        billboard: Boolean = true,
+    ): HtmlNodeElement {
+        (nodes[id] as? HtmlNodeElement)?.let { return it }
+        val node = HtmlNodeElement.adopt(element, position, id, width, height, billboard)
+        addNode(node)
+        return node
+    }
+
+    // ---- camera ------------------------------------------------------------------------------------------------
 
     fun centerView(targetPosition: Vector3D? = null, duration: Double = 0.7) {
         val target = when {
@@ -281,13 +440,54 @@ class SpaceGraph(
         cameraController.moveTo(target.x, target.y, target.z + distance, duration, target)
     }
 
+    /** Distance from which [node] fits the viewport (width-limited on a narrow phone, height-limited on a desktop). */
+    fun fitDistanceFor(node: BaseNode, padding: Double = 1.25): Double {
+        val fov = _camera.fov.toDouble() * DEG2RAD_KT
+        return if (node is HtmlNodeElement) {
+            if (node.isAdopted) node.measure()
+            val scale = if (node.isAdopted) 1.0 else (node.data.contentScale ?: 1.0).coerceAtLeast(1.0)
+            ViewMath.fitDistance(node.size.width * scale, node.size.height * scale, fov, aspect(), padding)
+        } else {
+            val d = node.getBoundingSphereRadius() * 2
+            ViewMath.fitDistance(d, d, fov, aspect(), padding)
+        }
+    }
+
     fun focusOnNode(node: BaseNode?, duration: Double = 0.6, pushHistory: Boolean = false) {
         if (node == null) return
-        val fov = _camera.fov.toDouble() * DEG2RAD_KT
-        val nodeSize = node.getBoundingSphereRadius() * 2
-        val distance = (nodeSize / (2 * tan(fov / 2))) + 50
-        if (pushHistory) cameraController.pushState()
-        cameraController.moveTo(node.position.x, node.position.y, node.position.z + distance, duration, node.position.copy())
+        cameraController.flyTo(node.position.copy(), fitDistanceFor(node), cameraController.currentTargetNodeId, duration, pushHistory)
+    }
+
+    /**
+     * ZUI navigation: selects [node] and flies the camera to it, remembering the previous view for [back].
+     * Flying to the node that is already the target does nothing (no duplicate history entry).
+     * @return false when the node is unknown.
+     */
+    fun flyTo(node: BaseNode?, duration: Double = 0.6, select: Boolean = true, onArrive: (() -> Unit)? = null): Boolean {
+        if (node == null || nodes[node.id] !== node) return false
+        if (select) selectedNode = node
+        if (cameraController.currentTargetNodeId == node.id) {
+            onArrive?.invoke()
+            return true
+        }
+        cameraController.flyTo(node.position.copy(), fitDistanceFor(node), node.id, duration, true, onArrive)
+        return true
+    }
+
+    fun flyTo(nodeId: String, duration: Double = 0.6): Boolean = flyTo(nodes[nodeId], duration)
+
+    /** View history back (what Esc does). @return false when the history was empty. */
+    fun back(duration: Double = 0.6): Boolean {
+        val went = cameraController.back(duration)
+        if (went) selectedNode = cameraController.currentTargetNodeId?.let { nodes[it] }
+        return went
+    }
+
+    /** Overview: initial camera, empty history, nothing selected. */
+    fun reset(duration: Double = 0.7) {
+        selectedNode = null
+        selectedEdge = null
+        cameraController.resetView(duration)
     }
 
     fun autoZoom(node: BaseNode?) {
@@ -295,9 +495,7 @@ class SpaceGraph(
         if (cameraController.getCurrentTargetNodeId() == node.id) {
             cameraController.popState()
         } else {
-            cameraController.pushState()
-            cameraController.setCurrentTargetNodeId(node.id)
-            focusOnNode(node, 0.6, false)
+            flyTo(node, 0.6, select = false)
         }
     }
 
@@ -346,6 +544,11 @@ class SpaceGraph(
         disposed = true
         animationFrameId?.let { window.cancelAnimationFrame(it) }
         window.removeEventListener("resize", resizeListener)
+        if (resizeObserver != null) resizeObserver.disconnect()
+        frameListeners.clear()
+        pickHooks.clear()
+        lodListeners.clear()
+        renderOverride = null
         cameraController.dispose()
         layoutEngine.dispose()
         nodes.values.toList().forEach { it.dispose() }
@@ -355,10 +558,14 @@ class SpaceGraph(
         scene.clear()
         cssScene.clear()
         uiManager.dispose()
-        gpuRenderer.dispose()
+        try {
+            gpuRenderer?.dispose()
+        } catch (e: Throwable) {
+            console.warn("SpaceGraph: renderer dispose threw", e)
+        }
+        containerElement.style.asDynamic().touchAction = ""
         cssRenderer.domElement.remove()
         css3dContainer.remove()
         gpuCanvas.remove()
-        console.log("SpaceGraph disposed.")
     }
 }

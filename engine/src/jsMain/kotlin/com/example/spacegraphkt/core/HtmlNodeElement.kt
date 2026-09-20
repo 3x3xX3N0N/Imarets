@@ -1,274 +1,345 @@
 package com.example.spacegraphkt.core
 
+import bar.verdantbloom.three.CSS3D.CSS3DObject
 import bar.verdantbloom.three.jsObject
-
 import com.example.spacegraphkt.data.NodeData
 import com.example.spacegraphkt.data.Size
 import com.example.spacegraphkt.data.Vector3D
-import bar.verdantbloom.three.CSS3D.CSS3DObject
-import bar.verdantbloom.three.THREE // Only needed if referencing THREE types directly here.
+import com.example.spacegraphkt.external.generateId
+import com.example.spacegraphkt.zui.LodLevel
+import com.example.spacegraphkt.zui.LodThresholds
+import com.example.spacegraphkt.zui.ViewMath
 import kotlinx.browser.document
-import kotlinx.dom.addClass
-import kotlinx.dom.removeClass
-import org.w3c.dom.HTMLDivElement
+import kotlinx.browser.window
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.events.Event // For event handlers
-import org.w3c.dom.pointerevents.PointerEvent // For pointer events if used directly
+import org.w3c.dom.Node
 import kotlin.math.max
 import kotlin.math.sqrt
 
 /**
- * A type of [BaseNode] that is represented by an HTML element in the 3D space,
- * rendered using Three.js [CSS3DRenderer].
+ * A [BaseNode] shown as an HTML element in 3D space through three's CSS3DRenderer.
  *
- * @property id Unique identifier for the node.
- * @property position Initial 3D position of the node.
- * @property data Data object ([NodeData]) containing configuration like label, content, type, etc.
- *              Specific fields like `data.width`, `data.height`, `data.contentScale`, `data.backgroundColor`,
- *              `data.billboard`, `data.editable` are used to configure this HTML node.
- * @property size The initial width and height of the HTML element. See [Size].
- * @property billboard If true, the HTML element will always face the camera.
- * @property htmlElement The root [HTMLDivElement] for this node, managed by this class.
- * @property css3dObject The [CSS3DObject] that wraps the [htmlElement] for rendering in the CSS3D scene.
- *                       This is assigned to `this.threeJsObject` from [BaseNode].
+ * Two ways to get one:
+ *  - the constructor BUILDS an element (`.node-html` > `.node-inner-wrapper` > `.node-content` + editor chrome);
+ *  - [adopt] (or passing [existingElement]) LIFTS an element that is already in the document into the graph -
+ *    progressive enhancement: the no-JS page keeps its cards, the ZUI moves the same DOM nodes into space.
+ *    [dispose] / [release] puts an adopted element back exactly where and how it was.
+ *
+ * DOM code is CSP-safe: elements are built with createElement / textContent, styles through CSSOM properties.
+ * `data.content` is TEXT, never parsed as HTML.
+ *
+ * Semantic zoom: every frame the node derives a [LodLevel] from the camera distance and mirrors it into the
+ * element's `data-lod` attribute ("far" | "mid" | "near") - only written when it changes.
  */
-open class HtmlNodeElement constructor(
+open class HtmlNodeElement(
     id: String,
     position: Vector3D,
     data: NodeData,
     var size: Size,
-    var billboard: Boolean
+    var billboard: Boolean,
+    existingElement: HTMLElement? = null,
 ) : BaseNode(id, position, data, data.mass) {
 
-    val htmlElement: HTMLDivElement = _createHtmlElement()
+    /** State needed to undo an adoption. */
+    private class Adoption(
+        val parent: Node?,
+        val nextSibling: Node?,
+        val cssText: String,
+        val addedClasses: List<String>,
+        val previousNodeId: String?,
+        val previousLod: String?,
+    )
+
+    private var adoption: Adoption? = null
+
+    /** true when the element came from the document ([adopt]) instead of being built here. */
+    val isAdopted: Boolean get() = adoption != null
+
+    private var contentEl: HTMLElement? = null
+    private var controlsEl: HTMLElement? = null
+    private var resizeHandleEl: HTMLElement? = null
+
+    val htmlElement: HTMLElement = if (existingElement != null) adoptElement(existingElement) else _createHtmlElement()
     val css3dObject: CSS3DObject = CSS3DObject(htmlElement)
 
-    init {
-        this.threeJsObject = css3dObject // Assign to the BaseNode property for generic handling
-        this.threeJsObject.position.set(position.x, position.y, position.z)
-        this.threeJsObject.userData = jsObject { this.nodeId = this@HtmlNodeElement.id; this.type = "html-node" }
+    /** Current semantic zoom level; null until the first frame inside a graph. */
+    var lod: LodLevel? = null
+        private set
 
-        // Apply initial data values from NodeData if they were set there and not overridden by constructor params
+    /** Per-node thresholds; null = the graph's (`SpaceGraph.lodThresholds`). A big card can turn NEAR from further away. */
+    var lodThresholds: LodThresholds? = null
+
+    /** Camera distance measured on the last frame (world units). */
+    var cameraDistance: Double = Double.NaN
+        private set
+
+    var readOnly: Boolean = false
+        private set
+
+    init {
+        this.threeJsObject = css3dObject
+        css3dObject.position.set(position.x, position.y, position.z)
+        css3dObject.userData = jsObject { this.nodeId = this@HtmlNodeElement.id; this.type = "html-node" }
+
         this.size.width = data.width ?: this.size.width
         this.size.height = data.height ?: this.size.height
         this.billboard = data.billboard ?: this.billboard
 
-        data.backgroundColor?.let { setBackgroundColor(it) } // Apply if present in NodeData
-        data.contentScale?.let { setContentScale(it) }     // Apply if present in NodeData
+        data.backgroundColor?.let { setBackgroundColor(it) }
+        if (!isAdopted) data.contentScale?.let { setContentScale(it) }
 
-        // Ensure element reflects these initial sizes from constructor or NodeData
         htmlElement.style.width = "${this.size.width}px"
-        htmlElement.style.height = "${this.size.height}px"
+        // an adopted card keeps its natural height unless one was given: its content changes with the LOD
+        if (!isAdopted || data.height != null) htmlElement.style.height = "${this.size.height}px"
+        // the CSS3D layer itself is pointer-events: none so the GPU canvas below stays reachable
+        htmlElement.style.asDynamic().pointerEvents = "auto"
     }
 
-    /**
-     * Creates the root HTML element for this node, including its inner structure and controls.
-     * Populates content based on `data.label` or `data.content`.
-     * Initializes content editability if `data.editable` is true.
-     * @return The created [HTMLDivElement].
-     */
-    internal fun _createHtmlElement(): HTMLDivElement {
-        val el = document.createElement("div") as HTMLDivElement
-        el.className = "node-html"
-        data.type.let { type -> if (type.isNotBlank()) el.addClass("type-$type") }
-        if (data.type == "note") el.addClass("note-node") // Specific compatibility class
+    private fun el(tag: String, className: String): HTMLElement =
+        (document.createElement(tag) as HTMLElement).also { it.className = className }
 
-        el.id = "node-html-${this.id}"
-        el.setAttribute("data-node-id", this.id)
-        // Size is applied in init after NodeData might override constructor Size object
-
-        val initialContent = data.content ?: data.label ?: id // Default content
-        val initialScale = data.contentScale ?: 1.0
-
-        // Simplified innerHTML. Consider kotlinx.html for complex, type-safe building.
-        el.innerHTML = """
-            <div class="node-inner-wrapper">
-                <div class="node-content" spellcheck="false" style="transform: scale($initialScale);">${initialContent}</div>
-                <div class="node-controls">
-                    <button class="node-quick-button node-content-zoom-in" title="Zoom In Content (+)">+</button>
-                    <button class="node-quick-button node-content-zoom-out" title="Zoom Out Content (-)">-</button>
-                    <button class="node-quick-button node-grow" title="Grow Node (Ctrl++)">➚</button>
-                    <button class="node-quick-button node-shrink" title="Shrink Node (Ctrl+-)">➘</button>
-                    <button class="node-quick-button delete-button node-delete" title="Delete Node (Del)">×</button>
-                </div>
-            </div>
-            <div class="resize-handle" title="Resize Node"></div>
-        """.trimIndent()
-
-        if (data.editable == true) {
-            _initContentEditable(el)
+    private fun controlButton(classes: String, title: String, glyph: String): HTMLElement =
+        el("button", "node-quick-button $classes").also {
+            it.setAttribute("type", "button")
+            it.title = title
+            it.textContent = glyph
         }
-        return el
+
+    internal fun _createHtmlElement(): HTMLElement {
+        val root = el("div", "node-html")
+        if (data.type.isNotBlank()) root.classList.add("type-${data.type.filter { it.isLetterOrDigit() || it == '-' || it == '_' }}")
+        if (data.type == "note") root.classList.add("note-node")
+        root.id = "node-html-$id"
+        root.setAttribute("data-node-id", id)
+
+        val wrapper = el("div", "node-inner-wrapper")
+        val content = el("div", "node-content")
+        content.setAttribute("spellcheck", "false")
+        content.style.whiteSpace = "pre-wrap"
+        content.textContent = data.content ?: data.label ?: id
+        content.style.transform = "scale(${data.contentScale ?: 1.0})"
+        wrapper.appendChild(content)
+
+        val controls = el("div", "node-controls")
+        controls.appendChild(controlButton("node-content-zoom-in", "Zoom In Content (+)", "+"))
+        controls.appendChild(controlButton("node-content-zoom-out", "Zoom Out Content (-)", "-"))
+        controls.appendChild(controlButton("node-grow", "Grow Node (Ctrl++)", "➚"))
+        controls.appendChild(controlButton("node-shrink", "Shrink Node (Ctrl+-)", "➘"))
+        controls.appendChild(controlButton("delete-button node-delete", "Delete Node (Del)", "×"))
+        wrapper.appendChild(controls)
+        root.appendChild(wrapper)
+
+        val handle = el("div", "resize-handle")
+        handle.title = "Resize Node"
+        root.appendChild(handle)
+
+        contentEl = content
+        controlsEl = controls
+        resizeHandleEl = handle
+        _initContentEditable(content)
+        return root
     }
 
-    /**
-     * Initializes content editable features for the node's content area if `data.editable` is true.
-     * Sets up event listeners for input, pointerdown, and wheel to manage editing and interaction.
-     * @param element The HTML element (usually the root [htmlElement]) containing the content div.
-     */
-    internal fun _initContentEditable(element: HTMLElement) {
-        val contentDiv = element.querySelector(".node-content") as? HTMLDivElement
-        contentDiv?.apply {
-            contentEditable = "true"
-            var debounceTimer: Int? = null
-            addEventListener("input", {
-                debounceTimer?.let { kotlinx.browser.window.clearTimeout(it) }
-                debounceTimer = kotlinx.browser.window.setTimeout({
-                    this@HtmlNodeElement.data.content = innerHTML // Update NodeData
-                    this@HtmlNodeElement.data.label = textContent ?: "" // Update label from text
-                    // TODO: Consider dispatching a 'nodeDataChanged' event via AgentAPI
+    private fun adoptElement(element: HTMLElement): HTMLElement {
+        val added = ArrayList<String>()
+        for (c in listOf("node-html", "node-adopted")) {
+            if (!element.classList.contains(c)) {
+                element.classList.add(c)
+                added.add(c)
+            }
+        }
+        adoption = Adoption(
+            parent = element.parentNode,
+            nextSibling = element.nextSibling,
+            cssText = element.style.cssText,
+            addedClasses = added,
+            previousNodeId = element.getAttribute("data-node-id"),
+            previousLod = element.getAttribute(LodLevel.DATA_ATTRIBUTE),
+        )
+        element.setAttribute("data-node-id", id)
+        contentEl = element.querySelector(".node-content") as? HTMLElement
+        return element
+    }
+
+    private val isEditableNow: Boolean get() = data.editable == true && !readOnly && !isAdopted
+
+    internal fun _initContentEditable(content: HTMLElement) {
+        var debounceTimer: Int? = null
+        content.addEventListener("input", {
+            if (isEditableNow) {
+                debounceTimer?.let { window.clearTimeout(it) }
+                debounceTimer = window.setTimeout({
+                    val text = content.textContent ?: ""
+                    data.content = text
+                    data.label = text
                 }, 300)
-            })
-            // Prevent SpaceGraph drag operations when interacting with contentEditable
-            addEventListener("pointerdown", { e -> e.stopPropagation() })
-            addEventListener("touchstart", { e -> e.stopPropagation() })
-            addEventListener("wheel", { e -> // Prevent graph zoom if content is scrollable
-                if (scrollHeight > clientHeight || scrollWidth > clientWidth) {
-                    e.stopPropagation()
-                }
-            }, jsObject{this.passive = false})
-        }
+            }
+        })
+        // while editing, the graph must not start a node drag / zoom from inside the text
+        content.addEventListener("pointerdown", { e -> if (isEditableNow) e.stopPropagation() })
+        content.addEventListener("wheel", { e ->
+            if (isEditableNow && (content.scrollHeight > content.clientHeight || content.scrollWidth > content.clientWidth)) e.stopPropagation()
+        }, jsObject { this.passive = true })
+        applyEditable()
+    }
+
+    private fun applyEditable() {
+        val content = contentEl ?: return
+        if (isAdopted) return
+        if (isEditableNow) content.contentEditable = "true" else content.removeAttribute("contenteditable")
     }
 
     /**
-     * Sets the size of the HTML node.
-     * Updates `data.width` and `data.height`.
-     * Optionally scales content based on the size change.
-     * Notifies the layout engine by calling `kick()`.
-     * @param width The new width. Minimum is 80.
-     * @param height The new height. Minimum is 40.
-     * @param scaleContent If true, attempts to scale content proportionally to the size change.
+     * Read-only presentation: removes the node control buttons and the resize handle from the DOM and turns
+     * contenteditable off. [SpaceGraph.addNode] applies the graph's `options.readOnly` automatically.
      */
-    open fun setSize(width: Double, height: Double, scaleContent: Boolean) {
-        val oldWidth = this.size.width
-        val oldHeight = this.size.height
-        this.size.width = max(80.0, width)
-        this.size.height = max(40.0, height)
-
-        htmlElement.style.width = "${this.size.width}px"
-        htmlElement.style.height = "${this.size.height}px"
-
-        if (scaleContent && oldWidth > 0 && oldHeight > 0) {
-            val currentContentScale = this.data.contentScale ?: 1.0
-            val scaleFactor = sqrt((this.size.width * this.size.height) / (oldWidth * oldHeight))
-            setContentScale(currentContentScale * scaleFactor)
+    fun setReadOnly(flag: Boolean) {
+        readOnly = flag
+        htmlElement.classList.toggle("read-only", flag)
+        val controls = controlsEl
+        val handle = resizeHandleEl
+        if (flag) {
+            controls?.remove()
+            handle?.remove()
+        } else if (!isAdopted) {
+            if (controls != null && controls.parentNode == null) htmlElement.querySelector(".node-inner-wrapper")?.appendChild(controls)
+            if (handle != null && handle.parentNode == null) htmlElement.appendChild(handle)
         }
-        this.data.width = this.size.width // Update NodeData
-        this.data.height = this.size.height // Update NodeData
+        applyEditable()
+    }
+
+    open fun setSize(width: Double, height: Double, scaleContent: Boolean) {
+        val oldWidth = size.width
+        val oldHeight = size.height
+        size.width = max(80.0, width)
+        size.height = max(40.0, height)
+        htmlElement.style.width = "${size.width}px"
+        htmlElement.style.height = "${size.height}px"
+        if (scaleContent && oldWidth > 0 && oldHeight > 0) {
+            setContentScale((data.contentScale ?: 1.0) * sqrt((size.width * size.height) / (oldWidth * oldHeight)))
+        }
+        data.width = size.width
+        data.height = size.height
         spaceGraphInstance?.layoutEngine?.kick()
     }
 
-    /**
-     * Sets the scaling factor for the node's content.
-     * Updates `data.contentScale`.
-     * The scale is clamped between 0.3 and 3.0.
-     * @param scale The new content scale factor.
-     */
+    /** Re-reads the rendered size of the element (adopted cards whose height follows their content / LOD). */
+    fun measure() {
+        val w = htmlElement.offsetWidth.toDouble()
+        val h = htmlElement.offsetHeight.toDouble()
+        if (w > 0) size.width = w
+        if (h > 0) size.height = h
+    }
+
     open fun setContentScale(scale: Double) {
         val newScale = scale.coerceIn(0.3, 3.0)
-        this.data.contentScale = newScale // Update NodeData
-        val contentEl = htmlElement.querySelector(".node-content") as? HTMLElement
+        data.contentScale = newScale
         contentEl?.style?.transform = "scale($newScale)"
     }
 
-    /**
-     * Sets the background color of the HTML node.
-     * Updates `data.backgroundColor`.
-     * @param color A CSS color string (e.g., "rgba(255,0,0,0.5)", "#FF0000", "var(--my-color)").
-     */
+    /** @param color any CSS colour; exposed to the stylesheet as the custom property `--node-bg`. */
     open fun setBackgroundColor(color: String) {
-        this.data.backgroundColor = color // Update NodeData
-        htmlElement.style.setProperty("--node-bg", color) // If using CSS variables
-        // htmlElement.style.backgroundColor = color // Or set directly
+        data.backgroundColor = color
+        htmlElement.style.setProperty("--node-bg", color)
     }
 
-    /**
-     * Adjusts the content scale by a delta factor.
-     * @param deltaFactor Factor to multiply the current content scale by (e.g., 1.1 for 10% larger).
-     */
-    fun adjustContentScale(deltaFactor: Double) {
-        setContentScale((data.contentScale ?: 1.0) * deltaFactor)
-    }
+    fun adjustContentScale(deltaFactor: Double) = setContentScale((data.contentScale ?: 1.0) * deltaFactor)
 
-    /**
-     * Adjusts the node's overall size by a factor. Content is not scaled with this call.
-     * @param factor Factor to multiply current width and height by.
-     */
-    fun adjustNodeSize(factor: Double) {
-        setSize(size.width * factor, size.height * factor, false)
-    }
+    fun adjustNodeSize(factor: Double) = setSize(size.width * factor, size.height * factor, false)
 
-    /**
-     * Updates the node, primarily for billboarding if enabled.
-     * Called each frame by the [SpaceGraph] animation loop.
-     * The position of [css3dObject] is generally managed by the `setPosition` via `BaseNode.threeJsObject`.
-     */
     override fun update() {
-        // bringup fix: ForceLayout mutates `position` (a Vector3D, not the THREE vector as in the JS original),
-        // so the CSS3D object has to be synced every frame or HTML nodes never follow the layout.
         css3dObject.position.set(position.x, position.y, position.z)
-        if (billboard && spaceGraphInstance?._camera != null) {
-            // css3dObject (which is threeJsObject) inherits from THREE.Object3D, so it has a quaternion
-            css3dObject.quaternion.copy(spaceGraphInstance!!._camera!!.quaternion)
-        }
+        val graph = spaceGraphInstance ?: return
+        val camera = graph._camera
+        if (billboard) css3dObject.quaternion.copy(camera.quaternion)
+        val cp = camera.position
+        cameraDistance = ViewMath.distance(cp.x, cp.y, cp.z, position.x, position.y, position.z)
+        applyLod((lodThresholds ?: graph.lodThresholds).levelFor(cameraDistance, lod))
+    }
+
+    /** Forces a level (tests, or a host that drives semantic zoom from something else than camera distance). */
+    fun applyLod(level: LodLevel) {
+        if (level == lod) return
+        val previous = lod
+        lod = level
+        htmlElement.setAttribute(LodLevel.DATA_ATTRIBUTE, level.attr)
+        spaceGraphInstance?.notifyLodChanged(this, level, previous)
     }
 
     /**
-     * Disposes of the HTML node, removing its HTML element from the DOM and calling superclass dispose.
+     * Undoes an adoption: the element goes back to its original parent / position with its original inline
+     * style, classes and attributes. No-op for built elements. Called by [dispose].
      */
+    fun release() {
+        val a = adoption ?: return
+        adoption = null
+        val e = htmlElement
+        e.remove()
+        e.style.cssText = a.cssText
+        for (c in a.addedClasses) e.classList.remove(c)
+        e.classList.remove("selected")
+        e.classList.remove("dragging")
+        e.classList.remove("read-only")
+        if (a.previousNodeId != null) e.setAttribute("data-node-id", a.previousNodeId) else e.removeAttribute("data-node-id")
+        if (a.previousLod != null) e.setAttribute(LodLevel.DATA_ATTRIBUTE, a.previousLod) else e.removeAttribute(LodLevel.DATA_ATTRIBUTE)
+        val parent = a.parent
+        if (parent != null) {
+            val before = a.nextSibling?.takeIf { it.parentNode === parent }
+            parent.insertBefore(e, before)
+        }
+    }
+
     override fun dispose() {
-        htmlElement.remove() // Remove from DOM
-        super.dispose() // Handles removal of css3dObject (as threeJsObject) from scene
+        if (isAdopted) release() else htmlElement.remove()
+        super.dispose()
     }
 
-    /**
-     * Calculates an approximate bounding sphere radius for layout purposes.
-     * Based on the diagonal of the node's current width and height, scaled by contentScale.
-     * @return The approximate radius.
-     */
-    override fun getBoundingSphereRadius(): Double {
-        return sqrt(size.width * size.width + size.height * size.height) / 2.0 * (data.contentScale ?: 1.0)
-    }
+    override fun getBoundingSphereRadius(): Double =
+        sqrt(size.width * size.width + size.height * size.height) / 2.0 * (data.contentScale ?: 1.0)
 
-    /**
-     * Sets the visual style for selection. Adds/removes a "selected" CSS class to the [htmlElement].
-     * @param selected True if selected, false otherwise.
-     */
     override fun setSelectedStyle(selected: Boolean) {
-        // super.setSelectedStyle(selected) // BaseNode's implementation is for Mesh, not relevant here.
-        if (selected) {
-            htmlElement.addClass("selected")
-        } else {
-            htmlElement.removeClass("selected")
-        }
+        htmlElement.classList.toggle("selected", selected)
+        if (selected) htmlElement.setAttribute("aria-current", "true") else htmlElement.removeAttribute("aria-current")
     }
 
-    /**
-     * Called by [UIManager] when a resize operation starts on this node.
-     * Adds "resizing" CSS class and fixes node in layout.
-     */
     open fun startResize() {
-        htmlElement.addClass("resizing")
+        htmlElement.classList.add("resizing")
         spaceGraphInstance?.layoutEngine?.fixNode(this)
     }
 
-    /**
-     * Called by [UIManager] during a resize operation. Updates node size.
-     * @param newWidth The target new width.
-     * @param newHeight The target new height.
-     */
-    open fun resize(newWidth: Double, newHeight: Double) {
-        setSize(newWidth, newHeight, false)
-    }
+    open fun resize(newWidth: Double, newHeight: Double) = setSize(newWidth, newHeight, false)
 
-    /**
-     * Called by [UIManager] when a resize operation ends.
-     * Removes "resizing" CSS class and releases node in layout.
-     */
     open fun endResize() {
-        htmlElement.removeClass("resizing")
+        htmlElement.classList.remove("resizing")
         spaceGraphInstance?.layoutEngine?.releaseNode(this)
     }
-}
 
-// Helper for jsObject if not already in a common place, used for userData and event listener options
+    companion object {
+        /**
+         * Adopts an element that already exists in the document as a graph node (it is NOT cloned: CSS3DRenderer
+         * moves this very element into its layer on the next frame, and [release] / dispose moves it back).
+         *
+         * @param element the card; measure happens now, so it should be attached and displayed
+         * @param id node id; default: the element's `id` attribute, else generated
+         * @param width / height world size = CSS px at scale 1; default: the element's current offset size.
+         *   Only the width is pinned on the element (height stays `auto`) unless [height] is given.
+         */
+        fun adopt(
+            element: HTMLElement,
+            position: Vector3D,
+            id: String = element.id.ifBlank { generateId("adopted") },
+            width: Double? = null,
+            height: Double? = null,
+            billboard: Boolean = true,
+            label: String? = null,
+        ): HtmlNodeElement {
+            val w = width ?: element.offsetWidth.toDouble().takeIf { it > 0.0 } ?: 320.0
+            val measuredH = element.offsetHeight.toDouble().takeIf { it > 0.0 } ?: 200.0
+            val data = NodeData(
+                id = id, label = label ?: id, type = "adopted",
+                width = w, height = height, contentScale = 1.0, editable = false, billboard = billboard,
+            )
+            return HtmlNodeElement(id, position, data, Size(w, height ?: measuredH), billboard, element)
+        }
+    }
+}
