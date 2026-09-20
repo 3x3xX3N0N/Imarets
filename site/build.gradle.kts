@@ -45,6 +45,12 @@ kotlin {
     }
 }
 
+// Tooling that lives next to the pages (design agent's generator + contract, bringup's unlinked demo sheet)
+// must not be published: everything in dist is served to the internet.
+tasks.withType<org.gradle.language.jvm.tasks.ProcessResources>().configureEach {
+    exclude("DOM-CONTRACT.md", "_design/**", "styles/engine.css")
+}
+
 val productionDir = layout.buildDirectory.dir("dist/js/productionExecutable")
 val scratchDist = rootProject.layout.projectDirectory.dir("../dist")
 
@@ -66,16 +72,17 @@ val verifySingleThree by tasks.registering {
     }
 }
 
-/** Copies the production bundle to scratch/dist (keeps the integrator's own docs/scripts there). */
+/** Copies the production bundle to scratch/dist (an exact mirror: anything else in dist is deleted). */
 val copyDist by tasks.registering(Sync::class) {
     group = "distribution"
     description = "Sync the production bundle into scratch/dist"
     dependsOn("jsBrowserDistribution", verifySingleThree)
-    from(productionDir)
-    into(scratchDist)
-    preserve {
-        include("*.md", "*.txt", "*.sh", "*.cmd", "*.ps1", "*.py")
+    from(productionDir) {
+        // source maps stay in build/ (verifySingleThree reads them); they are not published
+        exclude("**/*.map")
     }
+    into(scratchDist)
+    // integrator: nothing is preserved. dist is served verbatim, so it holds build output only; RUN.md lives in scratch/.
 }
 
 tasks.named("assemble") { dependsOn(copyDist) }
