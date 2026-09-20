@@ -1,0 +1,98 @@
+{
+  "asOf": "2026-09-20",
+  "schema": "verdantbloom.seo/1",
+  "site": {
+    "name": "verdantbloom.bar",
+    "origin": "https://verdantbloom.bar",
+    "lang": "en",
+    "locale": "en_US",
+    "themeColor": {
+      "night": null,
+      "day": null
+    }
+  },
+  "pages": {
+    "index": {
+      "path": "/",
+      "canonical": "https://verdantbloom.bar/",
+      "title": "verdantbloom.bar - open a tab",
+      "description": "A lineup of abliterated dark fiction models by DavidAU. Ten pours, one OpenAI-compatible endpoint, a monthly tab. Not open yet: get on the list.",
+      "robots": "index,follow",
+      "og": {
+        "og:type": "website",
+        "og:site_name": "verdantbloom.bar",
+        "og:title": "Open a tab. - verdantbloom.bar",
+        "og:description": "A lineup of abliterated dark fiction models by DavidAU. Ten pours, one endpoint, a monthly tab. Not open yet: get on the list.",
+        "og:url": "https://verdantbloom.bar/",
+        "og:locale": "en_US",
+        "og:image": "https://verdantbloom.bar/og.png",
+        "og:image:width": "1200",
+        "og:image:height": "630",
+        "og:image:alt": "Ten linked rings glowing green on black: the verdantbloom.bar bloom."
+      },
+      "twitter": {
+        "twitter:card": "summary_large_image",
+        "twitter:title": "Open a tab. - verdantbloom.bar",
+        "twitter:description": "A lineup of abliterated dark fiction models by DavidAU. Ten pours, one endpoint, a monthly tab. Not open yet: get on the list.",
+        "twitter:image": "https://verdantbloom.bar/og.png",
+        "twitter:image:alt": "Ten linked rings glowing green on black: the verdantbloom.bar bloom."
+      },
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "verdantbloom.bar",
+        "url": "https://verdantbloom.bar/",
+        "description": "A lineup of abliterated dark fiction models by DavidAU, behind one OpenAI-compatible endpoint. Not open yet.",
+        "inLanguage": "en"
+      },
+      "jsonLdNote": "CSP: a JSON-LD script block is inline script data. If the CSP forbids inline scripts without a hash, either add its hash or drop the block. No Product, Offer, Review or AggregateRating markup: nothing is for sale and there are no reviews."
+    },
+    "pricing": {
+      "path": "/pricing.html",
+      "canonical": "https://verdantbloom.bar/pricing.html",
+      "title": "Prices at opening - verdantbloom.bar",
+      "description": "Passes at $10, $20 and $40 a month, each a tab spent at per-token rates. Rates, minimum pours, the volume schedule and the reduced-fee form. Not open yet.",
+      "robots": "index,follow",
+      "og": {
+        "og:type": "website",
+        "og:site_name": "verdantbloom.bar",
+        "og:title": "Prices at opening - verdantbloom.bar",
+        "og:description": "Passes at $10, $20 and $40 a month, each a tab spent at per-token rates. The small print is on the page. Not open yet.",
+        "og:url": "https://verdantbloom.bar/pricing.html",
+        "og:locale": "en_US",
+        "og:image": "https://verdantbloom.bar/og.png",
+        "og:image:width": "1200",
+        "og:image:height": "630",
+        "og:image:alt": "Ten linked rings glowing green on black: the verdantbloom.bar bloom."
+      },
+      "twitter": {
+        "twitter:card": "summary_large_image",
+        "twitter:title": "Prices at opening - verdantbloom.bar",
+        "twitter:description": "Passes at $10, $20 and $40 a month, each a tab spent at per-token rates. The small print is on the page. Not open yet.",
+        "twitter:image": "https://verdantbloom.bar/og.png",
+        "twitter:image:alt": "Ten linked rings glowing green on black: the verdantbloom.bar bloom."
+      }
+    },
+    "legalAcceptableUse": {
+      "path": "/legal/acceptable-use.html",
+      "canonical": "https://verdantbloom.bar/legal/acceptable-use.html",
+      "title": "Acceptable use - verdantbloom.bar",
+      "description": "The acceptable-use policy for verdantbloom.bar: 18 or older, what is never allowed, and what we do about it.",
+      "robots": "index,follow"
+    },
+    "legalPrivacy": {
+      "path": "/legal/privacy.html",
+      "canonical": "https://verdantbloom.bar/legal/privacy.html",
+      "title": "Privacy - verdantbloom.bar",
+      "description": "What the verdantbloom.bar waitlist and reduced-fee forms store, and why. Nothing is claimed about the API until its own policy is written.",
+      "robots": "index,follow"
+    },
+    "legalTerms": {
+      "path": "/legal/terms.html",
+      "canonical": "https://verdantbloom.bar/legal/terms.html",
+      "title": "Terms (stub) - verdantbloom.bar",
+      "description": "A plain-language outline of the terms verdantbloom.bar intends to open with. Not a contract. Needs counsel before payments open.",
+      "robots": "noindex,follow"
+    }
+  }
+}

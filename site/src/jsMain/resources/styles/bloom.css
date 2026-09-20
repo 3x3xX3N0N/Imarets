@@ -1,0 +1,347 @@
+/*
+ * bloom.css - everything around the canvas: the stage and its layers, the static plate that stands in
+ * when there is no renderer, the controls HUD (knobs, bell, switches), the tour bar.
+ * Glow belongs to the bloom. None of this chrome glows.
+ */
+
+/* --- stage ------------------------------------------------------------------------------------
+   #stage                       data-renderer = none | webgpu | webgl | 2d   (set by Kotlin)
+     #bloom-host                renderer.attach(host, ...) puts its canvas in here
+     #bloom-plate               static figure, shown only while data-renderer="none"
+     #bloom-cards               DOM cards, moved with style.transform (CSSOM, CSP-safe)
+     #bloom-notice              renderer fallback messages
+   <html data-stage="full">     optional: stage fixed behind the whole page (ZUI mode)              */
+.vb-stage {
+    position: relative;
+    width: 100%;
+    height: 78svh;
+    min-height: 320px;
+    max-height: 720px;
+    overflow: hidden;
+    background: var(--vb-ground);
+    touch-action: none;                 /* the ZUI owns drag and pinch inside the stage */
+    user-select: none;
+    -webkit-user-select: none;
+}
+html:not([data-js="on"]) .vb-stage { touch-action: auto; height: auto; max-height: none; }
+@media (min-width: 1080px) {
+    .vb-stage { height: 100%; max-height: none; min-height: 560px; }
+}
+
+.vb-stage__host { position: absolute; inset: 0; }
+.vb-stage__host canvas { display: block; width: 100%; height: 100%; }
+
+.vb-stage__cards {
+    position: absolute;
+    inset: 0;
+    z-index: var(--vb-z-cards);
+    pointer-events: none;
+    overflow: hidden;
+}
+.vb-stage__cards > * {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: auto;
+    will-change: transform, opacity;
+    user-select: text;
+    -webkit-user-select: text;
+}
+.vb-ringtag {
+    padding: 2px var(--vb-s2) 3px;
+    background: var(--vb-ring-visitor);
+    color: var(--vb-ground);
+    font-family: var(--vb-font-mono);
+    font-weight: 700;
+    font-size: var(--vb-size-1);
+    line-height: 1;
+}
+
+.vb-stage__notice {
+    position: absolute;
+    left: var(--vb-s3);
+    right: var(--vb-s3);
+    bottom: var(--vb-s3);
+    z-index: var(--vb-z-cards);
+    max-width: none;
+    padding: var(--vb-s2) var(--vb-s3);
+    border: var(--vb-rule-w) solid var(--vb-alert);
+    background: var(--vb-ground);
+    font-family: var(--vb-font-mono);
+    font-size: var(--vb-size-0);
+    font-weight: 700;
+}
+
+.vb-stage__clock {
+    position: absolute;
+    top: var(--vb-s3);
+    right: var(--vb-s3);
+    z-index: var(--vb-z-cards);
+    width: min(18rem, calc(100% - 24px));
+}
+html:not([data-js="on"]) .vb-stage__clock { display: none; }
+
+/* the plate: ten real Hopf fibers (shelf latitudes from BloomConfig) under one fixed rotation, projected
+   and drawn once as a line engraving. It is an illustration, not a frame of the live clock. */
+.vb-plate { position: relative; margin: 0; padding: var(--vb-s4) var(--vb-gutter) var(--vb-s5); }
+.vb-stage:not([data-renderer="none"]) .vb-plate { display: none; }
+html[data-js="on"] .vb-stage[data-renderer="none"] .vb-plate { position: absolute; inset: 0; display: grid; align-content: center; }
+.vb-plate svg { width: 100%; height: auto; max-height: 62svh; margin-inline: auto; overflow: visible; }
+.vb-plate path { fill: none; stroke-width: 1.6; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.vb-plate [data-shelf="well"] { stroke: var(--vb-ring-well); }
+.vb-plate [data-shelf="call"] { stroke: var(--vb-ring-call); }
+.vb-plate [data-shelf="top"] { stroke: var(--vb-ring-top); stroke-width: 2.4; }
+.vb-plate .vb-plate__frame { stroke: var(--vb-rule-dim); stroke-width: 1; }
+.vb-plate text { fill: var(--vb-ink-dim); font-family: var(--vb-font-mono); font-size: 11px; }
+.vb-plate figcaption { margin-top: var(--vb-s3); font-family: var(--vb-font-mono); font-size: var(--vb-size-0); color: var(--vb-ink-dim); }
+.vb-plate figcaption b { color: var(--vb-ink); }
+
+/* optional full-viewport ZUI mode */
+html[data-stage="full"] .vb-stage {
+    position: fixed;
+    inset: 0;
+    z-index: var(--vb-z-stage);
+    height: 100vh;
+    height: 100svh;
+    max-height: none;
+}
+html[data-stage="full"] .vb-top { z-index: calc(var(--vb-z-doc) + 1); }      /* main is a later stacking context at the same level */
+html[data-stage="full"] #doc,
+html[data-stage="full"] .vb-hero__notes { position: relative; z-index: 1; background: var(--vb-ground); }   /* the document scrolls OVER the fixed stage */
+html[data-stage="full"] .vb-hero { background: transparent; min-height: 100svh; }
+html[data-stage="full"] .vb-hero__stagecol { position: static; border: 0; min-height: 50svh; }
+html[data-stage="full"] .vb-hero__copy { pointer-events: none; border-right: 0; }
+html[data-stage="full"] .vb-hero__copy > * { pointer-events: auto; }
+html[data-stage="full"] .vb-hero__copy h1,
+html[data-stage="full"] .vb-hero__copy p { background: var(--vb-ground); box-shadow: 0 0 0 var(--vb-s2) var(--vb-ground); width: fit-content; }
+
+/* --- HUD -------------------------------------------------------------------------------------- */
+.vb-hud {
+    position: fixed;
+    right: 0;
+    bottom: 56px;                        /* sits on the tour bar */
+    z-index: var(--vb-z-hud);
+    max-width: 100vw;
+    display: grid;
+    justify-items: end;
+    pointer-events: none;
+}
+.vb-hud > * { pointer-events: auto; }
+.vb-hud__toggle {
+    min-height: var(--vb-tap);
+    padding: var(--vb-s2) var(--vb-s4);
+    border: var(--vb-rule-w) solid var(--vb-rule);
+    border-right: 0;
+    border-radius: 0;
+    background: var(--vb-ink);
+    color: var(--vb-ground);
+    font: inherit;
+    font-weight: 900;
+    font-stretch: 125%;
+    font-size: var(--vb-size-0);
+    letter-spacing: 0.08em;
+    cursor: pointer;
+}
+.vb-hud__toggle [data-when] { display: none; }
+.vb-hud__toggle[aria-expanded="false"] [data-when="closed"],
+.vb-hud__toggle[aria-expanded="true"] [data-when="open"] { display: inline; }
+
+.vb-hud__panel {
+    width: min(100vw, 23rem);
+    max-height: calc(100svh - 56px - var(--vb-tap) - 8px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: var(--vb-rule-w) solid var(--vb-rule);
+    border-right: 0;
+    border-bottom: 0;
+    background: var(--vb-ground);
+}
+.vb-hud__title {
+    padding: var(--vb-s2) var(--vb-s3);
+    background: var(--vb-ink);
+    color: var(--vb-ground);
+    font-size: var(--vb-size-1);
+    letter-spacing: 0.08em;
+}
+.vb-hud__title::after { content: " / " var(--vb-theme-name); font-family: var(--vb-font-mono); font-weight: 400; font-stretch: 100%; letter-spacing: 0; }
+.vb-hud__group { margin: 0; padding: var(--vb-s3); border: 0; border-top: var(--vb-rule-w) solid var(--vb-rule); min-width: 0; }
+.vb-hud__group:first-of-type { border-top: 0; }
+.vb-hud__note { padding: var(--vb-s3); border-top: var(--vb-rule-w) solid var(--vb-rule); font-size: 0.6875rem; line-height: 1.4; color: var(--vb-ink-dim); }
+.vb-help { font-size: 0.6875rem; line-height: 1.35; color: var(--vb-ink-dim); margin-top: 0; }
+
+/* knobs: a real range input lies invisibly over a square plate with a dial on it.
+   Kotlin writes --vb-knob-turn (0..1) on the .vb-knob element with style.setProperty.            */
+.vb-knobs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--vb-s3); }
+.vb-knob { --vb-knob-turn: 0; position: relative; display: grid; gap: var(--vb-s2); justify-items: center; align-content: start; text-align: center; min-width: 0; }
+.vb-knob[data-knob="rho"] { --vb-knob-turn: 0.15; }      /* 28 on 25..45 */
+.vb-knob[data-knob="drift"] { --vb-knob-turn: 0.246; }   /* 1 on 0.02..4 */
+.vb-knob[data-knob="louche"] { --vb-knob-turn: 0.35; }
+.vb-knob label { font-weight: 900; font-stretch: 125%; font-size: var(--vb-size-0); letter-spacing: 0.08em; }
+.vb-knob__well { position: relative; width: 100%; max-width: 88px; aspect-ratio: 1; }
+.vb-knob__well input[type="range"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: ew-resize;
+    z-index: 1;
+    touch-action: pan-y;
+}
+.vb-knob__plate {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    border: var(--vb-rule-w) solid var(--vb-rule);
+    background: var(--vb-ground-2);
+}
+.vb-knob__plate::before,
+.vb-knob__plate::after { content: ""; position: absolute; bottom: 5px; width: 6px; height: 6px; background: var(--vb-ink-dim); }
+.vb-knob__plate::before { left: 5px; }
+.vb-knob__plate::after { right: 5px; }
+.vb-knob__dial {
+    position: relative;
+    width: 68%;
+    aspect-ratio: 1;
+    border: var(--vb-rule-w) solid var(--vb-ink);
+    border-radius: 50%;                 /* the one round thing: it turns */
+    background: var(--vb-ground);
+    transform: rotate(calc(-135deg + var(--vb-knob-turn) * 270deg));
+}
+.vb-knob__dial::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -4px;
+    width: 6px;
+    height: 52%;
+    margin-left: -3px;
+    background: var(--vb-accent);
+}
+.vb-knob__well input:focus-visible + .vb-knob__plate { outline: var(--vb-rule-w) solid var(--vb-focus); outline-offset: 2px; }
+.vb-knob__well input:active + .vb-knob__plate { background: var(--vb-ground-3); }
+.vb-knob output { font-family: var(--vb-font-mono); font-weight: 700; font-size: var(--vb-size-1); font-variant-numeric: tabular-nums; }
+
+/* bell */
+.vb-bell {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--vb-s3);
+    width: 100%;
+    min-height: 56px;
+    padding: var(--vb-s2) var(--vb-s3);
+    border: var(--vb-rule-w) solid var(--vb-warm);
+    border-radius: 0;
+    background: var(--vb-ground);
+    color: var(--vb-ink);
+    font: inherit;
+    font-weight: 900;
+    font-stretch: 125%;
+    font-size: var(--vb-size-1);
+    letter-spacing: 0.04em;
+    text-align: left;
+    cursor: pointer;
+}
+.vb-bell::before {
+    content: "";
+    width: 28px;
+    height: 28px;
+    border: var(--vb-rule-w) solid var(--vb-warm);
+    border-bottom-width: var(--vb-rule-heavy);
+    border-radius: 50% 50% 0 0;         /* a desk bell, seen from the side */
+    background: var(--vb-warm);
+}
+.vb-bell:hover { background: var(--vb-warm); color: var(--vb-ground); }
+.vb-bell:hover::before { border-color: var(--vb-ground); }
+.vb-bell:active::before { transform: translateY(3px); }
+.vb-bell[data-state="ringing"] { cursor: progress; }
+.vb-bell__status { min-height: 1.4em; margin-top: var(--vb-s2); font-family: var(--vb-font-mono); font-size: var(--vb-size-0); font-weight: 700; }
+
+/* switches: a lever in a slot. The unlabeled ones are the same part with nothing printed under it. */
+.vb-switches { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--vb-s3); }
+.vb-switches--blank { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.vb-switch { position: relative; display: grid; gap: var(--vb-s2); justify-items: center; align-content: start; text-align: center; min-width: 0; cursor: pointer; }
+.vb-switch input {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 44px;
+    height: 56px;
+    margin: 0 0 0 -22px;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1;
+}
+.vb-switch__slot {
+    position: relative;
+    width: 32px;
+    height: 56px;
+    border: var(--vb-rule-w) solid var(--vb-rule);
+    background: var(--vb-ground-2);
+}
+.vb-switch__slot::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    height: 22px;
+    background: var(--vb-ink-dim);
+    transition: transform var(--vb-fast) var(--vb-ease);
+}
+.vb-switch input:checked + .vb-switch__slot::before { transform: translateY(-22px); background: var(--vb-accent); }
+.vb-switch input:focus-visible + .vb-switch__slot { outline: var(--vb-rule-w) solid var(--vb-focus); outline-offset: 2px; }
+.vb-switch__label { font-weight: 900; font-stretch: 125%; font-size: 0.6875rem; letter-spacing: 0.06em; line-height: 1.15; }
+.vb-switch--blank .vb-switch__slot { border-color: var(--vb-rule-dim); }
+
+.vb-hud__reset { display: flex; align-items: center; gap: var(--vb-s3); }
+.vb-hud__reset .vb-btn { flex: none; }
+
+/* --- tour bar --------------------------------------------------------------------------------- */
+.vb-tour {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--vb-z-tour);
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    align-items: stretch;
+    height: 56px;
+    border-top: var(--vb-rule-w) solid var(--vb-rule);
+    background: var(--vb-ground);
+}
+.vb-tour button {
+    min-width: 56px;
+    padding: 0 var(--vb-s3);
+    border: 0;
+    border-right: var(--vb-rule-w) solid var(--vb-rule);
+    border-radius: 0;
+    background: var(--vb-ground);
+    color: var(--vb-ink);
+    font: inherit;
+    font-weight: 900;
+    font-stretch: 125%;
+    font-size: var(--vb-size-0);
+    letter-spacing: 0.06em;
+    cursor: pointer;
+}
+.vb-tour button:last-of-type { border-right: 0; border-left: var(--vb-rule-w) solid var(--vb-rule); background: var(--vb-accent); color: var(--vb-ink-inverse); }
+.vb-tour button:hover:not([disabled]) { background: var(--vb-ink); color: var(--vb-ground); }
+.vb-tour button[disabled] { color: var(--vb-ink-dim); cursor: default; }
+.vb-tour button kbd { display: block; font-size: 0.625rem; font-weight: 400; color: inherit; opacity: 0.7; }
+.vb-tour__where {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    max-width: none;
+    padding: 0 var(--vb-s3);
+    margin: 0;
+}
+.vb-tour__stop { font-weight: 900; font-stretch: 125%; font-size: var(--vb-size-1); letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vb-tour__pos { font-family: var(--vb-font-mono); font-size: 0.6875rem; color: var(--vb-ink-dim); }
+.vb-tour__stops { display: none; }

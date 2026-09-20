@@ -1,0 +1,164 @@
+/*
+ * tokens.css - verdantbloom.bar design tokens.
+ *
+ * Two themes, selected by <html data-theme="...">:
+ *   absinthe-abyss        night, 19:00-07:00 local (alias: abyss)
+ *   nightshade-herbarium  day                     (alias: herbarium)
+ * No attribute at all = absinthe-abyss, so bare pages (the API's confirm page) still get a palette.
+ *
+ * CONTRACT (bloom-api PaletteCss / PaletteDom.read): the thirteen properties in the "read by Kotlin"
+ * block MUST stay plain #rrggbb or #rgb. No rgb(), no hsl(), no names, no var() indirection: the Kotlin
+ * parser reads the computed string and rejects anything else.
+ *
+ * Everything below that block is chrome only. Chrome uses flat colour: no gradients, no blur, no radius.
+ */
+
+:root,
+:root[data-theme="absinthe-abyss"],
+:root[data-theme="abyss"] {
+    color-scheme: dark;
+
+    /* ---- read by Kotlin (PaletteDom) ---- */
+    --vb-ground: #020a07;        /* abyssal black-green */
+    --vb-ink: #d8f2e0;           /* louche white */
+    --vb-rule: #9fe8b8;          /* heavy rules, milky green */
+    --vb-glow: #b8ffce;          /* the bloom's glow; never used on chrome */
+    --vb-accent: #3dffc0;        /* bioluminescent cyan-green */
+    --vb-accent-2: #19c9a3;
+    --vb-warm: #c9a24a;          /* brass */
+    --vb-alert: #ff9d3c;         /* candle orange */
+    --vb-ring-well: #3dffc0;
+    --vb-ring-call: #b8ffce;
+    --vb-ring-top: #c9a24a;
+    --vb-ring-visitor: #ffe9a8;  /* candle flame */
+    --vb-ring-ghost: #3a5a4a;
+
+    /* ---- chrome ---- */
+    --vb-ground-2: #07170f;      /* raised plate */
+    --vb-ground-3: #0d2318;      /* pressed / hover plate */
+    --vb-ink-dim: #93b8a3;       /* secondary text, 8.9:1 on ground */
+    --vb-ink-inverse: #020a07;   /* text on a rule-coloured plate */
+    --vb-rule-dim: #2b5a41;      /* hairlines, table rows */
+    --vb-candle: #ffd58a;        /* warm highlight text */
+    --vb-ok: #3dffc0;            /* warm tap */
+    --vb-cold: #7fb7d9;          /* cold tap */
+    --vb-parked: #6a7f74;        /* parked tap */
+    --vb-focus: #ffe9a8;
+
+    /* shelf tints: flat panel grounds, one per latitude band */
+    --vb-shelf-well: #04211a;
+    --vb-shelf-call: #0c2a19;
+    --vb-shelf-top: #231b08;
+    --vb-shelf-order: #15100f;
+
+    /* spin discs. "original" is the jnorthrup.github.io/spin triad and is the same in both themes. */
+    --vb-spin-original-disc: #0000ff;
+    --vb-spin-original-stroke: #ff0000;
+    --vb-spin-original-wedge: #ffff00;
+    --vb-spin-theme-disc: #19c9a3;
+    --vb-spin-theme-stroke: #ff9d3c;
+    --vb-spin-theme-wedge: #c9a24a;
+
+    /* strings that change with the theme */
+    --vb-plate-prefix: "NO. ";
+    --vb-theme-name: "ABSINTHE ABYSS";
+}
+
+:root[data-theme="nightshade-herbarium"],
+:root[data-theme="herbarium"] {
+    color-scheme: light;
+
+    /* ---- read by Kotlin (PaletteDom) ---- */
+    --vb-ground: #efe8d8;        /* herbarium paper, bone */
+    --vb-ink: #1d1a16;           /* oxidised ink */
+    --vb-rule: #1d1a16;
+    --vb-glow: #6b4a8c;          /* nightshade bloom */
+    --vb-accent: #4b2a6e;        /* nightshade violet */
+    --vb-accent-2: #a3195b;      /* berry magenta */
+    --vb-warm: #7a5a1e;          /* foxed brown */
+    --vb-alert: #7d1414;         /* dried blood */
+    --vb-ring-well: #4b2a6e;
+    --vb-ring-call: #a3195b;
+    --vb-ring-top: #7d1414;
+    --vb-ring-visitor: #1d1a16;
+    --vb-ring-ghost: #b8ad98;
+
+    /* ---- chrome ---- */
+    --vb-ground-2: #e6dcc6;
+    --vb-ground-3: #dacdb1;
+    --vb-ink-dim: #574f43;       /* 6.6:1 on ground */
+    --vb-ink-inverse: #efe8d8;
+    --vb-rule-dim: #a89c84;
+    --vb-candle: #7a5a1e;
+    --vb-ok: #2f5d2a;            /* pressed-leaf green */
+    --vb-cold: #2d4f7a;
+    --vb-parked: #7c7364;
+    --vb-focus: #a3195b;
+
+    --vb-shelf-well: #e4dbe6;
+    --vb-shelf-call: #eed6de;
+    --vb-shelf-top: #ead3c6;
+    --vb-shelf-order: #ddd5c3;
+
+    --vb-spin-original-disc: #0000ff;
+    --vb-spin-original-stroke: #ff0000;
+    --vb-spin-original-wedge: #ffff00;
+    --vb-spin-theme-disc: #4b2a6e;
+    --vb-spin-theme-stroke: #7d1414;
+    --vb-spin-theme-wedge: #a3195b;
+
+    --vb-plate-prefix: "PLATE ";
+    --vb-theme-name: "NIGHTSHADE HERBARIUM";
+}
+
+:root {
+    /* type */
+    --vb-font-display: "Archivo Black", "Archivo", "Arial Black", "Helvetica Neue", Arial, sans-serif;
+    --vb-font-grotesk: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --vb-font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, "Courier New", monospace;
+
+    --vb-size-0: 0.75rem;                              /* 12 fine print */
+    --vb-size-1: 0.875rem;                             /* 14 labels */
+    --vb-size-2: 1rem;                                 /* 16 body */
+    --vb-size-3: 1.25rem;                              /* 20 lede */
+    --vb-size-4: clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem);
+    --vb-size-5: clamp(2rem, 1.2rem + 3.6vw, 3.75rem);
+    --vb-size-6: clamp(3rem, 1rem + 10vw, 9rem);       /* the headline */
+
+    /* rules and space: multiples of 4 */
+    --vb-hair: 1px;
+    --vb-rule-w: 4px;
+    --vb-rule-heavy: 8px;
+    --vb-s1: 4px;
+    --vb-s2: 8px;
+    --vb-s3: 12px;
+    --vb-s4: 16px;
+    --vb-s5: 24px;
+    --vb-s6: 32px;
+    --vb-s7: 48px;
+    --vb-s8: 64px;
+    --vb-s9: 96px;
+
+    --vb-measure: 62ch;
+    --vb-page: 1320px;
+    --vb-gutter: 16px;
+    --vb-shadow: 6px 6px 0 var(--vb-rule);             /* hard offset, no blur */
+    --vb-tap: 44px;                                    /* minimum touch target */
+
+    /* motion: chrome barely moves; the bloom does the moving */
+    --vb-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --vb-fast: 90ms;
+    --vb-slow: 240ms;
+
+    /* layers */
+    --vb-z-stage: 0;
+    --vb-z-doc: 10;
+    --vb-z-cards: 20;
+    --vb-z-tour: 40;
+    --vb-z-hud: 50;
+    --vb-z-skip: 100;
+}
+
+@media (min-width: 720px) {
+    :root { --vb-gutter: 32px; }
+}

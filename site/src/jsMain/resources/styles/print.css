@@ -1,0 +1,72 @@
+/*
+ * print.css - linked with media="print". Black on white, whatever the theme. The bloom, the HUD and
+ * the tour bar do not print; the pour list, the prices and the small print do, with their URLs.
+ */
+
+:root,
+:root[data-theme] {
+    color-scheme: light;
+    --vb-ground: #ffffff;
+    --vb-ground-2: #ffffff;
+    --vb-ground-3: #eeeeee;
+    --vb-ink: #000000;
+    --vb-ink-dim: #333333;
+    --vb-ink-inverse: #ffffff;
+    --vb-rule: #000000;
+    --vb-rule-dim: #888888;
+    --vb-accent: #000000;
+    --vb-accent-2: #000000;
+    --vb-warm: #000000;
+    --vb-candle: #000000;
+    --vb-alert: #000000;
+    --vb-ok: #000000;
+    --vb-cold: #000000;
+    --vb-parked: #666666;
+    --vb-ring-well: #000000;
+    --vb-ring-call: #000000;
+    --vb-ring-top: #000000;
+    --vb-shelf-well: #ffffff;
+    --vb-shelf-call: #ffffff;
+    --vb-shelf-top: #ffffff;
+    --vb-shelf-order: #ffffff;
+    --vb-shadow: none;
+}
+
+@page { margin: 16mm 14mm; }
+
+html { font-size: 10.5pt; }
+body { background: #ffffff; color: #000000; }
+
+.vb-skip, .vb-nav, .vb-hud, .vb-tour, .vb-cta, .vb-js-only, .vb-hp,
+.vb-stage__host, .vb-stage__cards, .vb-stage__notice, .vb-stage__clock,
+.vb-index, .vb-form button, .vb-pass__foot .vb-btn, .vb-signmini { display: none !important; }
+
+.vb-stage { height: auto !important; min-height: 0 !important; max-height: none !important; position: static !important; }
+.vb-plate { display: block !important; position: static !important; }
+.vb-plate svg { max-height: 90mm; }
+
+.vb-hero { display: block; min-height: 0 !important; }
+.vb-hero__copy { border-right: 0 !important; padding: 0 0 8mm !important; }
+h1 { font-size: 40pt; }
+h2 { font-size: 22pt; }
+
+.vb-section, .vb-foot { padding-block: 8mm; border-top-width: 2pt; }
+.vb-section__head::before, .vb-pour__code code, .vb-pass__head, .vb-board thead th, .vb-badge[data-badge="housePour"] {
+    background: #ffffff !important;
+    color: #000000 !important;
+    outline: 1pt solid #000000;
+}
+.vb-btn, .vb-pass, .vb-pour[data-lod] { box-shadow: none !important; }
+
+.vb-pour, .vb-pass, .vb-block, .vb-faq__item, .vb-board tr, .vb-fineprint li, .vb-banner, .vb-preopen, .vb-notice { break-inside: avoid; }
+h2, h3, h4, .vb-shelf__head { break-after: avoid; }
+.vb-pourlist, .vb-passes, .vb-blocks { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+.vb-board-scroll { overflow: visible; }
+
+a { text-decoration: underline; text-decoration-thickness: 1px; }
+a[href^="http"]::after { content: " <" attr(href) ">"; font-family: var(--vb-font-mono); font-size: 7.5pt; word-break: break-all; }
+.vb-wordmark::after, .vb-foot__links a::after { content: none !important; }
+
+/* forms print as blank forms */
+.vb-input, .vb-select, .vb-textarea { border: 1pt solid #000000; background: #ffffff; min-height: 10mm; }
+.vb-select { background-image: none; }

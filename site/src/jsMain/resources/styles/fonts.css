@@ -1,0 +1,54 @@
+/*
+ * fonts.css - self-hosted faces. Files are in ../fonts/, copied from npm:
+ *   @fontsource-variable/archivo 5.3.0   archivo-latin-wdth-normal.woff2  (axes: wght 100-900, wdth 62-125)
+ *   @fontsource/archivo-black    5.3.0   archivo-black-latin-400-normal.woff2
+ *   @fontsource/jetbrains-mono   5.3.0   jetbrains-mono-latin-{400,700}-normal.woff2
+ * All three are SIL OFL 1.1; the licence texts sit next to the files (fonts/OFL-*.txt).
+ *
+ * Family names match what the Kotlin renderers ask for: "Archivo", "Archivo Black", "JetBrains Mono".
+ * The webpack bundle's main.css declares static Archivo 400/700 and the other subsets under the same
+ * names. Load this file AFTER main.css: for an equal match the later @font-face wins, so Latin text
+ * uses the variable file (which is the only one that can be set expanded) and main.css still covers
+ * latin-ext, vietnamese and the rest.
+ */
+
+@font-face {
+    font-family: "Archivo";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 100 900;
+    font-stretch: 62% 125%;
+    src: url("../fonts/archivo-latin-wdth-normal.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+        U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "Archivo Black";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400;
+    src: url("../fonts/archivo-black-latin-400-normal.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+        U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "JetBrains Mono";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400;
+    src: url("../fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+        U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "JetBrains Mono";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 700;
+    src: url("../fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+        U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}

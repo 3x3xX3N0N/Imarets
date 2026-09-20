@@ -1,0 +1,519 @@
+{
+  "asOf": "2026-09-20",
+  "schema": "verdantbloom.pricing/1",
+  "status": "draft - prices at opening, good guess, not yet live. Nothing is for sale; every pass button goes to the waitlist.",
+  "currency": "USD",
+  "unit": "per 1M tokens; passes per month; all prices are the whole mandatory price (tax excluded)",
+  "headlineUnit": {
+    "label": "about N writing hours",
+    "rule": "Headline each pass with writingHours.headline. Always print the 6k-context figure and the 16k-context figure together, each with the word 'about'. Never print an hours or session figure without its context size. Per-token rates and minimum pours are fine print."
+  },
+  "sessionModel": {
+    "sessionMinutes": 45,
+    "repliesPerSession": 40,
+    "outputTokensPerReply": 400,
+    "reasoningTokensPerReplyWhenThinking": 1000,
+    "contextTokens": [
+      6000,
+      16000
+    ],
+    "text": "A writing hour is counted in 45-minute sessions: about 40 replies of about 400 tokens, each reply inside the minute. Context is billed as input on every turn. Thinking-on figures assume about 1,000 reasoning tokens per reply, billed as output."
+  },
+  "shelves": [
+    {
+      "id": "well",
+      "name": "Well",
+      "models": [
+        "mini",
+        "write",
+        "dark",
+        "fast",
+        "vision",
+        "reason"
+      ],
+      "thinkingModels": [
+        "mini",
+        "reason"
+      ],
+      "housePour": "fast",
+      "inputPerMtok": 1.25,
+      "outputPerMtok": 15.0,
+      "minPour": {
+        "warm": 0.012,
+        "cold": 0.025
+      },
+      "burnVsWell": 1.0,
+      "roughGuide": "$10 of tab is about 14 writing hours (roughly 18 forty-five-minute sessions, about 300k output tokens) on Well taps at about 6k tokens of context, thinking off. At 16k of context it is about 7 hours (roughly 9-10 sessions), because the context is billed as input on every turn. mini and reason are thinking models: with thinking on (assuming about 1,000 reasoning tokens per reply) it is about 7 hours at 6k and about 5 at 16k.",
+      "coldStartNote": "Cold, about 30 s to pour (measured 23-44 s). Taps scale to zero when the bar is quiet. Once poured, a tap stays warm for 60 s after your last request. Take longer than 60 s between messages and the next pour is cold again, with the cold minimum."
+    },
+    {
+      "id": "call",
+      "name": "Call",
+      "models": [
+        "standard",
+        "creative",
+        "coder"
+      ],
+      "thinkingModels": [
+        "standard",
+        "creative",
+        "coder"
+      ],
+      "housePour": "creative",
+      "inputPerMtok": 1.5,
+      "outputPerMtok": 18.0,
+      "minPour": {
+        "warm": 0.015,
+        "cold": 0.03
+      },
+      "burnVsWell": 1.2,
+      "roughGuide": "$20 of tab is about 23 writing hours (roughly 30 forty-five-minute sessions) on Call taps at about 6k of context with thinking off. At 16k of context it is about 12 hours (roughly 16 sessions). The 27Bs are thinking models. With thinking on, reasoning tokens are billed as output and a session can cost two to three times as much: about 11 hours at 6k and about 8 at 16k, assuming about 1,000 reasoning tokens per reply.",
+      "coldStartNote": "Cold, about 30 s to pour (up to ~45 s on the 27B taps). Thinking models bill their reasoning tokens as output."
+    },
+    {
+      "id": "top",
+      "name": "Top Shelf",
+      "models": [
+        "flagship"
+      ],
+      "thinkingModels": [
+        "flagship"
+      ],
+      "onOrder": [
+        "horror"
+      ],
+      "housePour": "flagship",
+      "inputPerMtok": 2.5,
+      "outputPerMtok": 35.0,
+      "minPour": {
+        "warm": 0.025,
+        "cold": 0.05
+      },
+      "burnVsWell": 2.3,
+      "roughGuide": "$40 of tab is about 12 writing hours (roughly 15 forty-five-minute sessions) on the flagship 40B at about 6k of context with thinking on, assuming about 1,000 reasoning tokens per reply. At 16k of context it is about 8 hours (roughly 11 sessions). The flagship is a thinking model; its thinking is billed as output.",
+      "coldStartNote": "Cold, about 30-45 s to pour. The big bottle lives on a 48GB card; the flagship thinks before it speaks and the thinking is billed as output. Pause longer than 60 s and the next pour is cold again."
+    }
+  ],
+  "passes": [
+    {
+      "id": "well",
+      "name": "Well pass",
+      "priceMonth": 10,
+      "tabCredit": 10,
+      "shelves": [
+        "well"
+      ],
+      "rpm": 20,
+      "concurrency": 1,
+      "taps": 6,
+      "blurb": "Six taps. $10 on the tab. Resets every 30 days. One request at a time.",
+      "writingHours": {
+        "on": "Well taps",
+        "headlineThinking": "off",
+        "headline": {
+          "context6k": {
+            "sessionCostUsd": 0.54,
+            "sessions": 18.5,
+            "hoursExact": 13.9,
+            "aboutHours": 14
+          },
+          "context16k": {
+            "sessionCostUsd": 1.04,
+            "sessions": 9.6,
+            "hoursExact": 7.2,
+            "aboutHours": 7
+          }
+        },
+        "headlineText": "About 14 writing hours on Well taps at 6k of context, thinking off. About 7 at 16k.",
+        "ifThinkingOn": {
+          "context6k": {
+            "sessionCostUsd": 1.14,
+            "sessions": 8.8,
+            "hoursExact": 6.6,
+            "aboutHours": 7
+          },
+          "context16k": {
+            "sessionCostUsd": 1.64,
+            "sessions": 6.1,
+            "hoursExact": 4.6,
+            "aboutHours": 5
+          },
+          "appliesTo": [
+            "mini",
+            "reason"
+          ],
+          "note": "Assumes about 1,000 reasoning tokens per reply, billed as output."
+        }
+      },
+      "cta": {
+        "action": "waitlist",
+        "passInterest": "well"
+      }
+    },
+    {
+      "id": "call",
+      "name": "Call pass",
+      "priceMonth": 20,
+      "tabCredit": 20,
+      "shelves": [
+        "well",
+        "call"
+      ],
+      "rpm": 30,
+      "concurrency": 2,
+      "taps": 9,
+      "blurb": "Nine taps: the 27Bs and everything under them. $20 on the tab.",
+      "writingHours": {
+        "on": "Call taps",
+        "headlineThinking": "off",
+        "headline": {
+          "context6k": {
+            "sessionCostUsd": 0.648,
+            "sessions": 30.9,
+            "hoursExact": 23.1,
+            "aboutHours": 23
+          },
+          "context16k": {
+            "sessionCostUsd": 1.248,
+            "sessions": 16.0,
+            "hoursExact": 12.0,
+            "aboutHours": 12
+          }
+        },
+        "headlineText": "About 23 writing hours on the 27Bs at 6k of context, thinking off. About 12 at 16k.",
+        "ifThinkingOn": {
+          "context6k": {
+            "sessionCostUsd": 1.368,
+            "sessions": 14.6,
+            "hoursExact": 11.0,
+            "aboutHours": 11
+          },
+          "context16k": {
+            "sessionCostUsd": 1.968,
+            "sessions": 10.2,
+            "hoursExact": 7.6,
+            "aboutHours": 8
+          },
+          "appliesTo": [
+            "standard",
+            "creative",
+            "coder"
+          ],
+          "note": "Assumes about 1,000 reasoning tokens per reply, billed as output."
+        },
+        "sameTabOnLowerShelves": {
+          "well": {
+            "context6k": {
+              "sessionCostUsd": 0.54,
+              "sessions": 37.0,
+              "hoursExact": 27.8,
+              "aboutHours": 28
+            },
+            "context16k": {
+              "sessionCostUsd": 1.04,
+              "sessions": 19.2,
+              "hoursExact": 14.4,
+              "aboutHours": 14
+            },
+            "thinking": "off"
+          }
+        }
+      },
+      "cta": {
+        "action": "waitlist",
+        "passInterest": "call"
+      }
+    },
+    {
+      "id": "top",
+      "name": "Top Shelf pass",
+      "priceMonth": 40,
+      "tabCredit": 40,
+      "shelves": [
+        "well",
+        "call",
+        "top"
+      ],
+      "rpm": 40,
+      "concurrency": 2,
+      "taps": 10,
+      "blurb": "Every tap in the house, the 40B included. $40 on the tab.",
+      "writingHours": {
+        "on": "flagship",
+        "headlineThinking": "on",
+        "headline": {
+          "context6k": {
+            "sessionCostUsd": 2.56,
+            "sessions": 15.6,
+            "hoursExact": 11.7,
+            "aboutHours": 12
+          },
+          "context16k": {
+            "sessionCostUsd": 3.56,
+            "sessions": 11.2,
+            "hoursExact": 8.4,
+            "aboutHours": 8
+          }
+        },
+        "headlineText": "About 12 writing hours on the flagship 40B at 6k of context, thinking on. About 8 at 16k.",
+        "ifThinkingOff": {
+          "context6k": {
+            "sessionCostUsd": 1.16,
+            "sessions": 34.5,
+            "hoursExact": 25.9,
+            "aboutHours": 26
+          },
+          "context16k": {
+            "sessionCostUsd": 2.16,
+            "sessions": 18.5,
+            "hoursExact": 13.9,
+            "aboutHours": 14
+          },
+          "note": "Reference only, not a headline. The flagship is a thinking model; whether a client can switch its thinking off on this tap has not been verified."
+        },
+        "sameTabOnLowerShelves": {
+          "call": {
+            "context6k": {
+              "sessionCostUsd": 0.648,
+              "sessions": 61.7,
+              "hoursExact": 46.3,
+              "aboutHours": 46
+            },
+            "context16k": {
+              "sessionCostUsd": 1.248,
+              "sessions": 32.1,
+              "hoursExact": 24.0,
+              "aboutHours": 24
+            },
+            "thinking": "off"
+          },
+          "well": {
+            "context6k": {
+              "sessionCostUsd": 0.54,
+              "sessions": 74.1,
+              "hoursExact": 55.6,
+              "aboutHours": 56
+            },
+            "context16k": {
+              "sessionCostUsd": 1.04,
+              "sessions": 38.5,
+              "hoursExact": 28.8,
+              "aboutHours": 29
+            },
+            "thinking": "off"
+          }
+        }
+      },
+      "cta": {
+        "action": "waitlist",
+        "passInterest": "top"
+      }
+    }
+  ],
+  "topUps": [
+    {
+      "name": "Another round",
+      "price": 5,
+      "credit": 5
+    },
+    {
+      "name": "Another round",
+      "price": 10,
+      "credit": 10
+    },
+    {
+      "name": "Another round",
+      "price": 25,
+      "credit": 25
+    }
+  ],
+  "topUpRules": "Needs an active pass. Poured only after the monthly tab is dry. Does not reset with the tab; expires 12 months after purchase. No bonus credit, no bulk discount.",
+  "patron": {
+    "name": "Buy a round for the house",
+    "description": "Patron money buys no tokens for you. Every dollar you give goes into the house pool; the house pays the card processor's fee itself. The house pool pays verdantbloom the gap between what a reduced-fee member pays and the standard pass price. Nothing else is paid from it. The ledger (rounds bought, rounds poured, pool balance) is published monthly.",
+    "options": [
+      {
+        "id": "round-5",
+        "kind": "one-time",
+        "price": 5,
+        "note": "One month of a community-rate Well seat."
+      },
+      {
+        "id": "round-10",
+        "kind": "one-time",
+        "price": 10,
+        "note": "One month of a community-rate Call seat, or a free Well seat."
+      },
+      {
+        "id": "round-25",
+        "kind": "one-time",
+        "price": 25
+      },
+      {
+        "id": "round-50",
+        "kind": "one-time",
+        "price": 50
+      },
+      {
+        "id": "round-custom",
+        "kind": "one-time",
+        "min": 5,
+        "max": 500
+      },
+      {
+        "id": "standing-round",
+        "kind": "monthly",
+        "price": 10,
+        "note": "A round for the house every month. Cancel any time."
+      }
+    ],
+    "perks": "Optional handle on the wall. No tokens, no priority, no rate change.",
+    "ledgerFields": [
+      "roundsBoughtUsd",
+      "roundsPouredUsd",
+      "poolBalanceUsd",
+      "seatsFunded",
+      "seatsWaiting"
+    ],
+    "notACharity": "verdantbloom.bar is a business, not a charity. A round for the house is a voluntary payment to that business, earmarked by us for reduced-fee seats. It is not a donation to a nonprofit and is not tax-deductible. Unpoured rounds are refundable on request within 30 days.",
+    "poolWindDown": "If the reduced-fee programme ever closes, the remaining pool balance is refunded to patrons pro rata to their rounds in the trailing 12 months. It never becomes house revenue."
+  },
+  "reducedFee": {
+    "name": "Financial Accessibility & Reduced Fee Application",
+    "ladder": [
+      {
+        "label": "Standard",
+        "priceMonth": {
+          "well": 10,
+          "call": 20,
+          "top": 40
+        }
+      },
+      {
+        "label": "Tight month",
+        "priceMonth": {
+          "well": 7.5,
+          "call": 15,
+          "top": 30
+        }
+      },
+      {
+        "label": "Community rate",
+        "priceMonth": {
+          "well": 5,
+          "call": 10,
+          "top": 20
+        }
+      },
+      {
+        "label": "On the house",
+        "priceMonth": {
+          "well": 0
+        },
+        "note": "Well pass only. Seats open only when the pool can fund them."
+      }
+    ],
+    "howItWorks": "Same taps, same tab, lower price. Fill in a short form; no documents. A person reads it. The house pool (patron money) pays the gap between your price and the standard price, reserved for your whole 6-month term at approval, so an approved seat is never pulled mid-term. Seats are limited by the pool balance and capped at 25% of active passes; if the pool is dry you go on a waiting list in order of application, and the form says so before you fill it in. Top Shelf reduced seats open last. Eligibility is financial only.",
+    "formFields": [
+      {
+        "id": "contact",
+        "label": "Email or handle",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "pass",
+        "label": "Which pass",
+        "type": "select",
+        "options": [
+          "Well",
+          "Call",
+          "Top Shelf"
+        ],
+        "required": true
+      },
+      {
+        "id": "rate",
+        "label": "What you can manage",
+        "type": "select",
+        "options": [
+          "Tight month",
+          "Community rate",
+          "On the house (Well only)"
+        ],
+        "required": true
+      },
+      {
+        "id": "circumstances",
+        "label": "A sentence or two on why (student, between jobs, currency, disability, anything)",
+        "type": "textarea",
+        "maxLength": 500,
+        "required": true
+      },
+      {
+        "id": "country",
+        "label": "Country (optional, helps us understand currency gaps)",
+        "type": "text",
+        "required": false
+      },
+      {
+        "id": "attest",
+        "label": "This is true, and I will switch to the standard price when I can.",
+        "type": "checkbox",
+        "required": true
+      }
+    ],
+    "honorSystem": true,
+    "termMonths": 6,
+    "seatCapShareOfActivePasses": 0.25,
+    "endOfTerm": "We email 14 days before the 6-month term ends. At term end the pass does NOT roll to the standard price by itself: it stops renewing unless you re-apply or choose the standard price. No price ever rises without your click."
+  },
+  "volumeSchedule": [
+    {
+      "activeMembers": 0,
+      "priceMultiplier": 1.0,
+      "note": "Opening night. The bar is nearly empty; most pours are cold; you are paying for a tap nobody shares."
+    },
+    {
+      "activeMembers": 100,
+      "priceMultiplier": 0.95,
+      "note": "House pours start to overlap in the evenings."
+    },
+    {
+      "activeMembers": 250,
+      "priceMultiplier": 0.85,
+      "note": "House pours are warm most evenings."
+    },
+    {
+      "activeMembers": 500,
+      "priceMultiplier": 0.75,
+      "note": "House pours are warm most of the day."
+    },
+    {
+      "activeMembers": 1000,
+      "priceMultiplier": 0.65,
+      "note": "Busy taps go always-on. Cold pours become rare on house pours."
+    }
+  ],
+  "volumeScheduleRules": "activeMembers = distinct accounts whose own card was charged at least $5 for a pass in the trailing 30 days (reduced-fee members who pay count; 'On the house' seats and patron-only payers do not), shown on the status sign. The multiplier applies to per-token rates on every shelf; pass prices stay put, so the same tab pours further. A step takes effect on the 1st of the month after the count has held for two consecutive months. A step is held for at least 6 months; it can only be stepped back after the count has been below the threshold for three consecutive months, with 30 days notice. Minimum pours do not change.",
+  "disclaimers": [
+    "Prices at opening, as of 2026-09-20. They are our best estimate of cost, not an introductory offer; they may go up or down with notice.",
+    "A pass is not unlimited. It is a monthly tab in dollars, spent at the per-token rates above. When the tab is dry, buy another round or wait for the reset.",
+    "Unused tab does not roll over. Rounds you bought do, for 12 months from purchase; then they expire.",
+    "Context is billed as input on every request. There is no cached-input discount. Chat clients resend the whole history each turn, so long contexts burn the tab faster.",
+    "Every pour has a small minimum (shown per shelf). A cold pour has a larger one, because waking a tap costs us GPU time before the first token.",
+    "Cold pours take about 30 seconds (23-44 s measured) because taps scale to zero when the bar is quiet. A tap goes cold 60 s after your last request. Warm/cold status is shown per tap.",
+    "Reasoning tokens from thinking models are billed as output tokens, including reasoning your client hides.",
+    "Session and hour estimates assume about 400 output tokens per reply and about 6k tokens of context, with thinking off on Well and Call. Top Shelf is the thinking flagship, so its figure is quoted with thinking on, assuming about 1,000 reasoning tokens per reply. Each shelf's rough guide gives the 16k-context and thinking-on figures.",
+    "Taps are shared. Each tap is one GPU running one model; a few members may be served by the same tap at the same time. That sharing is what lowers cost.",
+    "Reduced-fee seats are capped at 25% of active passes (with a floor of 3 seats while there are fewer than 12 members), so the standard price is the price the large majority of members pay. Reduced-fee prices are a separate, application-based programme funded by patrons, not a sale.",
+    "A round for the house is a payment to a business, not a charitable donation, and is not tax-deductible.",
+    "Passes renew monthly until cancelled. Cancel any time from your account; the pass runs to the end of the paid period. A reduced-fee term never rolls to a higher price without your action.",
+    "18+ only. See acceptableUse. You are responsible for what you generate."
+  ],
+  "acceptableUse": [
+    "18 or older only.",
+    "No sexual content involving minors or anyone presented as a minor. No sexual content about real people. Nothing illegal where you or we are. Keys that do this are closed without refund.",
+    "The service is sold as a fiction-writing and developer API. It is not sold, described or promoted as an adult-content service."
+  ]
+}

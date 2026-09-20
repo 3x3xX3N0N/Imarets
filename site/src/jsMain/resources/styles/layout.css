@@ -1,0 +1,284 @@
+/*
+ * layout.css - page frame. 375 px first; one breakpoint at 720, one at 1080.
+ * Hard edges everywhere: no border-radius, no gradients, no blur on chrome.
+ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: var(--vb-s5); }
+body { margin: 0; min-height: 100vh; min-height: 100svh; overflow-x: hidden; }
+img, svg, canvas, video { display: block; max-width: 100%; }
+[hidden] { display: none !important; }
+
+/* --- progressive enhancement switches --------------------------------------------------------
+   Kotlin sets <html data-js="on"> as its first act. Until then nothing that needs script shows. */
+html:not([data-js="on"]) .vb-js-only { display: none !important; }
+html[data-js="on"] .vb-nojs-only { display: none !important; }
+
+.vb-vh {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.vb-skip {
+    position: absolute;
+    left: var(--vb-s2);
+    top: var(--vb-s2);
+    z-index: var(--vb-z-skip);
+    padding: var(--vb-s3) var(--vb-s4);
+    background: var(--vb-ink);
+    color: var(--vb-ground);
+    font-weight: 900;
+    font-stretch: 125%;
+    text-decoration: none;
+    transform: translateY(-300%);
+}
+.vb-skip:focus { transform: none; }
+
+/* --- page frame ------------------------------------------------------------------------------ */
+.vb-wrap {
+    width: 100%;
+    max-width: var(--vb-page);
+    margin-inline: auto;
+    padding-inline: var(--vb-gutter);
+}
+
+.vb-top {
+    position: relative;
+    z-index: var(--vb-z-doc);
+    border-bottom: var(--vb-rule-heavy) solid var(--vb-rule);
+    background: var(--vb-ground);
+}
+.vb-top__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+}
+.vb-wordmark {
+    display: block;
+    padding: var(--vb-s3) 0;
+    font-family: var(--vb-font-display);
+    font-size: 1.375rem;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-decoration: none;
+}
+.vb-wordmark:hover { background: none; color: var(--vb-accent); }
+
+.vb-nav ul {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: var(--vb-rule-w) solid var(--vb-rule);
+    margin-inline: calc(var(--vb-gutter) * -1);
+}
+.vb-nav li { max-width: none; border-bottom: var(--vb-hair) solid var(--vb-rule-dim); }
+.vb-nav li:nth-child(odd) { border-right: var(--vb-hair) solid var(--vb-rule-dim); }
+.vb-nav li:nth-last-child(-n+2) { border-bottom: 0; }
+.vb-nav a {
+    display: flex;
+    align-items: center;
+    min-height: var(--vb-tap);
+    padding: var(--vb-s2) var(--vb-gutter);
+    font-weight: 800;
+    font-stretch: 125%;
+    font-size: var(--vb-size-0);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+.vb-nav a[aria-current="page"] { background: var(--vb-ink); color: var(--vb-ground); }
+
+@media (min-width: 720px) {
+    .vb-top__row { grid-template-columns: auto 1fr; align-items: stretch; gap: var(--vb-s6); }
+    .vb-wordmark { padding: var(--vb-s4) 0; font-size: 1.75rem; }
+    .vb-nav { display: flex; justify-content: flex-end; }
+    .vb-nav ul { display: flex; border-top: 0; margin-inline: 0; }
+    .vb-nav li,
+    .vb-nav li:nth-child(odd) { border: 0; border-left: var(--vb-rule-w) solid var(--vb-rule); }
+    .vb-nav a { height: 100%; padding-inline: var(--vb-s5); font-size: var(--vb-size-1); }
+}
+
+/* --- sections: every one opens with a heavy rule and a plate number -------------------------- */
+main { position: relative; z-index: var(--vb-z-doc); counter-reset: vb-plate; }
+
+.vb-section {
+    counter-increment: vb-plate;
+    padding-block: var(--vb-s7) var(--vb-s8);
+    border-top: var(--vb-rule-heavy) solid var(--vb-rule);
+    background: var(--vb-ground);
+}
+.vb-section__head {
+    display: grid;
+    gap: var(--vb-s4);
+    margin-bottom: var(--vb-s6);
+}
+.vb-section__head::before {
+    content: var(--vb-plate-prefix) counter(vb-plate, decimal-leading-zero);
+    justify-self: start;
+    padding: var(--vb-s1) var(--vb-s2);
+    background: var(--vb-ink);
+    color: var(--vb-ground);
+    font-family: var(--vb-font-mono);
+    font-weight: 700;
+    font-size: var(--vb-size-0);
+    letter-spacing: 0.04em;
+}
+.vb-section__head > p { font-size: var(--vb-size-3); font-weight: 600; line-height: 1.3; }
+.vb-section__head > p.vb-fine { font-size: var(--vb-size-1); font-weight: 400; }
+
+.vb-section--tint-2 { background: var(--vb-ground-2); }
+
+@media (min-width: 1080px) {
+    .vb-section__head { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--vb-s7); }
+    .vb-section__head::before { grid-column: 1 / -1; }
+    .vb-section__head > h2 { grid-row: span 4; }
+    .vb-section__head > :not(h2) { grid-column: 2; }
+}
+
+/* generic grids */
+.vb-grid { display: grid; gap: var(--vb-s5); }
+@media (min-width: 720px) {
+    .vb-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .vb-grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1080px) {
+    .vb-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.vb-stack > * + * { margin-top: var(--vb-s4); }
+.vb-stack-lg > * + * { margin-top: var(--vb-s6); }
+
+/* --- hero ------------------------------------------------------------------------------------ */
+.vb-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    background: var(--vb-ground);
+}
+.vb-hero__copy {
+    position: relative;
+    z-index: var(--vb-z-doc);
+    padding: var(--vb-s6) var(--vb-gutter) var(--vb-s5);
+}
+.vb-hero__copy > * + * { margin-top: var(--vb-s4); }
+.vb-hero__eyebrow { color: var(--vb-accent); }
+.vb-hero__positioning {
+    padding-block: var(--vb-s3);
+    border-block: var(--vb-rule-w) solid var(--vb-rule);
+    font-size: var(--vb-size-3);
+    font-weight: 900;
+    font-stretch: 125%;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    max-width: 26ch;
+}
+.vb-hero__status {
+    padding: var(--vb-s3);
+    border: var(--vb-rule-w) solid var(--vb-alert);
+    font-weight: 700;
+}
+.vb-hero__age { font-size: var(--vb-size-0); color: var(--vb-ink-dim); }
+
+.vb-hero__stagecol {
+    position: relative;
+    border-top: var(--vb-rule-w) solid var(--vb-rule);
+    min-width: 0;
+}
+.vb-hero__notes {
+    display: grid;
+    gap: var(--vb-s3);
+    padding: var(--vb-s4) var(--vb-gutter) var(--vb-s6);
+    border-top: var(--vb-rule-w) solid var(--vb-rule);
+    font-size: var(--vb-size-1);
+}
+.vb-hero__notes p:first-child { font-weight: 700; }
+
+@media (min-width: 1080px) {
+    .vb-hero {
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        grid-template-rows: 1fr auto;
+        min-height: min(100svh, 980px);
+    }
+    .vb-hero__copy { grid-row: 1 / 3; padding: var(--vb-s8) var(--vb-s7) var(--vb-s7) var(--vb-gutter); border-right: var(--vb-rule-heavy) solid var(--vb-rule); }
+    .vb-hero__stagecol { border-top: 0; }
+    .vb-hero__notes { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--vb-s5); padding: var(--vb-s4) var(--vb-s5); }
+}
+
+/* --- footer ---------------------------------------------------------------------------------- */
+.vb-foot {
+    position: relative;
+    z-index: var(--vb-z-doc);
+    padding-block: var(--vb-s7) calc(var(--vb-s9) + var(--vb-s5));   /* room for the fixed tour bar */
+    border-top: var(--vb-rule-heavy) solid var(--vb-rule);
+    background: var(--vb-ground-2);
+}
+.vb-foot__grid { display: grid; gap: var(--vb-s6); }
+.vb-foot__links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: var(--vb-rule-w) solid var(--vb-rule);
+}
+.vb-foot__links li { max-width: none; border-bottom: var(--vb-hair) solid var(--vb-rule-dim); }
+.vb-foot__links a {
+    display: flex;
+    align-items: center;
+    min-height: var(--vb-tap);
+    font-weight: 800;
+    font-stretch: 125%;
+    font-size: var(--vb-size-0);
+    letter-spacing: 0.06em;
+    text-decoration: none;
+}
+.vb-foot__credits { margin: 0; padding: 0; list-style: none; font-size: var(--vb-size-0); color: var(--vb-ink-dim); }
+.vb-foot__credits li + li { margin-top: var(--vb-s2); }
+.vb-foot__age {
+    padding: var(--vb-s4);
+    border: var(--vb-rule-w) solid var(--vb-alert);
+}
+.vb-foot__age strong {
+    display: block;
+    margin-bottom: var(--vb-s2);
+    font-family: var(--vb-font-display);
+    font-weight: 400;
+    font-size: var(--vb-size-4);
+    line-height: 0.9;
+}
+@media (min-width: 1080px) {
+    .vb-foot__grid { grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) minmax(0, 3fr); column-gap: var(--vb-s7); }
+    .vb-foot__links { grid-template-columns: 1fr; }
+}
+
+/* --- long-form pages (legal, 404, the API's bare confirm page) -------------------------------- */
+.vb-prose { padding-block: var(--vb-s7) var(--vb-s8); }
+.vb-prose h1 { font-size: var(--vb-size-5); line-height: 0.9; margin-bottom: var(--vb-s5); }
+.vb-prose h2 {
+    margin-top: var(--vb-s7);
+    padding-top: var(--vb-s3);
+    border-top: var(--vb-rule-w) solid var(--vb-rule);
+    font-size: var(--vb-size-4);
+    line-height: 1;
+}
+.vb-prose h2 + *, .vb-prose h1 + * { margin-top: var(--vb-s4); }
+.vb-prose p + p, .vb-prose p + ul, .vb-prose ul + p { margin-top: var(--vb-s4); }
+.vb-prose ul { padding-left: 1.25em; list-style: square; }
+.vb-prose li + li { margin-top: var(--vb-s2); }
+.vb-prose code { padding: 0 0.25em; background: var(--vb-ground-3); }
+
+/* --- reduced motion: chrome stops; the bloom only slows (that is Kotlin's job, not CSS) -------- */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+html[data-reduced-motion="on"] { scroll-behavior: auto; }
+html[data-reduced-motion="on"] *, html[data-reduced-motion="on"] *::before, html[data-reduced-motion="on"] *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }

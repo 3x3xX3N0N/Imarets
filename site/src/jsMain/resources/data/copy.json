@@ -1,0 +1,693 @@
+{
+  "asOf": "2026-09-20",
+  "schema": "verdantbloom.copy/1",
+  "brand": {
+    "name": "verdantbloom.bar",
+    "wordmark": "VERDANTBLOOM.BAR",
+    "positioning": "A lineup of abliterated dark fiction models by DavidAU."
+  },
+  "preOpen": {
+    "sign": "NOT OPEN YET.",
+    "body": "Nothing is for sale tonight. The prices on this page are the prices at opening: our best guess at cost. Every pass button puts you on the list. We write when the doors open."
+  },
+  "hero": {
+    "eyebrow": "VERDANTBLOOM.BAR",
+    "headline": "OPEN A TAB.",
+    "positioning": "A lineup of abliterated dark fiction models by DavidAU.",
+    "sub": "Ten pours. One OpenAI-compatible endpoint. Pay by the month, drink by the token.",
+    "body": "Dark fiction. Horror. The pages a house-style assistant flinches at.",
+    "status": "Not open yet. Prices at opening are posted. Put your name on the list.",
+    "ctaPrimary": {
+      "label": "GET ON THE LIST",
+      "target": "waitlist"
+    },
+    "ctaSecondary": {
+      "label": "READ THE POUR LIST",
+      "target": "pourList"
+    },
+    "ctaTertiary": {
+      "label": "SEE THE PRICES",
+      "target": "passes"
+    },
+    "ageLine": "18+. Fiction-writing and developer API. Acceptable-use policy applies."
+  },
+  "bloom": {
+    "caption": "Ten rings, one for each pour. Every ring links every other ring exactly once. The eleventh ring is you.",
+    "clock": "The bloom is a function of the clock. Load it in the same second anywhere on Earth and it is the same bloom. Then you touch it.",
+    "neverStill": "It never settles. Neither do we.",
+    "visitorRingLabel": "YOU",
+    "canvasAriaLabel": "Animated figure: ten linked rings, one for each model, and an eleventh ring for the visitor. Everything it links to is also in the page below.",
+    "skipLink": "SKIP THE BLOOM. READ THE PAGE.",
+    "noscript": "No JavaScript, no bloom. Everything else is below: the pour list, the prices, the list.",
+    "rendererFallback": {
+      "webgpuToWebgl": "WEBGPU SAID NO. POURING WEBGL.",
+      "webglTo2d": "NO WEBGL. DRAWING IT BY HAND.",
+      "allFailed": "NO CANVAS TONIGHT. THE PAGE BELOW STILL WORKS."
+    }
+  },
+  "clock": {
+    "unixLabel": "UNIX",
+    "newCalLabel": "THE NEW CALENDAR",
+    "originSign": "ORIGIN BLOOM. 1 JAN 1970.",
+    "originNote": "You are looking at second zero. Time still runs from here.",
+    "pinnedNote": "Clock started from the link you followed. Time still runs.",
+    "backToNow": "BACK TO NOW"
+  },
+  "pourList": {
+    "title": "THE POUR LIST",
+    "intro": "Ten bottles, ten taps. Each tap is one GPU running one model. Nine bottles are DavidAU's. One is a guest tap. One more is on order.",
+    "orderHint": "The word in mono is the order code. It is what your client sends as the model name.",
+    "liveHint": "WARM and COLD come from the status sign, live. If the sign is dark, so are the badges.",
+    "card": {
+      "sizeLabel": "SIZE",
+      "shelfLabel": "SHELF",
+      "baseLabel": "BASE",
+      "makerLabel": "MAKER",
+      "labelSays": "ON THE LABEL",
+      "coldPourLabel": "COLD POUR",
+      "coldPourValue": "about {s} s",
+      "bottleLink": "THE BOTTLE ON HUGGING FACE",
+      "orderExample": "\"model\": \"{id}\"",
+      "askForIt": "PUT ME DOWN FOR THIS SHELF"
+    },
+    "badges": {
+      "warm": "WARM",
+      "warmHelp": "pours now",
+      "cold": "COLD",
+      "coldHelp": "about 30 s to pour",
+      "parked": "PARKED",
+      "parkedHelp": "not pouring",
+      "unknown": "NO WORD",
+      "unknownHelp": "the sign is dark",
+      "housePour": "HOUSE POUR",
+      "housePourHelp": "the tap most likely to be warm",
+      "guestTap": "GUEST TAP",
+      "guestTapHelp": "not a DavidAU bottle",
+      "thinks": "THINKS",
+      "thinksHelp": "thinking is billed as output",
+      "onOrder": "ON ORDER",
+      "onOrderHelp": "not on a tap"
+    }
+  },
+  "shelves": {
+    "well": {
+      "header": "WELL",
+      "sub": "Six taps. The small bottles.",
+      "list": "mini 9B / write 10B / vision 8B (guest tap) / dark 16.5B / fast MoE 18.4B / reason MoE 24B",
+      "finePrint": "$1.25 in / $15 out per million tokens. Minimum pour 1.2 cents warm, 2.5 cents cold."
+    },
+    "call": {
+      "header": "CALL",
+      "sub": "Three taps. The 27Bs. All three think.",
+      "list": "standard 27B / creative 27B / coder 27B",
+      "finePrint": "$1.50 in / $18 out per million tokens. Minimum pour 1.5 cents warm, 3 cents cold."
+    },
+    "top": {
+      "header": "TOP SHELF",
+      "sub": "One tap. The 40B. It thinks before it speaks.",
+      "list": "flagship 40B thinking",
+      "finePrint": "$2.50 in / $35 out per million tokens. Minimum pour 2.5 cents warm, 5 cents cold."
+    },
+    "onOrder": {
+      "header": "ON ORDER",
+      "sub": "One bottle. Not on a tap. Not pourable. No date.",
+      "list": "horror 29B"
+    },
+    "ratesSmallPrint": [
+      "Yes, those rates are higher than the big labs. Their taps are full around the clock. Ours are mostly empty tonight, and an empty tap costs the same to keep warm as a full one. This is what that costs on opening night. See LAST CALL for how it comes down.",
+      "Context counts: your client resends the whole chat every turn and every turn is billed as input. No cache discount."
+    ]
+  },
+  "passes": {
+    "title": "OPEN A TAB",
+    "intro": "A pass is a monthly tab. The price you pay is the money on your tab. Spend it at the pour-list rates. It resets every 30 days. Dry before then? Buy another round.",
+    "preOpen": "Nothing is for sale tonight. These are the prices at opening. The button puts you on the list and notes which pass you wanted.",
+    "cards": {
+      "well": {
+        "name": "WELL PASS",
+        "price": "$10 / MONTH",
+        "headline": "About 14 writing hours at 6k of context. About 7 at 16k.",
+        "headlineOn": "On the Well taps, thinking off.",
+        "tab": "$10 on the tab. Six Well taps.",
+        "limits": "20 requests a minute. One at a time.",
+        "note": "mini and reason think before they answer. Thinking is billed as output, so those two drink faster: about 7 hours at 6k, about 5 at 16k, at about 1,000 thinking tokens a reply.",
+        "button": "PUT ME DOWN FOR WELL"
+      },
+      "call": {
+        "name": "CALL PASS",
+        "price": "$20 / MONTH",
+        "headline": "About 23 writing hours at 6k of context. About 12 at 16k.",
+        "headlineOn": "On the 27Bs, thinking off.",
+        "tab": "$20 on the tab. The three 27Bs and everything under them. Nine taps.",
+        "limits": "30 requests a minute. Two at a time.",
+        "note": "The 27Bs are thinking models, and thinking is billed as output. Leave it on and it is about 11 hours at 6k, about 8 at 16k, at about 1,000 thinking tokens a reply. The same tab pours further from the Well.",
+        "button": "PUT ME DOWN FOR CALL"
+      },
+      "top": {
+        "name": "TOP SHELF PASS",
+        "price": "$40 / MONTH",
+        "headline": "About 12 writing hours at 6k of context. About 8 at 16k.",
+        "headlineOn": "On the flagship 40B, thinking on.",
+        "tab": "$40 on the tab. Every tap in the house, the 40B included. Ten taps.",
+        "limits": "40 requests a minute. Two at a time.",
+        "note": "The flagship thinks before it speaks and the thinking is billed as output. These hours assume about 1,000 thinking tokens a reply. The same tab pours further down the shelf.",
+        "button": "PUT ME DOWN FOR TOP SHELF"
+      }
+    },
+    "finePrintTitle": "THE FINE PRINT",
+    "finePrint": [
+      "A writing hour is counted in 45-minute sessions: about 40 replies of about 400 tokens, each reply inside the minute.",
+      "Context is billed every turn, so long contexts and thinking models drink faster. If you run 16k or more of context for hours a day, read the FAQ before you pick a pass.",
+      "Pause longer than a minute between messages and the next pour is cold: a wait of about 30 seconds and the cold minimum. The hours above assume you do not.",
+      "Rates per shelf are on the pour list. All prices are the whole price, tax excluded."
+    ],
+    "hasABottom": {
+      "title": "A PASS HAS A BOTTOM.",
+      "body": "It is a monthly tab in dollars, spent at the pour-list rates. Anyone selling you a bottomless glass is rationing you some other way: one request at a time, a queue, a context cap. We ration with a number you can see."
+    }
+  },
+  "anotherRound": {
+    "title": "ANOTHER ROUND",
+    "headline": "Another round: $5 / $10 / $25.",
+    "body": "Dollar for dollar onto your tab. Poured after the monthly tab runs dry. Good for 12 months. Needs an active pass. No bonus, no bulk price.",
+    "preOpen": "Rounds open when the bar does."
+  },
+  "patron": {
+    "title": "BUY A ROUND FOR THE HOUSE",
+    "options": "$5 / $10 / $25 / $50 / your call, $5 to $500. Or a standing round: $10 a month, cancel any time.",
+    "pitch": [
+      "You get nothing. No tokens, no priority. Your handle on the wall if you want it.",
+      "Someone who could not afford a seat gets one."
+    ],
+    "unit": "$5 is a month at the bar for someone on the community rate.",
+    "mechanism": "Every dollar goes into the house pool; we pay the card fee. The pool pays us the difference between a reduced price and the standard price, and nothing else. We are a business, not a charity: a round for the house is a payment to a business and is not tax-deductible. If we ever close the programme, what is left goes back to the patrons. From the first round on, the ledger is public and updated monthly: rounds bought, rounds poured, what is left, who is waiting.",
+    "refund": "Unpoured rounds are refundable on request within 30 days.",
+    "preOpen": "Rounds for the house open when the bar does. Get on the list and we will tell you."
+  },
+  "lastCall": {
+    "title": "LAST CALL",
+    "headline": "The price falls as the bar fills. Here is the schedule. Hold us to it.",
+    "tableHead": [
+      "PAID MEMBERS",
+      "POUR-LIST RATES"
+    ],
+    "rows": [
+      [
+        "Opening night",
+        "as listed"
+      ],
+      [
+        "100",
+        "5% lower than the opening rates listed above"
+      ],
+      [
+        "250",
+        "15% lower than the opening rates listed above"
+      ],
+      [
+        "500",
+        "25% lower than the opening rates listed above"
+      ],
+      [
+        "1,000",
+        "35% lower than the opening rates listed above"
+      ]
+    ],
+    "rules": [
+      "The member count is on the status sign. When it holds above a line for two months, rates drop on the 1st of the next month, for everyone, every shelf.",
+      "Your pass costs the same. Your tab just pours further. Minimum pours do not change.",
+      "A cut stays for at least six months. We only step back if the bar empties below the line for three months straight, and you get 30 days notice.",
+      "A paid member is an account whose own card was charged at least $5 for a pass in the last 30 days. Free seats and patrons do not move the count."
+    ],
+    "counter": "PAID MEMBERS: {n}"
+  },
+  "warmCold": {
+    "title": "WARM / COLD",
+    "blocks": [
+      {
+        "head": "Why is my pour cold?",
+        "body": "Because the bar is quiet. Every tap is its own GPU, and a GPU nobody is using gets switched off. Taps scale to zero when the bar is quiet, so a cold pour takes about 30 seconds. After that the tap stays warm for a minute past your last message. Reply inside the minute and it stays warm. Take longer and the next pour is cold again: another wait, and the cold minimum."
+      },
+      {
+        "head": "A cold tap means not enough people are drinking here yet.",
+        "body": "While you read and type, the tap you woke is sitting warm and already paid for. The next drinker on that tap shares it, and rides on it for nearly nothing. Two drinkers on one tap: the pour costs us about half. Four: about a quarter. That is the whole trick, and it is the only one."
+      },
+      {
+        "head": "More drinkers, warmer taps, cheaper pours. For everyone.",
+        "body": "So drink from the house pours. They are marked. They are the taps most likely to be warm. Every drinker who follows the crowd makes the pour cheaper for the crowd. LAST CALL is the schedule that hands it back."
+      }
+    ],
+    "minimumPour": {
+      "head": "Minimum pour.",
+      "body": "Every pour holds a tap for a minute, so every pour costs at least a minute: 1.2 / 1.5 / 2.5 cents by shelf. Waking a cold tap costs about double: 2.5 / 3 / 5 cents. Reply within a minute with a normal-sized context and you will not notice either. Short prompts, or long pauses between messages, and you will."
+    },
+    "shared": "Taps are shared. Each tap is one GPU running one model; a few members may be served by the same tap at the same time. That sharing is what lowers the cost."
+  },
+  "statusSign": {
+    "title": "THE SIGN",
+    "states": {
+      "down": {
+        "sign": "DARK. CHAIRS ON THE TABLES.",
+        "plain": "The gateway is not answering."
+      },
+      "parked": {
+        "sign": "LIGHTS ARE ON. NOBODY AT THE DESK.",
+        "plain": "The gateway is up. The fleet is parked: no tap can pour right now."
+      },
+      "cold": {
+        "sign": "BARTENDER'S IN THE BACK. RING THE BELL. (~30 S)",
+        "plain": "The gateway is up and every tap is scaled to zero. A first pour takes about 30 seconds."
+      },
+      "open": {
+        "sign": "OPEN. {n} TAPS FLOWING.",
+        "signOne": "OPEN. 1 TAP FLOWING.",
+        "plain": "{n} of {total} taps are warm. A warm tap pours now. The rest take about 30 seconds."
+      },
+      "degraded": {
+        "sign": "LAST CALL.",
+        "plain": "Something is wrong behind the bar. Pours may fail."
+      }
+    },
+    "loading": "CHECKING THE LIGHTS.",
+    "stale": "THE SIGN IS OLD. LAST WORD {s} S AGO.",
+    "noscript": "The sign needs JavaScript. Without it: the bar is not open to the public yet.",
+    "members": "PAID MEMBERS: {n}",
+    "asOfLabel": "AS OF"
+  },
+  "waitlist": {
+    "title": "THE LIST",
+    "headline": "Get on the list.",
+    "body": "One address. We write when the doors open and when the prices are final. That is all the list is for.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "passLabel": "Which pass were you eyeing (optional)",
+    "passOptions": [
+      {
+        "value": "",
+        "label": "Not sure yet"
+      },
+      {
+        "value": "well",
+        "label": "Well - $10 / month"
+      },
+      {
+        "value": "call",
+        "label": "Call - $20 / month"
+      },
+      {
+        "value": "top",
+        "label": "Top Shelf - $40 / month"
+      }
+    ],
+    "passPrefilled": "Noted: {pass}. Change it if you like.",
+    "honeypotLabel": "Leave this one empty",
+    "submit": "PUT ME ON THE LIST",
+    "submitting": "WRITING IT DOWN.",
+    "consent": "We store your address and the pass you picked, to write to you about the opening. Nothing is charged. See Privacy.",
+    "timingNote": "The bloom feels the rhythm of your typing, not the letters. None of it leaves your browser.",
+    "success": {
+      "head": "CHECK YOUR MAIL.",
+      "body": "One link to confirm. No click, no list."
+    },
+    "confirmPage": {
+      "ok": {
+        "head": "YOU ARE ON THE LIST.",
+        "body": "We write when the doors open."
+      },
+      "already": {
+        "head": "ALREADY ON THE LIST.",
+        "body": "Nothing more to do."
+      },
+      "expired": {
+        "head": "THAT LINK HAS GONE FLAT.",
+        "body": "Put your address in again and we will send a fresh one."
+      },
+      "invalid": {
+        "head": "NO SUCH TICKET.",
+        "body": "That link is not one of ours. Put your address in again."
+      }
+    },
+    "errors": {
+      "emailRequired": "An address, please.",
+      "emailInvalid": "That does not look like an address.",
+      "passInvalid": "Pick a pass from the list, or leave it.",
+      "rateLimited": "Slow down. Try again in a minute.",
+      "tooLarge": "Too much in the glass. Shorten it.",
+      "server": "Spilled it. Nothing was saved. Try again.",
+      "network": "Could not reach the bar. Check your connection and try again."
+    }
+  },
+  "email": {
+    "confirm": {
+      "subject": "Confirm your place on the list - verdantbloom.bar",
+      "text": "Someone put this address on the list at verdantbloom.bar.\n\nIf it was you, confirm here:\n{confirmUrl}\n\nIf it was not you, do nothing. No click, no list.\n\nThe bar is not open yet. Nothing is charged. We write when the doors open.\n\nverdantbloom.bar - 18+ - a fiction-writing and developer API"
+    }
+  },
+  "reducedFee": {
+    "title": "FINANCIAL ACCESSIBILITY & REDUCED FEE APPLICATION",
+    "headline": "Can't swing it? There is a form.",
+    "sub": "Same taps. Same tab. Lower price.",
+    "tableHead": [
+      "",
+      "WELL",
+      "CALL",
+      "TOP SHELF"
+    ],
+    "rows": [
+      [
+        "Standard",
+        "$10",
+        "$20",
+        "$40"
+      ],
+      [
+        "Tight month",
+        "$7.50",
+        "$15",
+        "$30"
+      ],
+      [
+        "Community rate",
+        "$5",
+        "$10",
+        "$20"
+      ],
+      [
+        "On the house",
+        "$0",
+        "-",
+        "-"
+      ]
+    ],
+    "tableNote": "Per month. Each line is its own price. On the house is the Well pass only, and those seats open only when the pool can fund them.",
+    "how": [
+      "Six fields. No documents. A person reads it. Student, between jobs, bad exchange rate, disability, whatever it is: one or two sentences.",
+      "Approved for six months. We write to you two weeks before it ends. It never rolls over to a higher price on its own: ask again, pick the standard price, or let it lapse."
+    ],
+    "whoPays": "Who pays for it: patrons. Their rounds go into the house pool. The pool pays the difference between your price and the standard price, and it is set aside for your full six months the day you are approved. Top Shelf reduced seats open last. Eligibility is financial only.",
+    "cap": "Reduced seats are capped: one in four once the bar has twelve members, three seats until then. This is not a sale. It is a different price for people who need one.",
+    "queueNotice": "READ THIS FIRST. The bar is not open and the pool is empty tonight. Applying now puts you on the waiting list, in the order applications arrive. Nothing is charged. No seat exists until the doors open and the pool can fund it.",
+    "form": {
+      "legend": "THE FORM",
+      "fields": {
+        "contact": {
+          "label": "Email or handle",
+          "help": "An email is the only way we can write back. A handle alone keeps your place, but we cannot reach you."
+        },
+        "pass": {
+          "label": "Which pass",
+          "options": [
+            "Well",
+            "Call",
+            "Top Shelf"
+          ]
+        },
+        "rate": {
+          "label": "What you can manage",
+          "options": [
+            "Tight month",
+            "Community rate",
+            "On the house (Well only)"
+          ],
+          "help": "Tight month: $7.50 / $15 / $30. Community rate: $5 / $10 / $20. On the house: $0, Well pass only."
+        },
+        "circumstances": {
+          "label": "A sentence or two on why (student, between jobs, currency, disability, anything)",
+          "help": "500 characters at most. No documents, no proof. Do not send anything you would not want a person to read.",
+          "counter": "{n} / 500"
+        },
+        "country": {
+          "label": "Country (optional, helps us understand currency gaps)"
+        },
+        "attest": {
+          "label": "This is true, and I will switch to the standard price when I can."
+        }
+      },
+      "honeypotLabel": "Leave this one empty",
+      "required": "needed",
+      "optional": "optional",
+      "submit": "SEND THE FORM",
+      "submitting": "HANDING IT OVER.",
+      "consent": "We store what you type here so a person can read it and keep your place in line. See Privacy."
+    },
+    "success": {
+      "head": "GOT IT.",
+      "body": "You are in the line, in order. A person will read it. Nothing is charged. If you gave an email, that is where we write when seats open."
+    },
+    "errors": {
+      "contactRequired": "Tell us how to reach you: an email or a handle.",
+      "passRequired": "Pick a pass.",
+      "rateRequired": "Pick what you can manage.",
+      "houseWellOnly": "On the house is the Well pass only. Pick Well, or pick another rate.",
+      "circumstancesRequired": "A sentence or two. That is the whole application.",
+      "circumstancesTooLong": "500 characters at most.",
+      "attestRequired": "Tick the box if it is true.",
+      "rateLimited": "Slow down. Try again in a minute.",
+      "tooLarge": "Too much in the glass. Shorten it.",
+      "server": "Spilled it. Nothing was saved. Try again.",
+      "network": "Could not reach the bar. Check your connection and try again."
+    }
+  },
+  "hud": {
+    "title": "CONTROLS",
+    "open": "CONTROLS",
+    "close": "SHUT",
+    "knobs": {
+      "rho": {
+        "label": "RHO",
+        "help": "The Lorenz knob. 25 to 45. It never settles anywhere in that range."
+      },
+      "drift": {
+        "label": "DRIFT",
+        "help": "How fast the bloom turns."
+      },
+      "louche": {
+        "label": "LOUCHE",
+        "help": "Cloud the glass."
+      }
+    },
+    "bell": {
+      "label": "RING FOR SERVICE",
+      "help": "Rings the bar's status desk. The time it takes to answer kicks the bloom.",
+      "ringing": "RINGING.",
+      "answered": "{ms} MS. SOMEBODY HEARD YOU.",
+      "noAnswer": "NO ANSWER."
+    },
+    "switches": {
+      "dayNight": {
+        "label": "DAY / NIGHT",
+        "help": "Overrides your local clock. Night runs 19:00 to 07:00."
+      },
+      "tilt": {
+        "label": "TILT",
+        "help": "Lets your device's tilt stir the bloom. Your phone will ask first."
+      },
+      "reducedMotion": {
+        "label": "SLOW",
+        "help": "Slows the drift to a fiftieth. It does not stop. Nothing here stops."
+      }
+    },
+    "unlabeledSwitches": {
+      "visibleText": null,
+      "ariaLabelPattern": "Unmarked switch {n}"
+    },
+    "themeNames": {
+      "night": "ABSINTHE ABYSS",
+      "day": "NIGHTSHADE HERBARIUM"
+    },
+    "localNote": "Your hands move the bloom on your screen only. None of it is sent anywhere. The bell is the exception: it sends one request to our status desk.",
+    "reset": "LET GO",
+    "resetHelp": "Drop back onto the world's bloom."
+  },
+  "tour": {
+    "barLabel": "THE TOUR",
+    "prev": "PREV",
+    "next": "NEXT",
+    "back": "BACK",
+    "backHelp": "Esc",
+    "position": "{i} / {count}",
+    "overview": "THE BLOOM",
+    "stops": {
+      "bloom": "THE BLOOM",
+      "pour": "POUR: {id}",
+      "onOrder": "ON ORDER",
+      "tab": "OPEN A TAB",
+      "list": "THE LIST",
+      "sign": "THE SIGN"
+    },
+    "start": "TAKE THE TOUR",
+    "end": "END OF THE BAR. GET ON THE LIST?"
+  },
+  "faq": {
+    "title": "STRAIGHT ANSWERS",
+    "items": [
+      {
+        "id": "open",
+        "q": "Is it open?",
+        "a": "No. Nothing is for sale. The prices are the prices at opening, our best guess at cost. Get on the list and we write when the doors open."
+      },
+      {
+        "id": "cheapest",
+        "q": "Is this the cheapest way to run an uncensored model?",
+        "a": "No. If you chat for hours a day, or run 16k of context all evening, a flat-rate host will cost you less and you should go there. Small models especially are cheaper almost anywhere else. We are for people who want these exact bottles, on a tap shared with a handful of drinkers instead of a crowd, from scripts and apps as well as chat, and who would rather see a meter than a queue."
+      },
+      {
+        "id": "abliterated",
+        "q": "What does abliterated mean?",
+        "a": "A model whose refusals were cut out after training. Abliteration is one way to do it; DavidAU's Heretic pass is another; some of his merges are simply built from uncensored parts. Not every bottle had the same treatment. Each card prints what that bottle's own label says, and links to the maker's page."
+      },
+      {
+        "id": "davidau",
+        "q": "Who is DavidAU?",
+        "a": "An independent model maker who publishes on Hugging Face. We pour his published files. We are not him, and he has not endorsed this bar. The guest tap is Qwen3-VL 8B, abliterated by prithivMLmods and quantised by mradermacher."
+      },
+      {
+        "id": "api",
+        "q": "Can I point scripts and apps at it?",
+        "a": "Yes. It is an API. The tab and the per-pass request limits are the limit."
+      },
+      {
+        "id": "context",
+        "q": "Why does a long chat drain faster than a short one?",
+        "a": "Your client resends the whole conversation each turn and we bill it as input each turn. Trim the context and the tab lasts longer."
+      },
+      {
+        "id": "hello",
+        "q": "Why did my tab move when I only said hello?",
+        "a": "Minimum pour. Every pour holds a tap for a minute, so every pour costs at least a minute. See WARM / COLD."
+      },
+      {
+        "id": "thinking",
+        "q": "Do thinking models cost more?",
+        "a": "The thinking is output. It is billed as output, including thinking your client hides. Six of the ten taps think: mini, reason, the three 27Bs and the flagship."
+      },
+      {
+        "id": "cold",
+        "q": "Why did I wait 30 seconds?",
+        "a": "The tap was cold. Taps scale to zero when the bar is quiet, and a tap goes cold 60 seconds after its last request. The sign shows which taps are warm."
+      },
+      {
+        "id": "rollover",
+        "q": "Does my unused tab roll over?",
+        "a": "No. Rounds you bought do, for a year."
+      },
+      {
+        "id": "shared",
+        "q": "Do I get a tap to myself?",
+        "a": "No. Taps are shared. Each tap is one GPU running one model, and a few members may be served by it at the same time. That sharing is what lowers the cost."
+      },
+      {
+        "id": "logs",
+        "q": "What do you log?",
+        "a": "This page: what the Privacy page says, and no more. The API: nothing is promised here. Its policy gets written down before the doors open. Until it is, assume nothing."
+      },
+      {
+        "id": "adult",
+        "q": "Is this an adult site?",
+        "a": "No. It is a fiction-writing and developer API, 18 and over, with an acceptable-use policy. Read it."
+      }
+    ]
+  },
+  "ageNotice": {
+    "sign": "18+ ONLY.",
+    "body": "A fiction-writing and developer API. Some of these bottles write graphic horror and violence; their makers' labels say so. You are responsible for what you generate. The acceptable-use policy applies."
+  },
+  "footer": {
+    "line": "Prices at opening, {asOf}. Best guess at cost. They will move with the bar, and we will say so before they do. 18+. Acceptable-use policy applies.",
+    "business": "verdantbloom.bar is a business, not a charity.",
+    "links": [
+      {
+        "label": "POUR LIST",
+        "target": "pourList"
+      },
+      {
+        "label": "OPEN A TAB",
+        "target": "passes"
+      },
+      {
+        "label": "THE LIST",
+        "target": "waitlist"
+      },
+      {
+        "label": "REDUCED FEE",
+        "target": "reducedFee"
+      },
+      {
+        "label": "PRICES",
+        "target": "pricingPage"
+      },
+      {
+        "label": "ACCEPTABLE USE",
+        "target": "legalAcceptableUse"
+      },
+      {
+        "label": "PRIVACY",
+        "target": "legalPrivacy"
+      },
+      {
+        "label": "TERMS (STUB)",
+        "target": "legalTerms"
+      }
+    ],
+    "credits": [
+      "Models by DavidAU. Guest tap: Qwen3-VL 8B Instruct, abliterated by prithivMLmods, GGUF by mradermacher. We are not affiliated with any of them.",
+      "Dates in The New Calendar, (c) ralph7c2, MIT licence.",
+      "Spin discs after jnorthrup.github.io/spin.",
+      "Built in Kotlin."
+    ]
+  },
+  "pricingPage": {
+    "title": "PRICES AT OPENING",
+    "intro": "Everything on one page, no bloom. As of {asOf}. Best guess at cost, not an opening-night special. They may go up or down, with notice.",
+    "sections": [
+      "preOpen",
+      "passes",
+      "shelves",
+      "warmCold",
+      "anotherRound",
+      "lastCall",
+      "reducedFee",
+      "patron",
+      "disclaimers",
+      "faq"
+    ],
+    "disclaimersTitle": "THE SMALL PRINT, ALL OF IT",
+    "disclaimersSource": "Render pricing.public.json disclaimers[] in order, verbatim.",
+    "rateTableHead": [
+      "SHELF",
+      "IN / 1M TOKENS",
+      "OUT / 1M TOKENS",
+      "MINIMUM POUR, WARM",
+      "MINIMUM POUR, COLD"
+    ],
+    "backToBloom": "BACK TO THE BLOOM"
+  },
+  "legalNav": {
+    "acceptableUse": "ACCEPTABLE USE",
+    "privacy": "PRIVACY",
+    "terms": "TERMS (STUB - NEEDS COUNSEL BEFORE PAYMENTS OPEN)",
+    "back": "BACK TO THE BAR"
+  },
+  "errors": {
+    "notFound": {
+      "head": "NO SUCH DOOR.",
+      "body": "Nothing at this address.",
+      "link": "BACK TO THE BAR"
+    }
+  },
+  "meta": {
+    "asOfFallback": "20 September 2026",
+    "tokens": [
+      "{n}",
+      "{total}",
+      "{s}",
+      "{ms}",
+      "{asOf}",
+      "{pass}",
+      "{i}",
+      "{count}",
+      "{confirmUrl}",
+      "{id}"
+    ]
+  }
+}

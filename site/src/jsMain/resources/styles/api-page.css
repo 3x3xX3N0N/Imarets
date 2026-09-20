@@ -1,0 +1,43 @@
+/*
+ * api-page.css - for the bare HTML pages site-api answers with when JavaScript is off
+ * (confirm link, no-JS form posts). Their markup is just <body><main><h1>..</h1><p>..</p></main>.
+ * Use:  PAGE_STYLESHEET=/styles/api-page.css   (site-api README, "GET /api/confirm").
+ * No data-theme on those pages, so tokens.css falls back to absinthe-abyss.
+ */
+@import url("tokens.css");
+@import url("fonts.css");
+@import url("type.css");
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: grid;
+    align-content: center;
+    padding: var(--vb-s5) var(--vb-gutter);
+}
+
+main {
+    width: 100%;
+    max-width: 44rem;
+    margin-inline: auto;
+    padding: var(--vb-s5);
+    border: var(--vb-rule-heavy) solid var(--vb-rule);
+    background: var(--vb-ground-2);
+}
+
+main::before {
+    content: "VERDANTBLOOM.BAR";
+    display: block;
+    margin-bottom: var(--vb-s5);
+    font-family: var(--vb-font-display);
+    font-size: 1.25rem;
+    letter-spacing: -0.03em;
+    color: var(--vb-accent);
+}
+
+h1 { font-size: var(--vb-size-5); line-height: 0.88; }
+h1 + p { margin-top: var(--vb-s4); font-size: var(--vb-size-3); font-weight: 600; line-height: 1.3; }
+p + p { margin-top: var(--vb-s4); }

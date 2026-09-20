@@ -1,0 +1,131 @@
+/*
+ * type.css - brutalist grotesk.
+ *   display  Archivo Black, or Archivo 800-900 set expanded (wdth 125), uppercase, tight
+ *   body     Archivo 400-600, normal width
+ *   mono     JetBrains Mono: order codes, numbers, the clock, prices
+ */
+
+html {
+    font-family: var(--vb-font-grotesk);
+    font-size: 100%;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    font-kerning: normal;
+    font-optical-sizing: auto;
+}
+
+body {
+    font-size: var(--vb-size-2);
+    font-weight: 400;
+    color: var(--vb-ink);
+    background: var(--vb-ground);
+}
+
+h1, h2, h3, h4 {
+    margin: 0;
+    font-family: var(--vb-font-grotesk);
+    font-weight: 900;
+    font-stretch: 125%;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+    overflow-wrap: break-word;
+}
+
+h1 {
+    font-family: var(--vb-font-display);
+    font-weight: 400;              /* Archivo Black has one weight */
+    font-stretch: 100%;
+    font-size: var(--vb-size-6);
+    letter-spacing: -0.045em;
+    line-height: 0.82;
+}
+
+h2 { font-size: var(--vb-size-5); letter-spacing: -0.035em; line-height: 0.9; }
+/* a title with a thirteen-letter word in it: set smaller so no word breaks at 375 px */
+.vb-h2--long { font-size: clamp(1.35rem, 0.9rem + 2.2vw, 2.5rem); line-height: 0.95; letter-spacing: -0.025em; }
+h3 { font-size: var(--vb-size-4); }
+h4 { font-size: var(--vb-size-3); letter-spacing: -0.01em; line-height: 1.05; }
+
+p, ul, ol, dl, table, blockquote, figure { margin: 0; }
+p + p { margin-top: var(--vb-s3); }
+
+p, li, dd { max-width: var(--vb-measure); }
+
+strong, b { font-weight: 800; }
+
+small, .vb-fine {
+    font-size: var(--vb-size-0);
+    line-height: 1.45;
+    color: var(--vb-ink-dim);
+}
+
+a {
+    color: inherit;
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.18em;
+    text-decoration-color: var(--vb-accent);
+}
+a:hover { background: var(--vb-ink); color: var(--vb-ground); text-decoration-color: currentColor; }
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+    outline: var(--vb-rule-w) solid var(--vb-focus);
+    outline-offset: 2px;
+}
+
+code, kbd, samp, pre, output, time,
+.vb-mono {
+    font-family: var(--vb-font-mono);
+    font-size: 0.94em;
+    font-variant-ligatures: none;
+    font-feature-settings: "zero" 1;
+}
+time { font-size: inherit; }
+
+/* utility voices */
+.vb-display {
+    font-family: var(--vb-font-grotesk);
+    font-weight: 900;
+    font-stretch: 125%;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+}
+.vb-black {
+    font-family: var(--vb-font-display);
+    font-weight: 400;
+    font-stretch: 100%;
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    line-height: 0.85;
+}
+.vb-label {
+    font-family: var(--vb-font-grotesk);
+    font-weight: 800;
+    font-stretch: 125%;
+    font-size: var(--vb-size-0);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+}
+.vb-lede {
+    font-size: var(--vb-size-3);
+    font-weight: 600;
+    line-height: 1.3;
+}
+.vb-num {
+    font-family: var(--vb-font-mono);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+.vb-dim { color: var(--vb-ink-dim); }
+.vb-warm { color: var(--vb-candle); }
+
+::selection { background: var(--vb-accent); color: var(--vb-ink-inverse); }
