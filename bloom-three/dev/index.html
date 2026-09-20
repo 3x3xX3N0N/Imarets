@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" data-theme="absinthe-abyss">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bloom-three dev harness (not shipped)</title>
+<link rel="stylesheet" href="dev.css">
+<!-- DEV ONLY. The shipped page has no inline script; an import map cannot be external, and this page is never bundled. -->
+<script type="importmap">
+{
+  "imports": {
+    "three/webgpu": "/build/js/node_modules/three/build/three.webgpu.js",
+    "three/tsl": "/build/js/node_modules/three/build/three.tsl.js"
+  }
+}
+</script>
+<script type="module" src="/build/js/packages/imarets-bloom-three-test/kotlin/imarets-bloom-three-test.mjs"></script>
+</head>
+<body>
+<div id="bloom-three-dev"></div>
+<p id="bloom-three-dev-status">loading compiled Kotlin test module ...</p>
+</body>
+</html>
