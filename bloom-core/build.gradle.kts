@@ -9,7 +9,9 @@ kotlin {
         browser {
             testTask { enabled = false } // tests run on node: gradlew :bloom-core:jsNodeTest
         }
-        nodejs()
+        nodejs {
+            testTask { useMocha { timeout = "60s" } } // linking integrals and hour-long catch-ups
+        }
     }
     sourceSets {
         commonMain.dependencies {

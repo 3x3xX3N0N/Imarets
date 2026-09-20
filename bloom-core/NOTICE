@@ -1,0 +1,50 @@
+bloom-core (verdantbloom.bar landing page)
+
+This module contains a port of "newcal" - The New Calendar - Kotlin implementation.
+
+  Source:   newcal, kotlin/src/main/kotlin/com/ralphlandon/newcal/NewCal.kt
+            and kotlin/src/test/kotlin/com/ralphlandon/newcal/NewCalTest.kt
+  Author:   Copyright (c) ralph7c2
+  License:  MIT (the upstream README states "License: MIT"; upstream ships no separate LICENSE file,
+            so the standard MIT text is reproduced below)
+
+Ported files:
+  src/commonMain/kotlin/bar/verdantbloom/bloom/core/NewCal.kt
+  src/commonTest/kotlin/bar/verdantbloom/bloom/core/NewCalTest.kt
+
+Changes made in the port:
+  - package and API shape: implements bar.verdantbloom.bloom.api.NewCalendar and returns NewCalDate
+    (which carries dayOfWeek and modifier as fields) instead of the upstream Date class;
+  - day counting uses floor division, so instants before 1970 that are not on a day boundary map to
+    the correct day (upstream truncates towards zero);
+  - the year roll-over loop compares against the real year length; upstream used "days > 365" and
+    indexed past the season list on 21 December of every non-leap New Calendar year;
+  - added formatTime (HH:MM:SS UTC);
+  - tests: java.time replaced by a pure Kotlin civil-date helper so they run on Kotlin/JS; the two
+    upstream cases written with day 0 for the leap day use LEAP_DAY (-1); extra cases added.
+
+----------------------------------------------------------------------------------------------------
+MIT License
+
+Copyright (c) ralph7c2
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the "Software"), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+----------------------------------------------------------------------------------------------------
+
+Other acknowledgements:
+  - HashPrng.mix is the "lowbias32" integer finaliser by Chris Wellons (public domain / Unlicense).
+  - Spin disc geometry, colours (blue disc, red stroke, yellow wedges) and the (7 + c) * 29.6 s period
+    family follow https://jnorthrup.github.io/spin/ as required by the build spec.
