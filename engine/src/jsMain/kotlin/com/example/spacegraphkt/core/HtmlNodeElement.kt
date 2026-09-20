@@ -157,6 +157,8 @@ open class HtmlNodeElement(
             previousLod = element.getAttribute(LodLevel.DATA_ATTRIBUTE),
         )
         element.setAttribute("data-node-id", id)
+        // the measured offsetWidth is pinned as `width`, so it has to mean the border box (undone by release())
+        element.style.boxSizing = "border-box"
         contentEl = element.querySelector(".node-content") as? HTMLElement
         return element
     }
@@ -268,12 +270,16 @@ open class HtmlNodeElement(
 
     /**
      * Undoes an adoption: the element goes back to its original parent / position with its original inline
-     * style, classes and attributes. No-op for built elements. Called by [dispose].
+     * style, classes and attributes. No-op for built elements. Called by [dispose]; normally reached through
+     * `SpaceGraph.removeNode(id)` or `SpaceGraph.dispose()`.
      */
     fun release() {
         val a = adoption ?: return
         adoption = null
         val e = htmlElement
+        // Take the CSS3D object out of its scene FIRST: three's CSS3DObject listens for its own "removed" event
+        // and detaches its element from the DOM, which would undo the re-insertion below if it happened later.
+        css3dObject.parent?.remove(css3dObject)
         e.remove()
         e.style.cssText = a.cssText
         for (c in a.addedClasses) e.classList.remove(c)

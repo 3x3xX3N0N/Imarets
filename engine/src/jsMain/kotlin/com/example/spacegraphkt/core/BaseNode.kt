@@ -65,15 +65,16 @@ abstract class BaseNode constructor(
      * This includes disposing Three.js geometries, materials, and removing objects from their parents.
      */
     open fun dispose() {
-        threeJsObject?.let { obj ->
-            obj.parent?.remove(obj) // Remove from scene
-            // If it's a Mesh, dispose geometry and material
+        // engine agent fix: `threeJsObject` is dynamic, and `?.let` / `.unsafeCast` on a dynamic receiver compile to
+        // JS member calls that do not exist (dispose threw "e.let is not a function"). Use a typed local instead.
+        val obj: THREE.Object3D? = (threeJsObject as Any?) as? THREE.Object3D
+        if (obj != null) {
+            obj.parent?.remove(obj)
             if (obj is THREE.Mesh) {
-                obj.geometry?.dispose()
-                obj.material?.dispose()
+                obj.geometry.dispose()
+                val material: dynamic = obj.material
+                if (material != null && material.dispose != undefined) material.dispose()
             }
-            // If CSS3DObject, its element might need manual removal if not handled by parent's remove.
-            // However, CSS3DObject.element is typically managed by its own lifecycle or UIManager.
         }
         labelObject?.let { lbl ->
             lbl.parent?.remove(lbl)
@@ -99,14 +100,13 @@ abstract class BaseNode constructor(
      */
     open fun setSelectedStyle(selected: Boolean) {
         // Basic example for ShapeNodes (emissive highlight)
-        if (threeJsObject is THREE.Mesh) {
-            val material = threeJsObject?.material?.unsafeCast<THREE.MeshStandardMaterial>()
-            if (selected) {
-                material?.emissive?.setHex(0x888800) // Yellowish emissive highlight
-            } else {
-                material?.emissive?.setHex(0x000000) // No emission
+        val mesh = (threeJsObject as Any?) as? THREE.Mesh
+        if (mesh != null) {
+            val material: dynamic = mesh.material
+            if (material != null && material.emissive != undefined) {
+                material.emissive.setHex(if (selected) 0x888800 else 0x000000)
+                material.needsUpdate = true
             }
-            material?.needsUpdate = true
         }
         // HTML nodes will typically handle this by adding/removing CSS classes.
     }

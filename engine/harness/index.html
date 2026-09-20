@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'">
+<title>engine harness</title>
+<link rel="stylesheet" href="harness.css">
+<script defer src="engine.js"></script>
+</head>
+<body>
+<header>
+<p id="status">starting</p>
+<nav aria-label="Tour"><button type="button" id="tour-prev">PREV</button> <span id="tour-label">OVERVIEW</span> <button type="button" id="tour-next">NEXT</button></nav>
+</header>
+<div id="space"></div>
+<section id="doc">
+<h2>Document below the graph (must scroll normally)</h2>
+<article id="doc-card" class="card"><h3 class="card-code">T01</h3><p class="card-short">FLAGSHIP</p><p class="card-body">Full card text, only when near. <a href="#pour/mini">go to mini</a> <button type="button" id="card-button">a button</button></p></article>
+<p class="filler">filler</p>
+</section>
+</body>
+</html>

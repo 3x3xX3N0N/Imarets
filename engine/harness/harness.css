@@ -1,0 +1,15 @@
+html, body { margin: 0; background: #07120d; color: #d8ffe9; font: 14px/1.4 monospace; }
+header { display: flex; gap: 16px; align-items: center; padding: 4px 8px; flex-wrap: wrap; }
+header p { margin: 0; }
+#space { position: relative; width: 100%; height: 70vh; overflow: hidden; border-top: 2px solid #39ffb0; border-bottom: 2px solid #39ffb0; cursor: grab; }
+#space.panning { cursor: grabbing; }
+.filler { height: 120vh; }
+.node-html { box-sizing: border-box; background: var(--node-bg, #10241a); border: 2px solid #39ffb0; color: #d8ffe9; padding: 8px; }
+.node-html.selected { border-color: #ffd27a; }
+.node-html .node-inner-wrapper { width: 100%; height: 100%; }
+.node-html .node-content { transform-origin: top left; }
+.card { width: 260px; border: 2px solid #39ffb0; padding: 8px; background: #10241a; }
+.card h3, .card p { margin: 0 0 4px; }
+.node-html[data-lod="far"] .card-short, .node-html[data-lod="far"] .card-body { display: none; }
+.node-html[data-lod="mid"] .card-body { display: none; }
+.node-html[data-lod="near"] .card-short { display: none; }

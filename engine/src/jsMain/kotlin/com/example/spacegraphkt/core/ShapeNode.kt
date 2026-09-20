@@ -102,8 +102,8 @@ class ShapeNode constructor(
         div.textContent = data.label
         div.setAttribute("data-node-id", this.id)
         // Basic styling, can be enhanced via CSS class ".node-label-3d"
-        div.style.color = data.custom?.labelColor?.unsafeCast<String>() ?: "white"
-        div.style.backgroundColor = data.custom?.labelBackgroundColor?.unsafeCast<String>() ?: "rgba(0,0,0,0.65)"
+        div.style.color = (data.custom?.labelColor as? String) ?: "white"
+        div.style.backgroundColor = (data.custom?.labelBackgroundColor as? String) ?: "rgba(0,0,0,0.65)"
         div.style.padding = "4px 8px"
         div.style.borderRadius = "4px"
         div.style.fontSize = "14px"

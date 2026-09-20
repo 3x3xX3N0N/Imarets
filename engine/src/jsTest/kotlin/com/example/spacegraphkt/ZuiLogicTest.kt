@@ -277,6 +277,22 @@ class TourTest {
     }
 
     @Test
+    fun changeListenersSeeEveryChangeIncludingSync() {
+        val t = tour()
+        val nav = ArrayList<String?>()
+        val shown = ArrayList<String?>()
+        t.addListener { stop, _ -> nav.add(stop?.id) }
+        t.addChangeListener { stop, _ -> shown.add(stop?.id) }
+        t.next()
+        t.sync("c")
+        t.sync("c")
+        t.sync(null)
+        t.prev()
+        assertEquals(listOf<String?>("a", "c"), nav)
+        assertEquals(listOf<String?>("a", "c", null, "c"), shown)
+    }
+
+    @Test
     fun setStopsKeepsTheCurrentStopById() {
         val t = tour()
         t.goTo("b")

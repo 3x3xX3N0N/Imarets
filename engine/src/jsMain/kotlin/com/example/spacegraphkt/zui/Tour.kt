@@ -19,6 +19,7 @@ data class TourStop(val id: String, val title: String = id, val route: Route? = 
 class Tour(stops: List<TourStop> = emptyList(), var wrap: Boolean = true) {
     private var _stops: List<TourStop> = stops.toList()
     private val listeners = ArrayList<(TourStop?, Int) -> Unit>()
+    private val changeListeners = ArrayList<(TourStop?, Int) -> Unit>()
 
     init {
         requireUniqueIds(_stops)
@@ -89,7 +90,10 @@ class Tour(stops: List<TourStop> = emptyList(), var wrap: Boolean = true) {
      * means (clicked a ring, followed a deep link) and the bar only has to catch up. Unknown id -> overview.
      */
     fun sync(id: String?) {
-        index = if (id == null) -1 else _stops.indexOfFirst { it.id == id }
+        val newIndex = if (id == null) -1 else _stops.indexOfFirst { it.id == id }
+        if (newIndex == index) return
+        index = newIndex
+        notifyChanged()
     }
 
     /** Back to the overview (no current stop). Notifies with (null, -1). */
@@ -110,9 +114,29 @@ class Tour(stops: List<TourStop> = emptyList(), var wrap: Boolean = true) {
     private fun notifyListeners() {
         val stop = current
         for (l in listeners.toList()) l(stop, index)
+        notifyChanged()
     }
 
-    /** @return a function that removes the listener again. */
+    private fun notifyChanged() {
+        val stop = current
+        for (l in changeListeners.toList()) l(stop, index)
+    }
+
+    /**
+     * DISPLAY listener: fires on EVERY change of the current stop, including [sync]. This is what a tour bar
+     * uses to repaint its label and enable / disable its buttons. It must not move the camera.
+     * @return a function that removes the listener again.
+     */
+    fun addChangeListener(listener: (stop: TourStop?, index: Int) -> Unit): () -> Unit {
+        changeListeners.add(listener)
+        return { changeListeners.remove(listener) }
+    }
+
+    /**
+     * NAVIGATION listener: fires when the tour itself moved ([next], [prev], [goTo], [leave], [setStops]) - not
+     * on [sync]. This is where the camera flies.
+     * @return a function that removes the listener again.
+     */
     fun addListener(listener: (stop: TourStop?, index: Int) -> Unit): () -> Unit {
         listeners.add(listener)
         return { listeners.remove(listener) }

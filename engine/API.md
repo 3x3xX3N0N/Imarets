@@ -14,7 +14,7 @@ external/ VecTween (binds zui.Tween to THREE.Vector3), generateId
 main/   runEngineDemo
 ```
 
-Build / test: `./gradlew :engine:compileKotlinJs`, `./gradlew :engine:jsNodeTest` (37 tests, results in
+Build / test: `./gradlew :engine:compileKotlinJs`, `./gradlew :engine:jsNodeTest` (38 tests, results in
 `engine/build/test-results/jsNodeTest/`).
 
 ## 1. Creating a graph
@@ -133,13 +133,14 @@ val tour = Tour(listOf(TourStop(id = "card-mini", title = "W01 MINI", route = Ro
 tour.next(); tour.prev(); tour.goTo(index | id); tour.leave()      // notify listeners on real moves
 tour.current; tour.index (-1 = overview); tour.hasNext; tour.hasPrev; tour.positionLabel  // "3 / 10"
 tour.sync(id)                       // follow without notifying (visitor got there another way)
-tour.addListener { stop, index -> } // returns a remover
+tour.addListener { stop, index -> }        // NAVIGATION: the tour itself moved (not on sync) -> fly the camera
+tour.addChangeListener { stop, index -> }  // DISPLAY: every change incl. sync -> repaint the tour bar
 ```
 
 `ZuiNavigator(graph, tour).start()` wires the three together (tour stops are the node <-> route map):
 tour move -> fly + URL; click on a node -> tour + URL follow; deep link / Back / Forward -> fly + tour follow;
 Esc to the overview -> route leaves the URL (`t=` stays). `navigator.home()`, `navigator.dispose()`.
-Tour bar buttons only need `tour.prev()`, `tour.next()` and a listener that writes `stop.title` with `textContent`.
+Tour bar buttons only need `tour.prev()`, `tour.next()` and an `addChangeListener` that writes `stop.title` with `textContent`.
 
 ## 6. Renderer factory (SPEC section 4)
 
@@ -204,10 +205,34 @@ No `innerHTML` / markup strings, no inline handlers, no `setAttribute("style")`,
 with `createElement` + `textContent`; styles go through CSSOM properties (`release()` restores an adopted
 element's inline style through `style.cssText`, which is CSSOM too). `NodeData.content` is TEXT.
 
-## 10. Known gaps (honest list)
+## 10. Browser harness
 
-- Not exercised in a browser by the engine agent unless the final report says otherwise: see the agent's
-  verification notes. Node tests cover only the pure logic (tween, router, tour, LOD, view maths, pinch maths).
-- ShapeNode, edge labels, AgentAPI, context menus and linking are ported code that compiles; only lightly used.
+`engine/harness/` + `src/harness/kotlin` run the engine alone under a strict CSP. Opt-in only:
+`./gradlew :engine:jsBrowserProductionWebpack -PengineHarness` (see `engine/harness/README.md`). Without the
+property `:engine` is a plain library and none of it is compiled or bundled into `:site`.
+
+## 11. Verified / not verified (honest list)
+
+Verified by the engine agent in the desktop app's browser pane, 2026-09-20, through the harness, with
+`Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'` and no console errors:
+webgl rung (`backend=webgl2`) and webgpu rung (`backend=webgpu`) both start; read-only mode has no editor
+chrome / contenteditable / controls; tour next -> fly + `#pour/<id>` + selection + `data-lod="near"`;
+deep link `#pour/dark&t=0` on load (t survives every navigation); Esc -> back -> overview; Space not taken in
+read-only; synthetic touch tap -> select + fly; synthetic two-finger pinch zooms (680 -> 299); drag on a card
+pans; wheel is prevented over the graph and not over the document; pick hook sees DOWN / TAP and a claimed TAP
+leaves the selection alone; `<a href="#pour/mini">` inside an adopted card navigates, browser Back returns;
+`dispose()` puts the adopted card back (parent, sibling order, inline style, classes, attributes) and is
+idempotent; 375 px wide layout: a focused card is 300 px wide.
+
+NOT verified: a real touch screen (touch was synthetic PointerEvents), real-device pinch feel, Safari / Firefox,
+the WebGPU-unavailable path (`fellBack` / `ok = false` were not provoked), context menus / link drawing /
+resize handles in edit mode (they compile and the chrome appears, nothing more), AgentAPI, edge labels.
+Node tests cover only pure logic (tween, router, tour, LOD, view maths, pinch maths): 38 tests.
+
+Known behaviour gaps:
 - After a pinch, the finger that stays down does not resume panning until all fingers are lifted.
-- `ZuiNavigator` maps routes through tour stops only; `#list` / `#sign` need a stop (or the site's own handling).
+- `ZuiNavigator` maps routes through tour stops only; `#list` / `#sign` need a stop or the site's own handling.
+- `touch-action: none` on the container means a graph that fills the phone screen cannot be scrolled past by
+  dragging ON it; give the page scrollable space outside the container or a smaller container.
+- `VecTween` is a process-wide singleton: fine for one graph, two graphs share one tween clock.
+- ForceLayout still logs to the console (info level) in editor mode.
