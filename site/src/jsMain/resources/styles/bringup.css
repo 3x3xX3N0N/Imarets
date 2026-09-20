@@ -1,0 +1,15 @@
+/* BRINGUP PLACEHOLDER styles - the design agent owns styles/ and replaces this. */
+:root[data-theme="absinthe-abyss"] {
+    --vb-ground: #020a07; --vb-ink: #d8f2e0; --vb-rule: #9fe8b8; --vb-glow: #b8ffce;
+    --vb-accent: #3dffc0; --vb-accent-2: #19c9a3; --vb-warm: #c9a24a; --vb-alert: #ff9d3c;
+    --vb-ring-well: #3dffc0; --vb-ring-call: #b8ffce; --vb-ring-top: #c9a24a;
+    --vb-ring-visitor: #ffe9a8; --vb-ring-ghost: #3a5a4a;
+}
+html, body { height: 100%; margin: 0; background: var(--vb-ground); color: var(--vb-ink); overflow: hidden; }
+body { font-family: "Archivo", sans-serif; }
+.bringup-bar { position: absolute; z-index: 10; top: 0; left: 0; right: 0; padding: 12px 16px;
+    border-bottom: 4px solid var(--vb-rule); background: var(--vb-ground); }
+.bringup-bar h1 { font-family: "Archivo Black", "Archivo", sans-serif; font-size: 22px; margin: 0; letter-spacing: 0.02em; }
+.bringup-bar p { margin: 4px 0 0; font-size: 13px; text-transform: uppercase; }
+.mono { font-family: "JetBrains Mono", monospace; text-transform: none !important; color: var(--vb-accent); }
+#space { position: absolute; inset: 0; }

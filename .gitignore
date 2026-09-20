@@ -3,3 +3,6 @@
 build/
 .gradle/
 .idea
+kotlin-js-store/*.lock.bak
+.kotlin/
+node_modules/
