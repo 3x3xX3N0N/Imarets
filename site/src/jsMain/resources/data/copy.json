@@ -55,7 +55,7 @@
   },
   "pourList": {
     "title": "THE POUR LIST",
-    "intro": "Ten bottles, ten taps. Each tap is one GPU running one model. Nine bottles are DavidAU's; his name goes here once and nowhere else. One is a guest tap that reads pictures for the rest. One more is on order.",
+    "intro": "Ten bottles, ten taps. Each tap is one GPU running one model. Nine bottles are DavidAU's; One is a guest tap that reads pictures for the rest. One more is on order.",
     "orderHint": "The word in mono is the order code. It is what your client sends as the model name.",
     "liveHint": "WARM and COLD come from the status sign, live. If the sign is dark, so are the badges.",
     "card": {
@@ -539,7 +539,7 @@
       {
         "id": "davidau",
         "q": "Who makes these?",
-        "a": "One builder makes nine of the ten; the guest tap is from another cellar. Names, labels and links are on the citations page. We are not affiliated with any of them."
+        "a": "One builder makes nine of the ten; the guest tap is from another cellar. Each card links to the maker's own page. We are not affiliated with any of them."
       },
       {
         "id": "api",
