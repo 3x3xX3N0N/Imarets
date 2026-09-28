@@ -93,12 +93,12 @@
 <div class="vb-wrap">
 <div class="vb-section__head">
 <h2 id="sign-title">THE SIGN</h2>
-<p>WARM and COLD come from the status sign, live. If the sign is dark, so are the badges.</p>
+<p>We are open. WARM and COLD come from the status sign, live: cold is not closed, it is a tap nobody is on yet.</p>
 </div>
-<div id="sign-board" class="vb-sign__board" data-sign-down="DARK. CHAIRS ON THE TABLES." data-plain-down="The gateway is not answering." data-sign-parked="LIGHTS ARE ON. NOBODY AT THE DESK." data-plain-parked="The gateway is up. The fleet is parked: no tap can pour right now." data-sign-cold="BARTENDER&#x27;S IN THE BACK. RING THE BELL. (~30 S)" data-plain-cold="The gateway is up and every tap is scaled to zero. A first pour takes about 30 seconds." data-sign-open="OPEN. {n} TAPS FLOWING." data-plain-open="{n} of {total} taps are warm. A warm tap pours now. The rest take about 30 seconds." data-sign-degraded="LAST CALL." data-plain-degraded="Something is wrong behind the bar. Pours may fail." data-sign-open-one="OPEN. 1 TAP FLOWING." data-sign-loading="CHECKING THE LIGHTS." data-sign-stale="THE SIGN IS OLD. LAST WORD {s} S AGO." data-total="10">
+<div id="sign-board" class="vb-sign__board" data-sign-down="DARK. CHAIRS ON THE TABLES." data-plain-down="The gateway is not answering." data-sign-parked="OPEN. TAPS ARE OFF TONIGHT." data-plain-parked="We are open, but the taps are switched off right now. Open a tab and we will write when they are back on." data-sign-cold="OPEN. THE BEER IS COLD." data-plain-cold="We are open. Every tap is cold because nobody is on it yet: the first pour takes about 30 seconds, then it stays warm while you drink." data-sign-open="OPEN. {n} TAPS FLOWING." data-plain-open="{n} of {total} taps are warm. A warm tap pours now. The rest take about 30 seconds." data-sign-degraded="LAST CALL." data-plain-degraded="Something is wrong behind the bar. Pours may fail." data-sign-open-one="OPEN. 1 TAP FLOWING." data-sign-loading="CHECKING THE LIGHTS." data-sign-stale="THE SIGN IS OLD. LAST WORD {s} S AGO." data-total="10">
 <p id="sign-line" class="vb-sign__line" role="status" aria-live="polite" data-bind="sign.line">CHECKING THE LIGHTS.</p>
 <p id="sign-plain" class="vb-sign__plain" data-bind="sign.plain">The sign needs JavaScript. Without it, assume every tap is cold: about 30 seconds on the first pour.</p>
-<p class="vb-sign__meta vb-js-only"><span>AS OF <time id="sign-asof" data-bind="sign.asOf"></time></span><span id="sign-members" data-bind="sign.members" data-template="PAID MEMBERS: {n}"></span></p>
+<p class="vb-sign__meta vb-js-only"><span>AS OF <time id="sign-asof" data-bind="sign.asOf"></time></span><span id="sign-members" data-bind="sign.members" data-template="PAID MEMBERS: {n}" hidden></span></p>
 </div>
 </div>
 </section>

@@ -102,8 +102,9 @@ internal class StatusBoard(private val onLatency: (latencyMs: Double, jitterMs: 
                 setText(el, if (ms.isNaN()) asOf else BloomCore.newCalendar.formatTime((ms / 1000.0).toLong()) + " UTC")
             }
         }
+        // A zero is not a number worth printing on the sign. Show the count once there is one.
         val members = body.activeMembers
-        if (members != null) paintMembers(members.toString())
+        if (members != null && members > 0) paintMembers(members.toString())
     }
 
     private fun paintUnreachable() {
