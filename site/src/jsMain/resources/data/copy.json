@@ -7,8 +7,8 @@
     "positioning": "A lineup of abliterated dark fiction models."
   },
   "preOpen": {
-    "sign": "NOT OPEN YET.",
-    "body": "Nothing is for sale tonight. The prices on this page are the prices at opening: our best guess at cost. Every pass button puts you on the list. We write when the doors open."
+    "sign": "CHECKING THE LIGHTS.",
+    "body": "These are prices, not promises of speed. Every button opens a tab and notes the level you were eyeing."
   },
   "hero": {
     "eyebrow": "VERDANTBLOOM.BAR",
@@ -16,7 +16,7 @@
     "positioning": "A lineup of abliterated dark fiction models.",
     "sub": "Ten pours. One OpenAI-compatible endpoint. Pay by the month, drink by the token.",
     "body": "Dark fiction. Horror. The pages a house-style assistant flinches at.",
-    "status": "Not open yet. Prices at opening are posted. Put your name on the list.",
+    "status": "Every tap is cold today: there are no users yet. That lifts as people arrive.",
     "ctaPrimary": {
       "label": "GET ON THE LIST",
       "target": "waitlist"
@@ -121,7 +121,7 @@
   "passes": {
     "title": "OPEN A TAB",
     "intro": "A pass is a monthly tab. The price you pay is the money on your tab. Spend it at the pour-list rates. It resets every 30 days. Dry before then? Buy another round.",
-    "preOpen": "Nothing is for sale tonight. These are the prices at opening. The button puts you on the list and notes which pass you wanted.",
+    "preOpen": "These are prices, not promises of speed. The button opens a tab and notes the level you were eyeing.",
     "cards": {
       "well": {
         "name": "WELL PASS",
@@ -193,7 +193,7 @@
     ],
     "rows": [
       [
-        "Opening night",
+        "Today",
         "as listed"
       ],
       [
@@ -270,14 +270,14 @@
     },
     "loading": "CHECKING THE LIGHTS.",
     "stale": "THE SIGN IS OLD. LAST WORD {s} S AGO.",
-    "noscript": "The sign needs JavaScript. Without it: the bar is not open to the public yet.",
+    "noscript": "The sign needs JavaScript. Without it, assume every tap is cold: about 30 seconds on the first pour.",
     "members": "PAID MEMBERS: {n}",
     "asOfLabel": "AS OF"
   },
   "waitlist": {
     "title": "THE LIST",
     "headline": "Open a tab.",
-    "body": "One address. We write when the doors open and when the prices are final. That is all the list is for.",
+    "body": "One address. We write when your tab is ready and when the prices change. That is all it is for.",
     "emailLabel": "Email",
     "emailPlaceholder": "you@example.com",
     "passLabel": "Which pass were you eyeing (optional)",
@@ -312,7 +312,7 @@
     "confirmPage": {
       "ok": {
         "head": "YOU ARE ON THE LIST.",
-        "body": "We write when the doors open."
+        "body": "We write when your tab is ready."
       },
       "already": {
         "head": "ALREADY ON THE LIST.",
@@ -340,7 +340,7 @@
   "email": {
     "confirm": {
       "subject": "Confirm your place on the list - verdantbloom.bar",
-      "text": "Someone put this address on the list at verdantbloom.bar.\n\nIf it was you, confirm here:\n{confirmUrl}\n\nIf it was not you, do nothing. No click, no list.\n\nThe bar is not open yet. Nothing is charged. We write when the doors open.\n\nverdantbloom.bar - 18+ - a fiction-writing and developer API"
+      "text": "Someone put this address on the list at verdantbloom.bar.\n\nIf it was you, confirm here:\n{confirmUrl}\n\nIf it was not you, do nothing. No click, no list.\n\nThe bar is not open yet. Nothing is charged. We write when your tab is ready.\n\nverdantbloom.bar - 18+ - a fiction-writing and developer API"
     }
   },
   "reducedFee": {
@@ -386,7 +386,7 @@
     ],
     "whoPays": "Who pays for it: patrons. Their rounds go into the house pool. The pool pays the difference between your price and the standard price, and it is set aside for your full six months the day you are approved. Top Shelf reduced seats open last. Eligibility is financial only.",
     "cap": "Reduced seats are capped: one in four once the bar has twelve members, three seats until then. This is not a sale. It is a different price for people who need one.",
-    "queueNotice": "READ THIS FIRST. The bar is not open and the pool is empty tonight. Applying now puts you on the waiting list, in the order applications arrive. Nothing is charged. No seat exists until the doors open and the pool can fund it.",
+    "queueNotice": "READ THIS FIRST. The pool is empty tonight. Applying now puts you on the waiting list, in the order applications arrive. Nothing is charged. No seat exists until the doors open and the pool can fund it.",
     "form": {
       "legend": "THE FORM",
       "fields": {
@@ -524,7 +524,7 @@
       {
         "id": "open",
         "q": "Is it open?",
-        "a": "No. Nothing is for sale. The prices are the prices at opening, our best guess at cost. Open a tab and we write when the doors open."
+        "a": "Open a tab and find out. Every tap is cold today because there are no users yet; the first pour takes about 30 seconds."
       },
       {
         "id": "cheapest",
@@ -579,7 +579,7 @@
       {
         "id": "logs",
         "q": "What do you log?",
-        "a": "This page: what the Privacy page says, and no more. The API: nothing is promised here. Its policy gets written down before the doors open. Until it is, assume nothing."
+        "a": "This page: what the Privacy page says, and no more. The API: nothing is promised here. Its policy gets written down. Until it is, assume nothing."
       },
       {
         "id": "adult",
@@ -593,7 +593,7 @@
     "body": "A fiction-writing and developer API. Some of these bottles write graphic horror and violence; their makers' labels say so. You are responsible for what you generate. The acceptable-use policy applies."
   },
   "footer": {
-    "line": "Prices at opening, {asOf}. Best guess at cost. They will move with the bar, and we will say so before they do. 18+. Acceptable-use policy applies.",
+    "line": "Prices as of {asOf}. Best guess at cost. They will move with the bar, and we will say so before they do. 18+. Acceptable-use policy applies.",
     "business": "verdantbloom.bar is a business, not a charity.",
     "links": [
       {
@@ -635,7 +635,7 @@
     ]
   },
   "pricingPage": {
-    "title": "PRICES AT OPENING",
+    "title": "PRICES",
     "intro": "Everything on one page, no bloom. As of {asOf}. Best guess at cost, not an opening-night special. They may go up or down, with notice.",
     "sections": [
       "preOpen",

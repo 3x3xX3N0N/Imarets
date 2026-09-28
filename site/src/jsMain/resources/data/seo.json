@@ -16,13 +16,13 @@
       "path": "/",
       "canonical": "https://verdantbloom.bar/",
       "title": "verdantbloom.bar - open a tab",
-      "description": "A lineup of abliterated dark fiction models. Ten pours, one OpenAI-compatible endpoint, a monthly tab. Not open yet: open a tab.",
+      "description": "A lineup of abliterated dark fiction models. Ten pours, one OpenAI-compatible endpoint, a monthly tab.",
       "robots": "index,follow",
       "og": {
         "og:type": "website",
         "og:site_name": "verdantbloom.bar",
         "og:title": "Open a tab. - verdantbloom.bar",
-        "og:description": "A lineup of abliterated dark fiction models. Ten pours, one endpoint, a monthly tab. Not open yet: open a tab.",
+        "og:description": "A lineup of abliterated dark fiction models. Ten pours, one endpoint, a monthly tab.",
         "og:url": "https://verdantbloom.bar/",
         "og:locale": "en_US",
         "og:image": "https://verdantbloom.bar/og.png",
@@ -33,7 +33,7 @@
       "twitter": {
         "twitter:card": "summary_large_image",
         "twitter:title": "Open a tab. - verdantbloom.bar",
-        "twitter:description": "A lineup of abliterated dark fiction models. Ten pours, one endpoint, a monthly tab. Not open yet: open a tab.",
+        "twitter:description": "A lineup of abliterated dark fiction models. Ten pours, one endpoint, a monthly tab.",
         "twitter:image": "https://verdantbloom.bar/og.png",
         "twitter:image:alt": "Ten linked rings glowing green on black: the verdantbloom.bar bloom."
       },
@@ -42,7 +42,7 @@
         "@type": "WebSite",
         "name": "verdantbloom.bar",
         "url": "https://verdantbloom.bar/",
-        "description": "A lineup of abliterated dark fiction models, behind one OpenAI-compatible endpoint. Not open yet.",
+        "description": "A lineup of abliterated dark fiction models, behind one OpenAI-compatible endpoint.",
         "inLanguage": "en"
       },
       "jsonLdNote": "CSP: a JSON-LD script block is inline script data. If the CSP forbids inline scripts without a hash, either add its hash or drop the block. No Product, Offer, Review or AggregateRating markup: nothing is for sale and there are no reviews."
@@ -50,14 +50,14 @@
     "pricing": {
       "path": "/pricing.html",
       "canonical": "https://verdantbloom.bar/pricing.html",
-      "title": "Prices at opening - verdantbloom.bar",
-      "description": "Passes at $10, $20 and $40 a month, each a tab spent at per-token rates. Rates, minimum pours, the volume schedule and the reduced-fee form. Not open yet.",
+      "title": "Prices - verdantbloom.bar",
+      "description": "Passes at $10, $20 and $40 a month, each a tab spent at per-token rates. Rates, minimum pours, the volume schedule and the reduced-fee form.",
       "robots": "index,follow",
       "og": {
         "og:type": "website",
         "og:site_name": "verdantbloom.bar",
-        "og:title": "Prices at opening - verdantbloom.bar",
-        "og:description": "Passes at $10, $20 and $40 a month, each a tab spent at per-token rates. The small print is on the page. Not open yet.",
+        "og:title": "Prices - verdantbloom.bar",
+        "og:description": "Passes at $10, $20 and $40 a month, each a tab spent at per-token rates. The small print is on the page.",
         "og:url": "https://verdantbloom.bar/pricing.html",
         "og:locale": "en_US",
         "og:image": "https://verdantbloom.bar/og.png",
@@ -67,8 +67,8 @@
       },
       "twitter": {
         "twitter:card": "summary_large_image",
-        "twitter:title": "Prices at opening - verdantbloom.bar",
-        "twitter:description": "Passes at $10, $20 and $40 a month, each a tab spent at per-token rates. The small print is on the page. Not open yet.",
+        "twitter:title": "Prices - verdantbloom.bar",
+        "twitter:description": "Passes at $10, $20 and $40 a month, each a tab spent at per-token rates. The small print is on the page.",
         "twitter:image": "https://verdantbloom.bar/og.png",
         "twitter:image:alt": "Ten linked rings glowing green on black: the verdantbloom.bar bloom."
       }

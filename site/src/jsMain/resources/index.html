@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>verdantbloom.bar - open a tab</title>
-<meta name="description" content="A lineup of abliterated dark fiction models. Ten pours, one OpenAI-compatible endpoint, a monthly tab. Not open yet: open a tab.">
+<meta name="description" content="A lineup of abliterated dark fiction models. Ten pours, one OpenAI-compatible endpoint, a monthly tab.">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://verdantbloom.bar/">
 <meta name="theme-color" content="#020a07">
@@ -14,12 +14,12 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="verdantbloom.bar">
 <meta property="og:title" content="Open a tab. - verdantbloom.bar">
-<meta property="og:description" content="A lineup of abliterated dark fiction models. Ten pours, one endpoint, a monthly tab. Not open yet: open a tab.">
+<meta property="og:description" content="A lineup of abliterated dark fiction models. Ten pours, one endpoint, a monthly tab.">
 <meta property="og:url" content="https://verdantbloom.bar/">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Open a tab. - verdantbloom.bar">
-<meta name="twitter:description" content="A lineup of abliterated dark fiction models. Ten pours, one endpoint, a monthly tab. Not open yet: open a tab.">
+<meta name="twitter:description" content="A lineup of abliterated dark fiction models. Ten pours, one endpoint, a monthly tab.">
 <link rel="preload" href="fonts/archivo-black-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="main.css">
 <link rel="stylesheet" href="styles/tokens.css">
@@ -55,7 +55,7 @@
 <p class="vb-hero__positioning">A lineup of abliterated dark fiction models.</p>
 <p class="vb-lede">Ten pours. One OpenAI-compatible endpoint. Pay by the month, drink by the token.</p>
 <p>Dark fiction. Horror. The pages a house-style assistant flinches at.</p>
-<p class="vb-hero__status">Not open yet. Prices at opening are posted. Every tap is cold today: there are no users yet. That lifts as people arrive.</p>
+<p class="vb-hero__status">Every tap is cold today: there are no users yet. That lifts as people arrive.</p>
 <div class="vb-cta"><a class="vb-btn vb-btn--primary" href="#list" data-target="waitlist">OPEN A TAB</a><a class="vb-btn" href="pours.html" data-target="pourList">READ THE POUR LIST</a><a class="vb-btn" href="#tab" data-target="passes">SEE THE PRICES</a></div>
 <p class="vb-hero__age">18+. Fiction-writing and developer API. Acceptable-use policy applies.</p>
 <a class="vb-signmini vb-js-only" href="#sign"><span class="vb-dot" aria-hidden="true"></span><span data-bind="sign.line">CHECKING THE LIGHTS.</span></a>
@@ -96,8 +96,8 @@
 <p>WARM and COLD come from the status sign, live. If the sign is dark, so are the badges.</p>
 </div>
 <div id="sign-board" class="vb-sign__board" data-sign-down="DARK. CHAIRS ON THE TABLES." data-plain-down="The gateway is not answering." data-sign-parked="LIGHTS ARE ON. NOBODY AT THE DESK." data-plain-parked="The gateway is up. The fleet is parked: no tap can pour right now." data-sign-cold="BARTENDER&#x27;S IN THE BACK. RING THE BELL. (~30 S)" data-plain-cold="The gateway is up and every tap is scaled to zero. A first pour takes about 30 seconds." data-sign-open="OPEN. {n} TAPS FLOWING." data-plain-open="{n} of {total} taps are warm. A warm tap pours now. The rest take about 30 seconds." data-sign-degraded="LAST CALL." data-plain-degraded="Something is wrong behind the bar. Pours may fail." data-sign-open-one="OPEN. 1 TAP FLOWING." data-sign-loading="CHECKING THE LIGHTS." data-sign-stale="THE SIGN IS OLD. LAST WORD {s} S AGO." data-total="10">
-<p id="sign-line" class="vb-sign__line" role="status" aria-live="polite" data-bind="sign.line">NOT OPEN YET.</p>
-<p id="sign-plain" class="vb-sign__plain" data-bind="sign.plain">The sign needs JavaScript. Without it: the bar is not open to the public yet.</p>
+<p id="sign-line" class="vb-sign__line" role="status" aria-live="polite" data-bind="sign.line">CHECKING THE LIGHTS.</p>
+<p id="sign-plain" class="vb-sign__plain" data-bind="sign.plain">The sign needs JavaScript. Without it, assume every tap is cold: about 30 seconds on the first pour.</p>
 <p class="vb-sign__meta vb-js-only"><span>AS OF <time id="sign-asof" data-bind="sign.asOf"></time></span><span id="sign-members" data-bind="sign.members" data-template="PAID MEMBERS: {n}"></span></p>
 </div>
 </div>
@@ -319,10 +319,6 @@
 <h2 id="tab-title">THE LEVELS</h2>
 <p>A level is a monthly tab: the price is the money on it, spent at the pour-list rates, reset every 30 days. Higher levels add bottles, then room. Nothing on this page is a promise of speed. Every number is a floor we intend to beat, not a ceiling.</p>
 </div>
-<div class="vb-preopen" role="note">
-<p class="vb-preopen__sign">NOT OPEN YET.</p>
-<p>Nothing is for sale tonight. These are prices at opening, our best guess at cost. Every button opens a tab on the list and notes the level you were eyeing. We write when the doors open.</p>
-</div>
 <div class="vb-passes">
 <article class="vb-pass" id="pass-walkin" data-pass-id="walkin" aria-labelledby="pass-walkin-name">
 <header class="vb-pass__head">
@@ -370,7 +366,7 @@
 <p class="vb-pass__price">$100 / MONTH</p>
 </header>
 <p class="vb-pass__on" data-lod-min="mid">Every bottle, opt-in taps included.</p>
-<p class="vb-pass__tab" data-lod-min="near">$100 on the tab. More context and more seats than Top Shelf; the exact numbers are set at opening, once each bottle is measured on its card.</p>
+<p class="vb-pass__tab" data-lod-min="near">$100 on the tab. More context and more seats than Top Shelf; the exact numbers are printed once each bottle is measured on its card.</p>
 <p class="vb-pass__refrain" data-lod-min="near">Four seats at one tap is four people keeping it lit. Bring three.</p>
 <p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="#list" data-pass="reserve" data-source="pass-reserve">PUT ME DOWN FOR RESERVE</a><a class="vb-pass__more" href="pricing.html#pass-reserve">DETAILS</a></p>
 </article>
@@ -380,12 +376,12 @@
 <p class="vb-pass__price">$200 / MONTH</p>
 </header>
 <p class="vb-pass__on" data-lod-min="mid">Everything in Reserve, and one tap kept warm for a window each day, your pick.</p>
-<p class="vb-pass__tab" data-lod-min="near">$200 on the tab. The window length and the context ceiling are set at opening. If we can do more than we print here, we will.</p>
+<p class="vb-pass__tab" data-lod-min="near">$200 on the tab. The window length and the context ceiling are printed once measured. If we can do more than we print here, we will.</p>
 <p class="vb-pass__refrain" data-lod-min="near">Your window warms one tap for the whole bar. Bring people who drink at your hour.</p>
 <p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="#list" data-pass="private" data-source="pass-private">PUT ME DOWN FOR PRIVATE STOCK</a><a class="vb-pass__more" href="pricing.html#pass-private">DETAILS</a></p>
 </article>
 </div>
-<p class="vb-fine">Nothing is for sale tonight. These are the prices at opening. The button puts you on the list and notes which pass you wanted.</p>
+<p class="vb-fine">These are prices, not promises of speed. The button opens a tab and notes the level you were eyeing.</p>
 <div class="vb-callout">
 <h3>A PASS HAS A BOTTOM.</h3>
 <p>It is a monthly tab in dollars, spent at the pour-list rates. Anyone selling you a bottomless glass is rationing you some other way: one request at a time, a queue, a context cap. We ration with a number you can see.</p>
@@ -411,8 +407,8 @@
 <div class="vb-wrap">
 <div class="vb-section__head">
 <h2 id="list-title">OPEN A TAB</h2>
-<p>This is the login. Tonight it puts you on the list and hands you your code. On opening night the same button is your door.</p>
-<p class="vb-fine">One address. We write when the doors open and when the prices are final. That is all it is for until then.</p>
+<p>This is the login. It puts you on the list, hands you your code, and is your door once your tab is open.</p>
+<p class="vb-fine">One address. We write when your tab is ready and when the prices change. That is all it is for.</p>
 </div>
 <form id="waitlist-form" class="vb-form" method="post" action="/api/subscribe" data-form="waitlist" data-state="idle"
  data-label-submit="OPEN A TAB" data-label-submitting="WRITING IT DOWN." data-err-email-required="An address, please." data-err-email-invalid="That does not look like an address." data-err-pass-invalid="Pick a pass from the list, or leave it." data-err-rate-limited="Slow down. Try again in a minute." data-err-too-large="Too much in the glass. Shorten it." data-err-server="Spilled it. Nothing was saved. Try again." data-err-network="Could not reach the bar. Check your connection and try again.">
@@ -450,7 +446,7 @@
 <div class="vb-wrap vb-foot__grid">
 <div class="vb-stack">
 <p class="vb-foot__age" id="age-notice"><strong>18+ ONLY.</strong>A fiction-writing and developer API. Some of these bottles write graphic horror and violence; their makers&#x27; labels say so. You are responsible for what you generate. The acceptable-use policy applies.</p>
-<p>Prices at opening, <time class="vb-asof" datetime="2026-09-20" data-newcal="date">20 September 2026</time>. Best guess at cost. They will move with the bar, and we will say so before they do. 18+. Acceptable-use policy applies.</p>
+<p>Prices as of <time class="vb-asof" datetime="2026-09-28" data-newcal="date">28 September 2026</time>. Best guess at cost. They will move with the bar, and we will say so before they do. 18+. Acceptable-use policy applies.</p>
 <p><strong>verdantbloom.bar is a business, not a charity.</strong></p>
 
 </div>

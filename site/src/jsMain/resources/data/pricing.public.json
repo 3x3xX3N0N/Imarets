@@ -1,7 +1,7 @@
 {
   "asOf": "2026-09-20",
   "schema": "verdantbloom.pricing/1",
-  "status": "draft - prices at opening, good guess, not yet live. Nothing is for sale; every pass button goes to the waitlist.",
+  "status": "prices as of 2026-09-28, best guess at cost. Every level button opens a tab.",
   "currency": "USD",
   "unit": "per 1M tokens; passes per month; all prices are the whole mandatory price (tax excluded)",
   "headlineUnit": {
@@ -472,7 +472,7 @@
     {
       "activeMembers": 0,
       "priceMultiplier": 1.0,
-      "note": "Opening night. The bar is nearly empty; most pours are cold; you are paying for a tap nobody shares."
+      "note": "Today. The bar is nearly empty; most pours are cold; you are paying for a tap nobody shares."
     },
     {
       "activeMembers": 100,
@@ -497,7 +497,7 @@
   ],
   "volumeScheduleRules": "activeMembers = distinct accounts whose own card was charged at least $5 for a pass in the trailing 30 days (reduced-fee members who pay count; 'On the house' seats and patron-only payers do not), shown on the status sign. The multiplier applies to per-token rates on every shelf; pass prices stay put, so the same tab pours further. A step takes effect on the 1st of the month after the count has held for two consecutive months. A step is held for at least 6 months; it can only be stepped back after the count has been below the threshold for three consecutive months, with 30 days notice. Minimum pours do not change.",
   "disclaimers": [
-    "Prices at opening, as of 2026-09-20. They are our best estimate of cost, not an introductory offer; they may go up or down with notice.",
+    "Prices as of 2026-09-28. They are our best estimate of cost, not an introductory offer; they may go up or down with notice.",
     "A pass is not unlimited. It is a monthly tab in dollars, spent at the per-token rates above. When the tab is dry, buy another round or wait for the reset.",
     "Unused tab does not roll over. Rounds you bought do, for 12 months from purchase; then they expire.",
     "Context is billed as input on every request. There is no cached-input discount. Chat clients resend the whole history each turn, so long contexts burn the tab faster.",
