@@ -38,7 +38,7 @@
 <a class="vb-wordmark" href="#bloom">VERDANTBLOOM.BAR</a>
 <nav class="vb-nav" aria-label="Site">
 <ul>
-<li><a href="#pours">POUR LIST</a></li>
+<li><a href="pours.html">POUR LIST</a></li>
 <li><a href="#tab">LEVELS</a></li>
 <li><a href="#list">OPEN A TAB</a></li>
 <li><a href="pricing.html">PRICES</a></li>
@@ -56,7 +56,7 @@
 <p class="vb-lede">Ten pours. One OpenAI-compatible endpoint. Pay by the month, drink by the token.</p>
 <p>Dark fiction. Horror. The pages a house-style assistant flinches at.</p>
 <p class="vb-hero__status">Not open yet. Prices at opening are posted. Every tap is cold today: there are no users yet. That lifts as people arrive.</p>
-<div class="vb-cta"><a class="vb-btn vb-btn--primary" href="#list" data-target="waitlist">OPEN A TAB</a><a class="vb-btn" href="#pours" data-target="pourList">READ THE POUR LIST</a><a class="vb-btn" href="#tab" data-target="passes">SEE THE PRICES</a></div>
+<div class="vb-cta"><a class="vb-btn vb-btn--primary" href="#list" data-target="waitlist">OPEN A TAB</a><a class="vb-btn" href="pours.html" data-target="pourList">READ THE POUR LIST</a><a class="vb-btn" href="#tab" data-target="passes">SEE THE PRICES</a></div>
 <p class="vb-hero__age">18+. Fiction-writing and developer API. Acceptable-use policy applies.</p>
 <a class="vb-signmini vb-js-only" href="#sign"><span class="vb-dot" aria-hidden="true"></span><span data-bind="sign.line">CHECKING THE LIGHTS.</span></a>
 </div>
@@ -103,6 +103,24 @@
 </div>
 </section>
 
+<section id="chart" class="vb-section" aria-labelledby="chart-title" data-node="chart">
+<div class="vb-wrap">
+<div class="vb-section__head">
+<h2 id="chart-title">THE POUR LIST</h2>
+<p>Ten bottles, ten taps. Each tap is one GPU running one model. Every tap is cold today: there are no users yet. The full list, with each bottle&#x27;s label and link, is <a href="pours.html">its own page</a>.</p>
+</div>
+<div class="vb-chart__scroll">
+<table class="vb-chart">
+<thead><tr><th>Order code</th><th>Bottle</th><th>Size</th><th>Shelf</th><th>Where it pours</th><th>Thinks</th><th>Tap</th></tr></thead>
+<tbody><tr data-pour-id="mini" data-tap="unknown"><td><code>mini</code></td><td>The Defiant Fable 9B</td><td>9B</td><td>WELL</td><td>$3 opt-in</td><td>yes</td><td class="vb-chart__tap"><span class="vb-dot" aria-hidden="true"></span><span data-slot="tap-word">NO WORD</span></td></tr><tr data-pour-id="write" data-tap="unknown"><td><code>write</code></td><td>Restless Quill 10B</td><td>10B</td><td>WELL</td><td>$3 opt-in</td><td></td><td class="vb-chart__tap"><span class="vb-dot" aria-hidden="true"></span><span data-slot="tap-word">NO WORD</span></td></tr><tr data-pour-id="vision" data-tap="unknown"><td><code>vision</code></td><td>Qwen3-VL 8B Abliterated</td><td>8B VLM</td><td>WELL</td><td>any tap: send a picture</td><td></td><td class="vb-chart__tap"><span class="vb-dot" aria-hidden="true"></span><span data-slot="tap-word">NO WORD</span></td></tr><tr data-pour-id="dark" data-tap="unknown"><td><code>dark</code></td><td>Darkest Planet 16.5B</td><td>16.5B</td><td>WELL</td><td>Well</td><td></td><td class="vb-chart__tap"><span class="vb-dot" aria-hidden="true"></span><span data-slot="tap-word">NO WORD</span></td></tr><tr data-pour-id="fast" data-tap="unknown"><td><code>fast</code></td><td>Dark Champion 8x3B</td><td>MoE 18.4B</td><td>WELL</td><td>Walk-In</td><td></td><td class="vb-chart__tap"><span class="vb-dot" aria-hidden="true"></span><span data-slot="tap-word">NO WORD</span></td></tr><tr data-pour-id="reason" data-tap="unknown"><td><code>reason</code></td><td>Deep Thinker 4x8B</td><td>MoE 24B</td><td>WELL</td><td>$3 opt-in</td><td>yes</td><td class="vb-chart__tap"><span class="vb-dot" aria-hidden="true"></span><span data-slot="tap-word">NO WORD</span></td></tr><tr data-pour-id="standard" data-tap="unknown"><td><code>standard</code></td><td>Cold Fusion GAIN 27B</td><td>27B</td><td>CALL</td><td>$6 opt-in</td><td>yes</td><td class="vb-chart__tap"><span class="vb-dot" aria-hidden="true"></span><span data-slot="tap-word">NO WORD</span></td></tr><tr data-pour-id="creative" data-tap="unknown"><td><code>creative</code></td><td>Twin Turbo Fable 27B</td><td>27B</td><td>CALL</td><td>Call</td><td>yes</td><td class="vb-chart__tap"><span class="vb-dot" aria-hidden="true"></span><span data-slot="tap-word">NO WORD</span></td></tr><tr data-pour-id="coder" data-tap="unknown"><td><code>coder</code></td><td>Turbo Fable Coder 27B</td><td>27B</td><td>CALL</td><td>$6 opt-in</td><td>yes</td><td class="vb-chart__tap"><span class="vb-dot" aria-hidden="true"></span><span data-slot="tap-word">NO WORD</span></td></tr><tr data-pour-id="flagship" data-tap="unknown"><td><code>flagship</code></td><td>Deckard Thinking 40B</td><td>40B thinking</td><td>TOP SHELF</td><td>Top Shelf</td><td>yes</td><td class="vb-chart__tap"><span class="vb-dot" aria-hidden="true"></span><span data-slot="tap-word">NO WORD</span></td></tr><tr data-pour-id="horror" data-tap="unknown"><td><code>horror</code></td><td>Darkest Universe 29B</td><td>29B</td><td>TOP SHELF</td><td>not on a tap</td><td></td><td class="vb-chart__tap"><span class="vb-dot" aria-hidden="true"></span><span data-slot="tap-word">NO WORD</span></td></tr></tbody>
+</table>
+</div>
+<p class="vb-fine">The order code is what your client sends as the model name. Thinking is billed as output. A cold tap takes about 30 seconds on the first pour.</p>
+<p><a class="vb-btn" href="pours.html">READ THE FULL POUR LIST</a></p>
+</div>
+</section>
+
+<div id="pour-source" hidden aria-hidden="true">
 <section id="pours" class="vb-section" aria-labelledby="pours-title" data-node="pours" data-tap-warm="WARM" data-tap-warm-help="pours now" data-tap-cold="COLD" data-tap-cold-help="about 30 s to pour" data-tap-parked="PARKED" data-tap-parked-help="not pouring" data-tap-unknown="NO WORD" data-tap-unknown-help="the sign is dark">
 <div class="vb-wrap">
 <div class="vb-section__head">
@@ -288,6 +306,7 @@
 </article></li>
 </ol>
 </section>
+</div>
 <div class="vb-stack vb-fine" id="rates-small-print">
 <p>Yes, those rates are higher than the big labs. Their taps are full around the clock. Ours are mostly empty tonight, and an empty tap costs the same to keep warm as a full one. This is what that costs on opening night. See LAST CALL for how it comes down.</p><p>Context counts: your client resends the whole chat every turn and every turn is billed as input. No cache discount.</p>
 </div>
@@ -298,78 +317,72 @@
 <div class="vb-wrap vb-stack-lg">
 <div class="vb-section__head">
 <h2 id="tab-title">THE LEVELS</h2>
-<p>A level is a monthly tab. The price you pay is the money on your tab. Spend it at the pour-list rates. It resets every 30 days. Dry before then? Buy another round. Reserve and Private Stock add no new bottles: the same ten, more room, more seats, and a tap you keep lit.</p>
+<p>A level is a monthly tab: the price is the money on it, spent at the pour-list rates, reset every 30 days. Higher levels add bottles, then room. Nothing on this page is a promise of speed. Every number is a floor we intend to beat, not a ceiling.</p>
 </div>
 <div class="vb-preopen" role="note">
 <p class="vb-preopen__sign">NOT OPEN YET.</p>
-<p>Nothing is for sale tonight. The prices on this page are the prices at opening: our best guess at cost. Every pass button puts you on the list. We write when the doors open.</p>
+<p>Nothing is for sale tonight. These are prices at opening, our best guess at cost. Every button opens a tab on the list and notes the level you were eyeing. We write when the doors open.</p>
 </div>
 <div class="vb-passes">
 <article class="vb-pass" id="pass-walkin" data-pass-id="walkin" aria-labelledby="pass-walkin-name">
 <header class="vb-pass__head">
 <h3 class="vb-pass__name" id="pass-walkin-name">WALK-IN</h3>
-<p class="vb-pass__price">$0 / MONTH</p>
+<p class="vb-pass__price">$0</p>
 </header>
-<p class="vb-pass__hours" data-lod-min="mid">The house tap. 10 requests a day at 8k of context.</p>
-<p class="vb-pass__on" data-lod-min="mid">On fast, the house tap. Always warm.</p>
-<p class="vb-pass__tab" data-lod-min="near">No cover. One free seat per person, once you have an account. 10 requests a day, 8k of context, 512 tokens a reply, one at a time.</p>
-<p class="vb-pass__refrain" data-lod-min="near">One tap is warm because the house pays for it. The rest are cold because the bar is quiet. Bring someone and that changes.</p>
-<p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="#list" data-pass="walkin" data-source="pass-walkin">OPEN A TAB</a><a class="vb-pass__more" href="pricing.html#pass-walkin">SEE THE PRICES</a></p>
+<p class="vb-pass__on" data-lod-min="mid">The house tap. 10 requests a day. 8k of context.</p>
+<p class="vb-pass__tab" data-lod-min="near">One free seat per person, with an account. Nothing else is promised.</p>
+<p class="vb-pass__refrain" data-lod-min="near">Cold taps are cold because the bar is quiet. Bring someone.</p>
+<p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="#list" data-pass="walkin" data-source="pass-walkin">OPEN A TAB</a><a class="vb-pass__more" href="pricing.html#pass-walkin">DETAILS</a></p>
 </article>
 <article class="vb-pass" id="pass-well" data-pass-id="well" aria-labelledby="pass-well-name">
 <header class="vb-pass__head">
 <h3 class="vb-pass__name" id="pass-well-name">WELL</h3>
 <p class="vb-pass__price">$10 / MONTH</p>
 </header>
-<p class="vb-pass__hours" data-lod-min="mid">About 12 sessions at 6k of context. About 5 or 6 at 16k.</p>
-<p class="vb-pass__on" data-lod-min="mid">On the house tap with member slots, and dark 16.5B.</p>
-<p class="vb-pass__tab" data-lod-min="near">$10 on the tab. 16k of context. One request at a time. Tick opt-in taps onto the order.</p>
-<p class="vb-pass__refrain" data-lod-min="near">dark is cold until somebody rings the bell: about 30 seconds. Two people on it at the same hour and it stays warm for both. Bring the second person.</p>
-<p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="#list" data-pass="well" data-source="pass-well">PUT ME DOWN FOR WELL</a><a class="vb-pass__more" href="pricing.html#pass-well">SEE THE PRICES</a></p>
+<p class="vb-pass__on" data-lod-min="mid">The house tap with member slots, and dark.</p>
+<p class="vb-pass__tab" data-lod-min="near">$10 on the tab. 16k of context. One request at a time.</p>
+<p class="vb-pass__refrain" data-lod-min="near">Two people on a tap keep it warm for both. Bring the second.</p>
+<p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="#list" data-pass="well" data-source="pass-well">PUT ME DOWN FOR WELL</a><a class="vb-pass__more" href="pricing.html#pass-well">DETAILS</a></p>
 </article>
 <article class="vb-pass" id="pass-call" data-pass-id="call" aria-labelledby="pass-call-name">
 <header class="vb-pass__head">
 <h3 class="vb-pass__name" id="pass-call-name">CALL</h3>
 <p class="vb-pass__price">$20 / MONTH</p>
 </header>
-<p class="vb-pass__hours" data-lod-min="mid">About 11 sessions on the 27B at 6k of context. About 5 at 16k.</p>
-<p class="vb-pass__on" data-lod-min="mid">Well, plus creative 27B on a 48GB card.</p>
-<p class="vb-pass__tab" data-lod-min="near">$20 on the tab. 24k of context. Two requests at a time.</p>
-<p class="vb-pass__refrain" data-lod-min="near">A 27B sleeps when nobody is drinking it. Ring, wait about 30 seconds, then keep it warm together. Bring someone who writes at your hour.</p>
-<p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="#list" data-pass="call" data-source="pass-call">PUT ME DOWN FOR CALL</a><a class="vb-pass__more" href="pricing.html#pass-call">SEE THE PRICES</a></p>
+<p class="vb-pass__on" data-lod-min="mid">Well, plus creative.</p>
+<p class="vb-pass__tab" data-lod-min="near">$20 on the tab. 24k of context. Two at a time.</p>
+<p class="vb-pass__refrain" data-lod-min="near">A 27B sleeps alone. Bring someone who writes at your hour.</p>
+<p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="#list" data-pass="call" data-source="pass-call">PUT ME DOWN FOR CALL</a><a class="vb-pass__more" href="pricing.html#pass-call">DETAILS</a></p>
 </article>
 <article class="vb-pass" id="pass-top" data-pass-id="top" aria-labelledby="pass-top-name">
 <header class="vb-pass__head">
 <h3 class="vb-pass__name" id="pass-top-name">TOP SHELF</h3>
 <p class="vb-pass__price">$40 / MONTH</p>
 </header>
-<p class="vb-pass__hours" data-lod-min="mid">About 7 sessions on the flagship with thinking on at 6k. About 11 with it off. About 5 at 16k.</p>
-<p class="vb-pass__on" data-lod-min="mid">Every ladder bottle, the flagship 40B thinker included.</p>
-<p class="vb-pass__tab" data-lod-min="near">$40 on the tab. 32k of context. Two requests at a time.</p>
-<p class="vb-pass__refrain" data-lod-min="near">The flagship is the coldest tap in the house because the fewest people drink it. 30 to 45 seconds. Three drinkers at the same hour keep it lit. Bring two.</p>
-<p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="#list" data-pass="top" data-source="pass-top">PUT ME DOWN FOR TOP SHELF</a><a class="vb-pass__more" href="pricing.html#pass-top">SEE THE PRICES</a></p>
+<p class="vb-pass__on" data-lod-min="mid">Every ladder bottle, the flagship included.</p>
+<p class="vb-pass__tab" data-lod-min="near">$40 on the tab. 32k of context. Two at a time.</p>
+<p class="vb-pass__refrain" data-lod-min="near">The flagship is the coldest tap in the house. Bring two.</p>
+<p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="#list" data-pass="top" data-source="pass-top">PUT ME DOWN FOR TOP SHELF</a><a class="vb-pass__more" href="pricing.html#pass-top">DETAILS</a></p>
 </article>
 <article class="vb-pass" id="pass-reserve" data-pass-id="reserve" aria-labelledby="pass-reserve-name">
 <header class="vb-pass__head">
 <h3 class="vb-pass__name" id="pass-reserve-name">RESERVE</h3>
 <p class="vb-pass__price">$100 / MONTH</p>
 </header>
-<p class="vb-pass__hours" data-lod-min="mid">About 55 sessions on the 27Bs at 6k of context. About 25 at 16k.</p>
-<p class="vb-pass__on" data-lod-min="mid">Every bottle in the house, the opt-in taps included. Nothing to tick.</p>
-<p class="vb-pass__tab" data-lod-min="near">$100 on the tab. 64k of context. Four requests at a time. When a tap is packed, you pour first.</p>
-<p class="vb-pass__refrain" data-lod-min="near">Four requests at a time is four seats at one tap. Fill them with people you write with and the tap stays lit for the room. Bring three.</p>
-<p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="#list" data-pass="reserve" data-source="pass-reserve">PUT ME DOWN FOR RESERVE</a><a class="vb-pass__more" href="pricing.html#pass-reserve">SEE THE PRICES</a></p>
+<p class="vb-pass__on" data-lod-min="mid">Every bottle, opt-in taps included.</p>
+<p class="vb-pass__tab" data-lod-min="near">$100 on the tab. More context and more seats than Top Shelf; the exact numbers are set at opening, once each bottle is measured on its card.</p>
+<p class="vb-pass__refrain" data-lod-min="near">Four seats at one tap is four people keeping it lit. Bring three.</p>
+<p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="#list" data-pass="reserve" data-source="pass-reserve">PUT ME DOWN FOR RESERVE</a><a class="vb-pass__more" href="pricing.html#pass-reserve">DETAILS</a></p>
 </article>
 <article class="vb-pass" id="pass-private" data-pass-id="private" aria-labelledby="pass-private-name">
 <header class="vb-pass__head">
 <h3 class="vb-pass__name" id="pass-private-name">PRIVATE STOCK</h3>
 <p class="vb-pass__price">$200 / MONTH</p>
 </header>
-<p class="vb-pass__hours" data-lod-min="mid">About 110 sessions on the 27Bs at 6k of context. About 50 at 16k.</p>
-<p class="vb-pass__on" data-lod-min="mid">Everything in Reserve. And you pick one tap and a four-hour window every day: it stays lit the whole window, for you and whoever walks in.</p>
-<p class="vb-pass__tab" data-lod-min="near">$200 on the tab. 128k of context. Eight requests at a time. Change your pick monthly.</p>
-<p class="vb-pass__refrain" data-lod-min="near">Your window keeps one tap warm for the whole bar. The other nine are cold for the usual reason. Bring people who drink at your hour and the window pays for itself twice.</p>
-<p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="#list" data-pass="private" data-source="pass-private">PUT ME DOWN FOR PRIVATE STOCK</a><a class="vb-pass__more" href="pricing.html#pass-private">SEE THE PRICES</a></p>
+<p class="vb-pass__on" data-lod-min="mid">Everything in Reserve, and one tap kept warm for a window each day, your pick.</p>
+<p class="vb-pass__tab" data-lod-min="near">$200 on the tab. The window length and the context ceiling are set at opening. If we can do more than we print here, we will.</p>
+<p class="vb-pass__refrain" data-lod-min="near">Your window warms one tap for the whole bar. Bring people who drink at your hour.</p>
+<p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="#list" data-pass="private" data-source="pass-private">PUT ME DOWN FOR PRIVATE STOCK</a><a class="vb-pass__more" href="pricing.html#pass-private">DETAILS</a></p>
 </article>
 </div>
 <p class="vb-fine">Nothing is for sale tonight. These are the prices at opening. The button puts you on the list and notes which pass you wanted.</p>
@@ -443,7 +456,7 @@
 </div>
 <nav aria-label="Footer">
 <ul class="vb-foot__links">
-<li><a href="#pours" data-target="pourList">POUR LIST</a></li>
+<li><a href="pours.html" data-target="pourList">POUR LIST</a></li>
 <li><a href="#tab" data-target="passes">LEVELS</a></li>
 <li><a href="#list" data-target="waitlist">OPEN A TAB</a></li>
 <li><a href="pricing.html#reduced-fee" data-target="reducedFee">REDUCED FEE</a></li>

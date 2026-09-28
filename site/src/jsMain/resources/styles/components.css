@@ -519,3 +519,14 @@
 .vb-pagehead { padding-block: var(--vb-s7) var(--vb-s6); }
 .vb-pagehead h1 { font-size: var(--vb-size-6); }
 .vb-pagehead > * + * { margin-top: var(--vb-s5); }
+
+/* ---- the pour list chart (index) ---- */
+.vb-chart__scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.vb-chart { width: 100%; border-collapse: collapse; font-size: var(--vb-fs-sm, 0.9rem); }
+.vb-chart th, .vb-chart td { text-align: left; padding: var(--vb-s2, .5rem) var(--vb-s3, .75rem); border-bottom: var(--vb-hair) solid var(--vb-rule-dim); vertical-align: top; white-space: nowrap; }
+.vb-chart th { font-family: var(--vb-mono); font-weight: 400; letter-spacing: .06em; text-transform: uppercase; color: var(--vb-ink-dim, inherit); }
+.vb-chart td:nth-child(2) { white-space: normal; min-width: 12rem; }
+.vb-chart tr[data-tap="cold"] .vb-dot { background: var(--vb-cold, #5b7a8a); }
+.vb-chart tr[data-tap="warm"] .vb-dot { background: var(--vb-warm, #7fd39a); }
+.vb-chart__tap { font-family: var(--vb-mono); }
+.vb-pours-page .vb-shelf { margin-inline: 0; }
