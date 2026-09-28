@@ -16,13 +16,13 @@
       "path": "/",
       "canonical": "https://verdantbloom.bar/",
       "title": "verdantbloom.bar - open a tab",
-      "description": "A lineup of abliterated dark fiction models by DavidAU. Ten pours, one OpenAI-compatible endpoint, a monthly tab. Not open yet: get on the list.",
+      "description": "A lineup of abliterated dark fiction models. Ten pours, one OpenAI-compatible endpoint, a monthly tab. Not open yet: open a tab.",
       "robots": "index,follow",
       "og": {
         "og:type": "website",
         "og:site_name": "verdantbloom.bar",
         "og:title": "Open a tab. - verdantbloom.bar",
-        "og:description": "A lineup of abliterated dark fiction models by DavidAU. Ten pours, one endpoint, a monthly tab. Not open yet: get on the list.",
+        "og:description": "A lineup of abliterated dark fiction models. Ten pours, one endpoint, a monthly tab. Not open yet: open a tab.",
         "og:url": "https://verdantbloom.bar/",
         "og:locale": "en_US",
         "og:image": "https://verdantbloom.bar/og.png",
@@ -33,7 +33,7 @@
       "twitter": {
         "twitter:card": "summary_large_image",
         "twitter:title": "Open a tab. - verdantbloom.bar",
-        "twitter:description": "A lineup of abliterated dark fiction models by DavidAU. Ten pours, one endpoint, a monthly tab. Not open yet: get on the list.",
+        "twitter:description": "A lineup of abliterated dark fiction models. Ten pours, one endpoint, a monthly tab. Not open yet: open a tab.",
         "twitter:image": "https://verdantbloom.bar/og.png",
         "twitter:image:alt": "Ten linked rings glowing green on black: the verdantbloom.bar bloom."
       },
@@ -42,7 +42,7 @@
         "@type": "WebSite",
         "name": "verdantbloom.bar",
         "url": "https://verdantbloom.bar/",
-        "description": "A lineup of abliterated dark fiction models by DavidAU, behind one OpenAI-compatible endpoint. Not open yet.",
+        "description": "A lineup of abliterated dark fiction models, behind one OpenAI-compatible endpoint. Not open yet.",
         "inLanguage": "en"
       },
       "jsonLdNote": "CSP: a JSON-LD script block is inline script data. If the CSP forbids inline scripts without a hash, either add its hash or drop the block. No Product, Offer, Review or AggregateRating markup: nothing is for sale and there are no reviews."

@@ -14,7 +14,7 @@ import org.w3c.dom.HTMLTextAreaElement
  */
 internal object Forms {
     private val EMAIL = Regex("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")
-    private val PASS_IDS = setOf("", "well", "call", "top")
+    private val PASS_IDS = setOf("", "walkin", "well", "call", "top", "reserve", "private")
     private const val HOUSE_RATE = "On the house (Well only)"
 
     private class FormUi(val form: HTMLFormElement, val prefix: String) {

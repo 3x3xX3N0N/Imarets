@@ -38,7 +38,7 @@
 <ul>
 <li><a href="index.html#pours">POUR LIST</a></li>
 <li><a href="index.html#tab">OPEN A TAB</a></li>
-<li><a href="index.html#list">THE LIST</a></li>
+<li><a href="index.html#list">OPEN A TAB</a></li>
 <li><a href="pricing.html" aria-current="page">PRICES</a></li>
 </ul>
 </nav>
@@ -71,6 +71,19 @@
 <p class="vb-fine">Nothing is for sale tonight. These are the prices at opening. The button puts you on the list and notes which pass you wanted.</p>
 </div>
 <div class="vb-passes">
+<article class="vb-pass" id="pass-walkin" data-pass-id="walkin" aria-labelledby="pass-walkin-name">
+<header class="vb-pass__head">
+<h3 class="vb-pass__name" id="pass-walkin-name">WALK-IN</h3>
+<p class="vb-pass__price">$0 / MONTH</p>
+</header>
+<p class="vb-pass__hours" data-lod-min="mid">About three long sessions a day at 8k of context.</p>
+<p class="vb-pass__on" data-lod-min="mid">On fast, the house tap. Always warm.</p>
+<p class="vb-pass__tab" data-lod-min="near">No cover. One free seat per person. 120 requests a day, 512 tokens a reply, one at a time. Cannot wake cold taps.</p>
+<p class="vb-pass__limits">40 requests a minute. Two at a time.</p>
+<p class="vb-pass__note">The flagship thinks before it speaks and the thinking is billed as output. These hours assume about 1,000 thinking tokens a reply. The same tab pours further down the shelf.</p>
+<p class="vb-pass__rates"><span><b>WELL</b> $1.25 in / $15 out per million tokens. Minimum pour 1.2 cents warm, 2.5 cents cold.</span><br><span><b>CALL</b> $1.50 in / $18 out per million tokens. Minimum pour 1.5 cents warm, 3 cents cold.</span><br><span><b>TOP SHELF</b> $2.50 in / $35 out per million tokens. Minimum pour 2.5 cents warm, 5 cents cold.</span><br></p>
+<p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="index.html?pass=top#list" data-pass="walkin" data-source="pass-walkin">PUT ME DOWN FOR WALK-IN</a></p>
+</article>
 <article class="vb-pass" id="pass-well" data-pass-id="well" aria-labelledby="pass-well-name">
 <header class="vb-pass__head">
 <h3 class="vb-pass__name" id="pass-well-name">WELL PASS</h3>
@@ -110,11 +123,34 @@
 <p class="vb-pass__rates"><span><b>WELL</b> $1.25 in / $15 out per million tokens. Minimum pour 1.2 cents warm, 2.5 cents cold.</span><br><span><b>CALL</b> $1.50 in / $18 out per million tokens. Minimum pour 1.5 cents warm, 3 cents cold.</span><br><span><b>TOP SHELF</b> $2.50 in / $35 out per million tokens. Minimum pour 2.5 cents warm, 5 cents cold.</span><br></p>
 <p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="index.html?pass=top#list" data-pass="top" data-source="pass-top">PUT ME DOWN FOR TOP SHELF</a></p>
 </article>
+<article class="vb-pass" id="pass-reserve" data-pass-id="reserve" aria-labelledby="pass-reserve-name">
+<header class="vb-pass__head">
+<h3 class="vb-pass__name" id="pass-reserve-name">RESERVE</h3>
+<p class="vb-pass__price">$100 / MONTH</p>
+</header>
+<p class="vb-pass__hours" data-lod-min="mid">About 55 sessions on the 27Bs at 6k of context. About 25 at 16k.</p>
+<p class="vb-pass__on" data-lod-min="mid">Every bottle, opt-in taps included. Nothing to tick.</p>
+<p class="vb-pass__tab" data-lod-min="near">$100 on the tab. 64k of context. Four requests at a time. You pour first when a tap is packed.</p>
+<p class="vb-pass__limits">40 requests a minute. Two at a time.</p>
+<p class="vb-pass__note">The flagship thinks before it speaks and the thinking is billed as output. These hours assume about 1,000 thinking tokens a reply. The same tab pours further down the shelf.</p>
+<p class="vb-pass__rates"><span><b>WELL</b> $1.25 in / $15 out per million tokens. Minimum pour 1.2 cents warm, 2.5 cents cold.</span><br><span><b>CALL</b> $1.50 in / $18 out per million tokens. Minimum pour 1.5 cents warm, 3 cents cold.</span><br><span><b>TOP SHELF</b> $2.50 in / $35 out per million tokens. Minimum pour 2.5 cents warm, 5 cents cold.</span><br></p>
+<p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="index.html?pass=top#list" data-pass="reserve" data-source="pass-reserve">PUT ME DOWN FOR RESERVE</a></p>
+</article>
+<article class="vb-pass" id="pass-private" data-pass-id="private" aria-labelledby="pass-private-name">
+<header class="vb-pass__head">
+<h3 class="vb-pass__name" id="pass-private-name">PRIVATE STOCK</h3>
+<p class="vb-pass__price">$200 / MONTH</p>
+</header>
+<p class="vb-pass__hours" data-lod-min="mid">About 110 sessions on the 27Bs at 6k of context. About 50 at 16k.</p>
+<p class="vb-pass__on" data-lod-min="mid">Everything in Reserve, plus one tap kept lit four hours a day, your pick.</p>
+<p class="vb-pass__tab" data-lod-min="near">$200 on the tab. 128k of context. Eight requests at a time. The window warms that tap for everyone.</p>
+<p class="vb-pass__limits">40 requests a minute. Two at a time.</p>
+<p class="vb-pass__note">The flagship thinks before it speaks and the thinking is billed as output. These hours assume about 1,000 thinking tokens a reply. The same tab pours further down the shelf.</p>
+<p class="vb-pass__rates"><span><b>WELL</b> $1.25 in / $15 out per million tokens. Minimum pour 1.2 cents warm, 2.5 cents cold.</span><br><span><b>CALL</b> $1.50 in / $18 out per million tokens. Minimum pour 1.5 cents warm, 3 cents cold.</span><br><span><b>TOP SHELF</b> $2.50 in / $35 out per million tokens. Minimum pour 2.5 cents warm, 5 cents cold.</span><br></p>
+<p class="vb-pass__foot" data-lod-min="near"><a class="vb-btn vb-btn--primary vb-btn--block" href="index.html?pass=top#list" data-pass="private" data-source="pass-private">PUT ME DOWN FOR PRIVATE STOCK</a></p>
+</article>
 </div>
-<div>
-<h3 id="fine-print">THE FINE PRINT</h3>
-<ol class="vb-fineprint"><li><span>A writing hour is counted in 45-minute sessions: about 40 replies of about 400 tokens, each reply inside the minute.</span></li><li><span>Context is billed every turn, so long contexts and thinking models drink faster. If you run 16k or more of context for hours a day, read the FAQ before you pick a pass.</span></li><li><span>Pause longer than a minute between messages and the next pour is cold: a wait of about 30 seconds and the cold minimum. The hours above assume you do not.</span></li><li><span>Rates per shelf are on the pour list. All prices are the whole price, tax excluded.</span></li></ol>
-</div>
+<p class="vb-fine">The fine print (what a session is, how context and thinking bill, the stay-above rule) is <a href="fine-print.html">its own page</a>.</p>
 <div class="vb-callout">
 <h3>A PASS HAS A BOTTOM.</h3>
 <p>It is a monthly tab in dollars, spent at the pour-list rates. Anyone selling you a bottomless glass is rationing you some other way: one request at a time, a queue, a context cap. We ration with a number you can see.</p>
@@ -126,7 +162,7 @@
 <div class="vb-wrap vb-stack-lg">
 <div class="vb-section__head">
 <h2 id="shelves-title">THE POUR LIST</h2>
-<p>Ten bottles, ten taps. Each tap is one GPU running one model. Nine bottles are DavidAU&#x27;s. One is a guest tap. One more is on order.</p>
+<p>Ten bottles, ten taps. Each tap is one GPU running one model. Nine bottles are from one maker, named on the <a href="citations.html">citations page</a>. One is a guest tap that reads pictures for the rest. One more is on order.</p>
 <p class="vb-fine">The word in mono is the order code. It is what your client sends as the model name.</p>
 </div>
 <div class="vb-board-scroll" tabindex="0" role="region" aria-labelledby="rates-caption">
@@ -141,7 +177,7 @@
 <header class="vb-shelf__head">
 <h3 id="pshelf-well">WELL</h3>
 <p class="vb-shelf__sub">Six taps. The small bottles.</p>
-<p class="vb-mono">mini 9B / write 10B / vision 8B (guest tap) / dark 16.5B / fast MoE 18.4B / reason MoE 24B</p>
+<p class="vb-mono">mini 9B / write 10B / dark 16.5B / fast MoE 18.4B / reason MoE 24B / vision 8B (the reading: send any tap a picture)</p>
 <p class="vb-shelf__rates">$1.25 in / $15 out per million tokens. Minimum pour 1.2 cents warm, 2.5 cents cold.</p>
 </header>
 </section>
@@ -310,17 +346,16 @@
 <p>Unpoured rounds are refundable on request within 30 days.</p>
 <p><strong>verdantbloom.bar is a business, not a charity.</strong></p>
 </div>
-<p class="vb-note">Rounds for the house open when the bar does. Get on the list and we will tell you.</p>
+<p class="vb-note">Rounds for the house open when the bar does. Open a tab and we will tell you.</p>
 </div>
 </section>
 
 <section id="disclaimers" class="vb-section" aria-labelledby="disclaimers-title">
-<div class="vb-wrap vb-stack-lg">
+<div class="vb-wrap">
 <div class="vb-section__head">
-<h2 id="disclaimers-title">THE SMALL PRINT, ALL OF IT</h2>
+<h2 id="disclaimers-title">THE SMALL PRINT</h2>
+<p>All of it, on <a href="fine-print.html">the fine print page</a>. Sources for every number on <a href="citations.html">the citations page</a>.</p>
 </div>
-<ol class="vb-fineprint"><li><span>Prices at opening, as of 2026-09-20. They are our best estimate of cost, not an introductory offer; they may go up or down with notice.</span></li><li><span>A pass is not unlimited. It is a monthly tab in dollars, spent at the per-token rates above. When the tab is dry, buy another round or wait for the reset.</span></li><li><span>Unused tab does not roll over. Rounds you bought do, for 12 months from purchase; then they expire.</span></li><li><span>Context is billed as input on every request. There is no cached-input discount. Chat clients resend the whole history each turn, so long contexts burn the tab faster.</span></li><li><span>Every pour has a small minimum (shown per shelf). A cold pour has a larger one, because waking a tap costs us GPU time before the first token.</span></li><li><span>Cold pours take about 30 seconds (23-44 s measured) because taps scale to zero when the bar is quiet. A tap goes cold 60 s after your last request. Warm/cold status is shown per tap.</span></li><li><span>Reasoning tokens from thinking models are billed as output tokens, including reasoning your client hides.</span></li><li><span>Session and hour estimates assume about 400 output tokens per reply and about 6k tokens of context, with thinking off on Well and Call. Top Shelf is the thinking flagship, so its figure is quoted with thinking on, assuming about 1,000 reasoning tokens per reply. Each shelf&#x27;s rough guide gives the 16k-context and thinking-on figures.</span></li><li><span>Taps are shared. Each tap is one GPU running one model; a few members may be served by the same tap at the same time. That sharing is what lowers cost.</span></li><li><span>Reduced-fee seats are capped at 25% of active passes (with a floor of 3 seats while there are fewer than 12 members), so the standard price is the price the large majority of members pay. Reduced-fee prices are a separate, application-based programme funded by patrons, not a sale.</span></li><li><span>A round for the house is a payment to a business, not a charitable donation, and is not tax-deductible.</span></li><li><span>Passes renew monthly until cancelled. Cancel any time from your account; the pass runs to the end of the paid period. A reduced-fee term never rolls to a higher price without your action.</span></li><li><span>18+ only. See acceptableUse. You are responsible for what you generate.</span></li></ol>
-<div class="vb-aside" id="acceptable-use-summary">
 <h3>ACCEPTABLE USE</h3>
 <ul class="vb-stack"><li>18 or older only.</li><li>No sexual content involving minors or anyone presented as a minor. No sexual content about real people. Nothing illegal where you or we are. Keys that do this are closed without refund.</li><li>The service is sold as a fiction-writing and developer API. It is not sold, described or promoted as an adult-content service.</li></ul>
 <p><a href="legal/acceptable-use.html">ACCEPTABLE USE</a></p>
@@ -333,7 +368,7 @@
 <div class="vb-section__head">
 <h2 id="faq-title">STRAIGHT ANSWERS</h2>
 </div>
-<dl class="vb-faq"><div class="vb-faq__item" id="faq-open"><dt>Is it open?</dt><dd>No. Nothing is for sale. The prices are the prices at opening, our best guess at cost. Get on the list and we write when the doors open.</dd></div><div class="vb-faq__item" id="faq-cheapest"><dt>Is this the cheapest way to run an uncensored model?</dt><dd>No. If you chat for hours a day, or run 16k of context all evening, a flat-rate host will cost you less and you should go there. Small models especially are cheaper almost anywhere else. We are for people who want these exact bottles, on a tap shared with a handful of drinkers instead of a crowd, from scripts and apps as well as chat, and who would rather see a meter than a queue.</dd></div><div class="vb-faq__item" id="faq-abliterated"><dt>What does abliterated mean?</dt><dd>A model whose refusals were cut out after training. Abliteration is one way to do it; DavidAU&#x27;s Heretic pass is another; some of his merges are simply built from uncensored parts. Not every bottle had the same treatment. Each card prints what that bottle&#x27;s own label says, and links to the maker&#x27;s page.</dd></div><div class="vb-faq__item" id="faq-davidau"><dt>Who is DavidAU?</dt><dd>An independent model maker who publishes on Hugging Face. We pour his published files. We are not him, and he has not endorsed this bar. The guest tap is Qwen3-VL 8B, abliterated by prithivMLmods and quantised by mradermacher.</dd></div><div class="vb-faq__item" id="faq-api"><dt>Can I point scripts and apps at it?</dt><dd>Yes. It is an API. The tab and the per-pass request limits are the limit.</dd></div><div class="vb-faq__item" id="faq-context"><dt>Why does a long chat drain faster than a short one?</dt><dd>Your client resends the whole conversation each turn and we bill it as input each turn. Trim the context and the tab lasts longer.</dd></div><div class="vb-faq__item" id="faq-hello"><dt>Why did my tab move when I only said hello?</dt><dd>Minimum pour. Every pour holds a tap for a minute, so every pour costs at least a minute. See WARM / COLD.</dd></div><div class="vb-faq__item" id="faq-thinking"><dt>Do thinking models cost more?</dt><dd>The thinking is output. It is billed as output, including thinking your client hides. Six of the ten taps think: mini, reason, the three 27Bs and the flagship.</dd></div><div class="vb-faq__item" id="faq-cold"><dt>Why did I wait 30 seconds?</dt><dd>The tap was cold. Taps scale to zero when the bar is quiet, and a tap goes cold 60 seconds after its last request. The sign shows which taps are warm.</dd></div><div class="vb-faq__item" id="faq-rollover"><dt>Does my unused tab roll over?</dt><dd>No. Rounds you bought do, for a year.</dd></div><div class="vb-faq__item" id="faq-shared"><dt>Do I get a tap to myself?</dt><dd>No. Taps are shared. Each tap is one GPU running one model, and a few members may be served by it at the same time. That sharing is what lowers the cost.</dd></div><div class="vb-faq__item" id="faq-logs"><dt>What do you log?</dt><dd>This page: what the Privacy page says, and no more. The API: nothing is promised here. Its policy gets written down before the doors open. Until it is, assume nothing.</dd></div><div class="vb-faq__item" id="faq-adult"><dt>Is this an adult site?</dt><dd>No. It is a fiction-writing and developer API, 18 and over, with an acceptable-use policy. Read it.</dd></div></dl>
+<dl class="vb-faq"><div class="vb-faq__item" id="faq-open"><dt>Is it open?</dt><dd>No. Nothing is for sale. The prices are the prices at opening, our best guess at cost. Open a tab and we write when the doors open.</dd></div><div class="vb-faq__item" id="faq-cheapest"><dt>Is this the cheapest way to run an uncensored model?</dt><dd>No. If you chat for hours a day, or run 16k of context all evening, a flat-rate host will cost you less and you should go there. Small models especially are cheaper almost anywhere else. We are for people who want these exact bottles, on a tap shared with a handful of drinkers instead of a crowd, from scripts and apps as well as chat, and who would rather see a meter than a queue.</dd></div><div class="vb-faq__item" id="faq-abliterated"><dt>What does abliterated mean?</dt><dd>A model whose refusals were cut out after training. Abliteration is one way to do it; the maker&#x27;s Heretic pass is another; some of the merges are simply built from uncensored parts. Not every bottle had the same treatment. Each card prints what that bottle&#x27;s own label says, and links to the maker&#x27;s page.</dd></div><div class="vb-faq__item" id="faq-maker"><dt>Who makes these?</dt><dd>One builder makes nine of the ten; the guest tap is from another cellar. Names, labels and links are on the <a href="citations.html">citations page</a>. We are not affiliated with any of them.</dd></div><div class="vb-faq__item" id="faq-api"><dt>Can I point scripts and apps at it?</dt><dd>Yes. It is an API. The tab and the per-pass request limits are the limit.</dd></div><div class="vb-faq__item" id="faq-context"><dt>Why does a long chat drain faster than a short one?</dt><dd>Your client resends the whole conversation each turn and we bill it as input each turn. Trim the context and the tab lasts longer.</dd></div><div class="vb-faq__item" id="faq-hello"><dt>Why did my tab move when I only said hello?</dt><dd>Minimum pour. Every pour holds a tap for a minute, so every pour costs at least a minute. See WARM / COLD.</dd></div><div class="vb-faq__item" id="faq-thinking"><dt>Do thinking models cost more?</dt><dd>The thinking is output. It is billed as output, including thinking your client hides. Six of the ten taps think: mini, reason, the three 27Bs and the flagship.</dd></div><div class="vb-faq__item" id="faq-cold"><dt>Why did I wait 30 seconds?</dt><dd>The tap was cold. Taps scale to zero when the bar is quiet, and a tap goes cold 60 seconds after its last request. The sign shows which taps are warm.</dd></div><div class="vb-faq__item" id="faq-rollover"><dt>Does my unused tab roll over?</dt><dd>No. Rounds you bought do, for a year.</dd></div><div class="vb-faq__item" id="faq-shared"><dt>Do I get a tap to myself?</dt><dd>No. Taps are shared. Each tap is one GPU running one model, and a few members may be served by it at the same time. That sharing is what lowers the cost.</dd></div><div class="vb-faq__item" id="faq-logs"><dt>What do you log?</dt><dd>This page: what the Privacy page says, and no more. The API: nothing is promised here. Its policy gets written down before the doors open. Until it is, assume nothing.</dd></div><div class="vb-faq__item" id="faq-adult"><dt>Is this an adult site?</dt><dd>No. It is a fiction-writing and developer API, 18 and over, with an acceptable-use policy. Read it.</dd></div></dl>
 </div>
 </section>
 
@@ -350,21 +385,17 @@
 <ul class="vb-foot__links">
 <li><a href="index.html#pours" data-target="pourList">POUR LIST</a></li>
 <li><a href="index.html#tab" data-target="passes">OPEN A TAB</a></li>
-<li><a href="index.html#list" data-target="waitlist">THE LIST</a></li>
+<li><a href="index.html#list" data-target="waitlist">OPEN A TAB</a></li>
 <li><a href="pricing.html#reduced-fee" data-target="reducedFee">REDUCED FEE</a></li>
 <li><a href="pricing.html" data-target="pricingPage">PRICES</a></li>
 <li><a href="legal/acceptable-use.html" data-target="legalAcceptableUse">ACCEPTABLE USE</a></li>
 <li><a href="legal/privacy.html" data-target="legalPrivacy">PRIVACY</a></li>
 <li><a href="legal/terms.html" data-target="legalTerms">TERMS (STUB)</a></li>
+<li><a href="fine-print.html" data-target="finePrint">FINE PRINT</a></li>
+<li><a href="citations.html" data-target="citations">CITATIONS</a></li>
 </ul>
 </nav>
-<ul class="vb-foot__credits">
-<li>Models by DavidAU. Guest tap: Qwen3-VL 8B Instruct, abliterated by prithivMLmods, GGUF by mradermacher. We are not affiliated with any of them.</li>
-<li>Dates in The New Calendar, (c) ralph7c2, MIT licence.</li>
-<li>Spin discs after jnorthrup.github.io/spin.</li>
-<li>Built in Kotlin.</li>
-<li><a href="fonts/OFL-Archivo.txt">Archivo</a>, <a href="fonts/OFL-ArchivoBlack.txt">Archivo Black</a> and <a href="fonts/OFL-JetBrainsMono.txt">JetBrains Mono</a> are served from this site under the SIL Open Font License 1.1.</li>
-</ul>
+<p class="vb-foot__credits">Sources, licences and who made what: <a href="citations.html">citations</a>.</p>
 </div>
 </footer>
 </body>

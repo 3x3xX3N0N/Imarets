@@ -5,7 +5,7 @@ import kotlin.math.PI
 import kotlin.math.sqrt
 
 /**
- * Geometry of one spin disc, taken from the original page (https://jnorthrup.github.io/spin/):
+ * Geometry of one spin disc, taken from the reference page:
  *
  *     <g id="seed" stroke-width=".25">
  *       <circle r="12.8" fill="blue" stroke="red"/>

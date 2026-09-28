@@ -199,7 +199,7 @@ internal class EpochTrack(
     }
 
     companion object {
-        /** The original jnorthrup.github.io/spin colours: fill="blue" stroke="red", wedges fill="yellow". */
+        /** The reference colours: fill="blue" stroke="red", wedges fill="yellow". */
         const val ORIGINAL_DISC: Int = 0x0000ff
         const val ORIGINAL_STROKE: Int = 0xff0000
         const val ORIGINAL_WEDGE: Int = 0xffff00

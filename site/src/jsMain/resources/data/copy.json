@@ -4,7 +4,7 @@
   "brand": {
     "name": "verdantbloom.bar",
     "wordmark": "VERDANTBLOOM.BAR",
-    "positioning": "A lineup of abliterated dark fiction models by DavidAU."
+    "positioning": "A lineup of abliterated dark fiction models."
   },
   "preOpen": {
     "sign": "NOT OPEN YET.",
@@ -13,7 +13,7 @@
   "hero": {
     "eyebrow": "VERDANTBLOOM.BAR",
     "headline": "OPEN A TAB.",
-    "positioning": "A lineup of abliterated dark fiction models by DavidAU.",
+    "positioning": "A lineup of abliterated dark fiction models.",
     "sub": "Ten pours. One OpenAI-compatible endpoint. Pay by the month, drink by the token.",
     "body": "Dark fiction. Horror. The pages a house-style assistant flinches at.",
     "status": "Not open yet. Prices at opening are posted. Put your name on the list.",
@@ -55,7 +55,7 @@
   },
   "pourList": {
     "title": "THE POUR LIST",
-    "intro": "Ten bottles, ten taps. Each tap is one GPU running one model. Nine bottles are DavidAU's. One is a guest tap. One more is on order.",
+    "intro": "Ten bottles, ten taps. Each tap is one GPU running one model. Nine bottles are DavidAU's; his name goes here once and nowhere else. One is a guest tap that reads pictures for the rest. One more is on order.",
     "orderHint": "The word in mono is the order code. It is what your client sends as the model name.",
     "liveHint": "WARM and COLD come from the status sign, live. If the sign is dark, so are the badges.",
     "card": {
@@ -82,7 +82,7 @@
       "housePour": "HOUSE POUR",
       "housePourHelp": "the tap most likely to be warm",
       "guestTap": "GUEST TAP",
-      "guestTapHelp": "not a DavidAU bottle",
+      "guestTapHelp": "from another cellar",
       "thinks": "THINKS",
       "thinksHelp": "thinking is billed as output",
       "onOrder": "ON ORDER",
@@ -182,7 +182,7 @@
     "unit": "$5 is a month at the bar for someone on the community rate.",
     "mechanism": "Every dollar goes into the house pool; we pay the card fee. The pool pays us the difference between a reduced price and the standard price, and nothing else. We are a business, not a charity: a round for the house is a payment to a business and is not tax-deductible. If we ever close the programme, what is left goes back to the patrons. From the first round on, the ledger is public and updated monthly: rounds bought, rounds poured, what is left, who is waiting.",
     "refund": "Unpoured rounds are refundable on request within 30 days.",
-    "preOpen": "Rounds for the house open when the bar does. Get on the list and we will tell you."
+    "preOpen": "Rounds for the house open when the bar does. Open a tab and we will tell you."
   },
   "lastCall": {
     "title": "LAST CALL",
@@ -276,7 +276,7 @@
   },
   "waitlist": {
     "title": "THE LIST",
-    "headline": "Get on the list.",
+    "headline": "Open a tab.",
     "body": "One address. We write when the doors open and when the prices are final. That is all the list is for.",
     "emailLabel": "Email",
     "emailPlaceholder": "you@example.com",
@@ -524,7 +524,7 @@
       {
         "id": "open",
         "q": "Is it open?",
-        "a": "No. Nothing is for sale. The prices are the prices at opening, our best guess at cost. Get on the list and we write when the doors open."
+        "a": "No. Nothing is for sale. The prices are the prices at opening, our best guess at cost. Open a tab and we write when the doors open."
       },
       {
         "id": "cheapest",
@@ -534,12 +534,12 @@
       {
         "id": "abliterated",
         "q": "What does abliterated mean?",
-        "a": "A model whose refusals were cut out after training. Abliteration is one way to do it; DavidAU's Heretic pass is another; some of his merges are simply built from uncensored parts. Not every bottle had the same treatment. Each card prints what that bottle's own label says, and links to the maker's page."
+        "a": "A model whose refusals were cut out after training. Abliteration is one way to do it; the maker's Heretic pass is another; some of the merges are simply built from uncensored parts. Not every bottle had the same treatment. Each card prints what that bottle's own label says, and links to the maker's page."
       },
       {
         "id": "davidau",
-        "q": "Who is DavidAU?",
-        "a": "An independent model maker who publishes on Hugging Face. We pour his published files. We are not him, and he has not endorsed this bar. The guest tap is Qwen3-VL 8B, abliterated by prithivMLmods and quantised by mradermacher."
+        "q": "Who makes these?",
+        "a": "One builder makes nine of the ten; the guest tap is from another cellar. Names, labels and links are on the citations page. We are not affiliated with any of them."
       },
       {
         "id": "api",
@@ -630,9 +630,7 @@
       }
     ],
     "credits": [
-      "Models by DavidAU. Guest tap: Qwen3-VL 8B Instruct, abliterated by prithivMLmods, GGUF by mradermacher. We are not affiliated with any of them.",
       "Dates in The New Calendar, (c) ralph7c2, MIT licence.",
-      "Spin discs after jnorthrup.github.io/spin.",
       "Built in Kotlin."
     ]
   },

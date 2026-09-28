@@ -162,17 +162,18 @@ internal class Navigator(private val stage: BloomStage) {
     }
 
     /** DOM-CONTRACT 3.2: a pass button means "waitlist, with this pass noted". */
+    private val PASS_LABELS = mapOf(
+        "walkin" to "Walk-In", "well" to "Well", "call" to "Call",
+        "top" to "Top Shelf", "reserve" to "Reserve", "private" to "Private Stock",
+    )
+
     private fun preselectPass(pass: String, source: String?) {
         val select = byId("wl-pass") as? HTMLSelectElement ?: return
-        if (pass !in setOf("well", "call", "top")) return
+        if (pass !in PASS_LABELS) return
         select.value = pass
         if (source != null) (byId("wl-source") as? HTMLInputElement)?.value = source
         val note = byId("wl-pass-note") ?: return
-        val label = when (pass) {
-            "well" -> "Well"
-            "call" -> "Call"
-            else -> "Top Shelf"
-        }
+        val label = PASS_LABELS[pass] ?: pass
         note.textContent = (note.data("template") ?: "{pass}").replace("{pass}", label)
         note.hidden = false
     }

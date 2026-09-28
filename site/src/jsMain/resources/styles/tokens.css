@@ -51,7 +51,7 @@
     --vb-shelf-top: #231b08;
     --vb-shelf-order: #15100f;
 
-    /* spin discs. "original" is the jnorthrup.github.io/spin triad and is the same in both themes. */
+    /* spin discs. "original" is the reference triad and is the same in both themes. */
     --vb-spin-original-disc: #0000ff;
     --vb-spin-original-stroke: #ff0000;
     --vb-spin-original-wedge: #ffff00;
