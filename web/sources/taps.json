@@ -1,0 +1,18 @@
+{
+ "demo3b": {
+  "class": "24",
+  "loaded_context": 8192,
+  "max_replicas": 1,
+  "queue_depth": 8,
+  "weights_path": "demo3b/models/model.gguf",
+  "weights_size": 2019377696
+ },
+ "qwen38-27b": {
+  "class": "48",
+  "loaded_context": 262144,
+  "max_replicas": 2,
+  "queue_depth": 8,
+  "weights_path": "qwen38-27b/model.gguf",
+  "weights_size": 16810722816
+ }
+}

@@ -1,0 +1,14 @@
+{
+  "_note": "Hand-written facts about the one served model. Everything else comes from the live exports. build.py checks hf_file_size against the live taps.json weights_size, so a model swap on the box without updating this file fails the build.",
+  "tap": "qwen38-27b",
+  "display_name": "Twin Turbo Fable 27B",
+  "maker": "DavidAU",
+  "hf_repo": "DavidAU/Qwen3.8-27B-TWIN-TURBO-Fable-Cold-Fusion-709-L-Uncensored-NM-DAU-NEO-MTP-GGUF",
+  "hf_file": "Qwen3.8-27B-TTURBO-Fable-C-Fusion-709-L-Uncen-NM-DAU-NEO-MTP-Q4_K_M.gguf",
+  "hf_file_size": 16810722816,
+  "base": "Qwen3.8 27B",
+  "quant": "Q4_K_M",
+  "on_the_label": "Uncensored",
+  "note": "Qwen3.8 27B with the maker's Fable Fusion training folded into a Cold Fusion build. Its maker calls it lightly uncensored. A thinking model, served with thinking off unless you ask for it. It reads images you send it.",
+  "voice": {"name": "Kokoro", "voices": 54, "default": "af_heart"}
+}

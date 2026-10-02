@@ -1,0 +1,28 @@
+{
+  "_comment": "Gateway rules. `levels` MUST equal contracts/levels.md section 1 (checked by `cargo test levels_contract`). Change the contract first, then this file.",
+  "opt_ins": [],
+  "levels": {
+    "walkin":  {"models": ["qwen38-27b", "voice"], "tab_usd": 0,   "rpm": 6,   "parallel": 1, "context": 8192,  "max_tokens": 512,  "daily": 2,     "opt_ins": false, "wakes": false},
+    "well":    {"models": ["qwen38-27b", "voice"], "tab_usd": 10,  "rpm": 20,  "parallel": 1, "context": 16384, "max_tokens": 1024, "daily": 2000,  "opt_ins": false},
+    "call":    {"models": ["qwen38-27b", "voice"], "tab_usd": 20,  "rpm": 30,  "parallel": 2, "context": 24576, "max_tokens": 2048, "daily": 3000,  "opt_ins": false},
+    "top":     {"models": ["qwen38-27b", "voice"], "tab_usd": 40,  "rpm": 40,  "parallel": 2, "context": 32768, "max_tokens": 4096, "daily": 4000,  "opt_ins": false},
+    "reserve": {"models": ["qwen38-27b", "voice"],
+                "tab_usd": 100, "rpm": 60,  "parallel": 4, "context": 32768, "max_tokens": 4096, "daily": 8000,  "opt_ins": false},
+    "private": {"models": ["qwen38-27b", "voice"],
+                "tab_usd": 200, "rpm": 120, "parallel": 8, "context": 32768, "max_tokens": 4096, "daily": 16000, "opt_ins": false}
+  },
+  "_taps": "Models podctl actually pours. G-5 (2026-10-02): one tap, every level pours it; more join later (levels.md first). A model a level allows but that is not here answers 404 model_not_poured.",
+  "taps": {
+    "qwen38-27b": {"rate_class": "call", "thinking": false}
+  },
+  "_rate_class": "tap -> pricing class (pricing v3 rates[].taps). Unknown taps price as `call` (never under). The numbers per class come from the ledger (ledger.rate_card), read at startup.",
+  "rate_class": {
+    "house": "well", "dark": "well", "mini": "well", "write": "well", "reason": "well", "vision": "well",
+    "creative": "call", "standard": "call", "coder": "call", "qwen38-27b": "call",
+    "flagship": "top", "fast": "house"
+  },
+  "_busy_estimate": "pessimistic GPU ms per token, only to size holds (measured 2026-09/10 on A40/A6000: ~35-45 ms/tok eval, 4-7 ms/tok prefill)",
+  "busy_estimate": {"prefill_ms_per_tok": 10, "eval_ms_per_tok": 60},
+  "voice": {"model": "voice", "tap": "qwen38-27b", "upstream_model": "kokoro", "default_voice": "af_heart",
+            "max_input_chars": 4000, "daily_chars": 20000}
+}

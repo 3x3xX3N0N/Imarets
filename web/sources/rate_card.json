@@ -1,0 +1,4 @@
+[{"rate_class":"call","gpu_ledger":48,"effective_from":"2026-09-20T00:00:00+00:00","card_uusd_per_hour":1220000,"markup_permille":1300,"in_uusd_per_mtok":5500000,"out_uusd_per_mtok":27500000,"cold_start_ms":45000,"idle_cap_ms":60000,"k_max":4}, 
+ {"rate_class":"house","gpu_ledger":24,"effective_from":"2026-09-20T00:00:00+00:00","card_uusd_per_hour":0,"markup_permille":1300,"in_uusd_per_mtok":2500000,"out_uusd_per_mtok":12500000,"cold_start_ms":0,"idle_cap_ms":60000,"k_max":4}, 
+ {"rate_class":"top","gpu_ledger":48,"effective_from":"2026-09-20T00:00:00+00:00","card_uusd_per_hour":1220000,"markup_permille":1300,"in_uusd_per_mtok":11000000,"out_uusd_per_mtok":55000000,"cold_start_ms":45000,"idle_cap_ms":60000,"k_max":4}, 
+ {"rate_class":"well","gpu_ledger":24,"effective_from":"2026-09-20T00:00:00+00:00","card_uusd_per_hour":690000,"markup_permille":1300,"in_uusd_per_mtok":2500000,"out_uusd_per_mtok":12500000,"cold_start_ms":35000,"idle_cap_ms":60000,"k_max":4}]

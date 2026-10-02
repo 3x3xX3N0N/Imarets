@@ -1,0 +1,7 @@
+{
+ "boot_median_s": 97.5,
+ "boot_p90_s": 198.0,
+ "boot_samples": 24,
+ "idle_s": 600,
+ "tap": "qwen38-27b"
+}
