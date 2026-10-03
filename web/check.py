@@ -85,6 +85,36 @@ for page_name in ("index.html", "pricing.html"):
     if f"about {facts['cold_start_median_s']}" not in t:
         bad(f"{page_name}: cold start median {facts['cold_start_median_s']} s missing")
 
+# API privacy notice: present, linked, numbers from the live sources, no unfilled placeholders.
+ap_path = DIST / "legal" / "api-privacy.html"
+if not ap_path.exists():
+    bad("legal/api-privacy.html missing")
+else:
+    ap_raw = ap_path.read_text()
+    ap_text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", ap_raw)))
+    eta = json.loads((WEB / "sources" / "eta.json").read_text())
+    ret = json.loads((WEB / "sources" / "retention.json").read_text())
+    for want, what in ((f"after {round(eta['idle_s'] / 60)} minutes without requests", "pod idle timeout"),
+                       (f"at most {round(ret['max_life_s'] / 3600)} hours", "pod max life"),
+                       (f"after {ret['session_ttl_days']} days", "session length"),
+                       ("We do not store or log what you write", "the core promise")):
+        if want not in ap_text:
+            bad(f"legal/api-privacy.html: {what} missing ({want!r})")
+    if re.search(r"\{[a-z_]+\}", ap_raw):
+        bad("legal/api-privacy.html: unfilled {placeholder}")
+    sys.path.insert(0, str(WEB))
+    import api_privacy
+    if api_privacy.ADDRESS_FINAL and "pending]" in ap_text:
+        bad("legal/api-privacy.html: ADDRESS_FINAL but the address still says pending")
+    if not api_privacy.ADDRESS_FINAL:
+        print("note: api-privacy address is a placeholder (PO box pending); DRAFT page")
+for p in pages:
+    if p.name == "api-privacy.html":
+        continue
+    link = "api-privacy.html" if p.parent.name == "legal" else "legal/api-privacy.html"
+    if f'href="{link}"' not in p.read_text():
+        bad(f"{p.relative_to(DIST)}: no link to {link}")
+
 print(f"{len(pages)} pages checked, {len(problems)} problems")
 for m in problems:
     print("  -", m)

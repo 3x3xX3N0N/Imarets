@@ -64,6 +64,9 @@ shared_min = per_s * idle_cap_s / rc["k_max"]     # the same, with the pod share
 boot_med = round(eta["boot_median_s"])
 boot_p90 = round(eta["boot_p90_s"])
 idle_min = round(eta["idle_s"] / 60)
+retention = load("retention.json")
+MAX_LIFE_H = round(retention["max_life_s"] / 3600)
+SESSION_DAYS = retention["session_ttl_days"]
 voice = g["voice"]
 
 
@@ -146,6 +149,7 @@ def page(name, title, desc, body, current=None, depth=0):
 <li><a href="{ACCOUNT}">OPEN A TAB</a></li>
 <li><a href="{up}legal/acceptable-use.html">ACCEPTABLE USE</a></li>
 <li><a href="{up}legal/privacy.html">PRIVACY</a></li>
+<li><a href="{up}legal/api-privacy.html">API PRIVACY</a></li>
 <li><a href="{up}legal/terms.html">TERMS (STUB)</a></li>
 </ul></nav>
 </div>
@@ -330,13 +334,45 @@ def build():
     (OUT / "legal").mkdir()
     for f in ("acceptable-use.html", "privacy.html"):
         shutil.copy(RES / "legal" / f, OUT / "legal" / f)
+    # The old site's legal pages: add the API privacy link to their own footers, and replace the website
+    # privacy page's "the API has no policy yet" lines now that it does (legal/api-privacy.html).
+    def legal_fix(name, text):
+        foot = '<li><a href="privacy.html"'
+        assert foot in text, f"{name}: footer privacy link moved: update build.py"
+        text = text.replace('PRIVACY</a></li><li><a href="terms.html"',
+                            'PRIVACY</a></li><li><a href="api-privacy.html">API PRIVACY</a></li><li><a href="terms.html"', 1)
+        if name == "privacy.html":
+            for old, new in (
+                ("<p><strong>It does not cover the API.</strong> What the API stores will be written down in its own policy. "
+                 "Until then, nothing is promised about it, here or anywhere on this site.</p>",
+                 '<p><strong>It does not cover the API.</strong> The API has its own page: '
+                 '<a href="api-privacy.html">API privacy</a>. In one line: we do not store or log what you write to the '
+                 'model, or what it writes back.</p>'),
+                ("<p>This page will change when the API gets its own policy. The date at the top changes with it.</p>",
+                 "<p>This page will change. The date at the top changes with it.</p>")):
+                assert old in text, "privacy.html API sentence changed: update build.py"
+                text = text.replace(old, new)
+        return text
+    for f in ("acceptable-use.html", "privacy.html"):
+        p = OUT / "legal" / f
+        p.write_text(legal_fix(f, p.read_text()))
     terms = (RES / "legal" / "terms.html").read_text()
     old = ("Cold pours take about 30 seconds because taps scale to zero when the bar is quiet. "
            "A tap goes cold 60 seconds after your last request.")
     assert old in terms, "terms.html cold-start sentence changed: update build.py"
     terms = terms.replace(old, f"Cold pours take about {boot_med} seconds (up to {boot_p90}) because taps scale "
                                f"to zero when the bar is quiet. A tap goes cold {idle_min} minutes after the last request.")
+    terms = legal_fix("terms.html", terms)
     (OUT / "legal" / "terms.html").write_text(terms)
+    # API privacy notice (DRAFT, api_privacy.py): numbers come from the same live sources as the rest.
+    import api_privacy as ap
+    address = ", ".join(ap.ADDRESS_LINES)
+    api_body = ap.BODY.format(asof=ASOF_TXT, address=e(address), idle_min=idle_min,
+                              max_life_h=MAX_LIFE_H, session_days=SESSION_DAYS)
+    (OUT / "legal" / "api-privacy.html").write_text(
+        page("legal", "API privacy - verdantbloom.bar",
+             "What the verdantbloom.bar API keeps: accounts, keys, meters and money. Never the text of a request or a reply.",
+             api_body, depth=1))
     pages = {
         "index.html": page("index", "verdantbloom.bar - open a tab",
                            f"An abliterated dark fiction model behind one OpenAI-compatible endpoint. Levels from free to ${max(lv['tab_usd'] for _, lv in levels)} a month.",

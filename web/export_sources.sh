@@ -29,6 +29,11 @@ PY' > "$OUT/taps.json"
 ssh "$BOX" 'curl -s http://172.18.0.1:8090/eta/qwen38-27b' | python3 -c "
 import json, sys; d = json.load(sys.stdin)
 o = {k: d[k] for k in ('tap', 'boot_median_s', 'boot_p90_s', 'boot_samples')}
-o['idle_s'] = int(sys.argv[1]); print(json.dumps(o, indent=1, sort_keys=True))" "$(ssh "$BOX" 'grep -E "^VB_IDLE_S=" /opt/podctl/podctl.env | cut -d= -f2 || true' | tr -dc 0-9 | sed 's/^$/600/')" > "$OUT/eta.json"
+o['idle_s'] = int(sys.argv[1]); print(json.dumps(o, indent=1, sort_keys=True))" "$(ssh "$BOX" 'grep -E "^VB_IDLE_S=" /opt/podctl/podctl.env | cut -d= -f2 || true' </dev/null | tr -dc 0-9 | sed 's/^$/600/')" > "$OUT/eta.json"
+# Retention facts the API privacy page states (legal/api-privacy.html): pod max life, session length.
+# Defaults are the code's own defaults (podctl MAX_LIFE_S 21600, site SESSION_TTL_DAYS 30).
+ML=$(ssh "$BOX" 'grep -E "^VB_MAX_LIFE_S=" /opt/podctl/podctl.env | cut -d= -f2 || true' </dev/null | tr -dc 0-9); ML=${ML:-21600}
+SD=$(ssh "$BOX" 'grep -E "^SESSION_TTL_DAYS=" /opt/litellm-gateway/site.env | cut -d= -f2 || true' </dev/null | tr -dc 0-9); SD=${SD:-30}
+printf '{\n "max_life_s": %s,\n "session_ttl_days": %s\n}\n' "$ML" "$SD" > "$OUT/retention.json"
 date -u +%Y-%m-%dT%H:%M:%SZ > "$OUT/exported_at"
 ls -la "$OUT"

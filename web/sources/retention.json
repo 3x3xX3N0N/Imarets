@@ -1,0 +1,4 @@
+{
+ "max_life_s": 21600,
+ "session_ttl_days": 30
+}
