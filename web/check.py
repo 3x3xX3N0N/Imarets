@@ -140,6 +140,24 @@ for field in ("kind", "agency", "name", "email", "phone", "jurisdiction", "case_
               "date_to", "details", "attest", "website"):
     if f'name="{field}"' not in le_raw:
         bad(f"legal/law-enforcement.html: form lacks field {field}")
+# Website privacy (privacy.py): current, says what the site really does, nothing left of the Kotlin page.
+pv_text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", (DIST / "legal" / "privacy.html").read_text())))
+for want in ("no scripts, no cookies, no analytics", "keeps no access log", "vb_session", "Stripe",
+             f"lasts {json.loads((WEB / 'sources' / 'retention.json').read_text())['session_ttl_days']} days",
+             "we never see or store your card number", "18 or older"):
+    if want not in pv_text:
+        bad(f"legal/privacy.html: missing {want!r}")
+for gone in ("bloom reacts", "ring for service", "status sign", "Nothing is claimed about the API", "2026-09-20"):
+    if gone in pv_text:
+        bad(f"legal/privacy.html: old text {gone!r}")
+for name in ("pours.html", "fine-print.html"):
+    if (DIST / name).exists():
+        bad(f"{name}: retired page is built again (Caddy redirects it)")
+for p in pages:
+    if p.name != "404.html" and "mailto:bloom@verdantbloom.bar" not in p.read_text():
+        bad(f"{p.relative_to(DIST)}: no contact address in the footer")
+if not (DIST / "styles" / "app.css").exists():
+    bad("styles/app.css missing (site-api pages use it)")
 # Positioning (acceptable_use.py): a developer API, not an adult-content service. These lines stay put.
 au_text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", (DIST / "legal" / "acceptable-use.html").read_text())))
 for want in ("3. Not for adult-content services", "sexual gratification", "It is not an adult-content service"):

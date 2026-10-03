@@ -1,0 +1,26 @@
+/* app.css - styles for the site-api's HTML pages (/api/account, /api/login, form answers).
+   Those pages are plain HTML from the Rust site-api (no classes on their forms and tables); this file gives
+   them the site's look, scoped to .vb-app so nothing else changes. Built by web/build.py. */
+.vb-app form { display: flex; flex-wrap: wrap; gap: var(--vb-s3); align-items: end; margin-top: var(--vb-s4); }
+.vb-app label { display: grid; gap: var(--vb-s2); font-weight: 800; font-size: var(--vb-size-1); }
+.vb-app input[type="email"], .vb-app input[type="text"] {
+    min-width: min(22rem, 100%); min-height: 52px; padding: var(--vb-s3);
+    border: var(--vb-rule-w) solid var(--vb-rule); border-radius: 0;
+    background: var(--vb-ground); color: var(--vb-ink); font: inherit; font-weight: 400;
+}
+.vb-app button {
+    min-height: 52px; padding: var(--vb-s3) var(--vb-s5);
+    border: var(--vb-rule-w) solid var(--vb-accent); border-radius: 0;
+    background: var(--vb-accent); color: var(--vb-ink-inverse);
+    font-family: var(--vb-font-grotesk); font-weight: 900; font-stretch: 125%; letter-spacing: 0.04em;
+    text-transform: uppercase; cursor: pointer;
+}
+.vb-app button:hover { background: var(--vb-ink); border-color: var(--vb-ink); color: var(--vb-ground); }
+.vb-app label:has(input[type="checkbox"]) { display: inline-flex; align-items: center; font-weight: 700; }
+.vb-app table { width: 100%; border-collapse: collapse; margin-top: var(--vb-s4); font-family: var(--vb-font-mono); font-size: var(--vb-size-1); border: var(--vb-rule-w) solid var(--vb-rule); }
+.vb-app th, .vb-app td { padding: var(--vb-s3); text-align: left; border-bottom: var(--vb-hair) solid var(--vb-rule-dim); }
+.vb-app thead th { background: var(--vb-ink); color: var(--vb-ground); font-family: var(--vb-font-grotesk); font-weight: 800; text-transform: uppercase; font-size: 0.6875rem; }
+.vb-app td form { margin-top: 0; }
+.vb-app td button { min-height: 0; padding: var(--vb-s2) var(--vb-s3); font-size: var(--vb-size-0); }
+.vb-app h2 { font-size: var(--vb-size-3); }
+.vb-app form + p, .vb-app form + form { margin-top: var(--vb-s5); }

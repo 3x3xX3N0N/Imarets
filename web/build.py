@@ -67,6 +67,7 @@ idle_min = round(eta["idle_s"] / 60)
 retention = load("retention.json")
 MAX_LIFE_H = round(retention["max_life_s"] / 3600)
 SESSION_DAYS = retention["session_ttl_days"]
+LOGIN_MIN = retention.get("login_ttl_min", 15)
 voice = g["voice"]
 
 
@@ -141,6 +142,7 @@ def page(name, title, desc, body, current=None, depth=0):
 <div class="vb-stack">
 <p class="vb-foot__age"><strong>18+ ONLY.</strong> A developer API for fiction and writing tools. Not for adult-content services. You are responsible for what you generate. The acceptable-use policy applies.</p>
 <p>Prices and limits as of <time class="vb-asof" datetime="{ASOF_ISO}">{ASOF_TXT}</time>, taken from the live rate card and the gateway's own rules. When they change, this page changes with them.</p>
+<p>Questions, billing or account help: <a href="mailto:bloom@verdantbloom.bar">bloom@verdantbloom.bar</a></p>
 <p><strong>verdantbloom.bar is a business, not a charity.</strong></p>
 </div>
 <nav aria-label="Footer"><ul class="vb-foot__links">
@@ -326,11 +328,6 @@ PRICING = f"""<div class="vb-wrap vb-pagehead">
 </div>
 </section>"""
 
-GONE = lambda what: f"""<div class="vb-wrap vb-pagehead vb-stack">
-<h1>{what}</h1>
-<p class="vb-lede">This page described a ten-model list that isn't served. What is served, and what it costs, is on <a href="index.html#tap">the tap</a> and <a href="pricing.html">the prices</a>.</p>
-</div>"""
-
 NOTFOUND = """<div class="vb-wrap vb-pagehead vb-stack">
 <h1>NOT ON TAP.</h1>
 <p class="vb-lede">Nothing here. <a href="/index.html">Back to the bar.</a></p>
@@ -343,37 +340,8 @@ def build():
     OUT.mkdir(parents=True)
     shutil.copytree(RES / "styles", OUT / "styles")
     shutil.copytree(RES / "fonts", OUT / "fonts")
+    shutil.copy(WEB / "app.css", OUT / "styles" / "app.css")   # site-api's HTML pages (/api/account, /api/login)
     (OUT / "legal").mkdir()
-    shutil.copy(RES / "legal" / "privacy.html", OUT / "legal" / "privacy.html")
-    # The old site's legal pages: add the API privacy link to their own footers, and replace the website
-    # privacy page's "the API has no policy yet" lines now that it does (legal/api-privacy.html).
-    def legal_fix(name, text):
-        foot = '<li><a href="privacy.html"'
-        assert foot in text, f"{name}: footer privacy link moved: update build.py"
-        text = text.replace('PRIVACY</a></li><li><a href="terms.html"',
-                            'PRIVACY</a></li><li><a href="api-privacy.html">API PRIVACY</a></li><li><a href="terms.html"', 1)
-        text = text.replace("TERMS (STUB - NEEDS COUNSEL BEFORE PAYMENTS OPEN)", "TERMS").replace("TERMS (STUB)", "TERMS")
-        old_age = ("<strong>18+ ONLY.</strong>A fiction-writing and developer API. Some of these bottles write graphic horror "
-                   "and violence; their makers&#x27; labels say so. You are responsible for what you generate. The "
-                   "acceptable-use policy applies.")
-        if old_age in text:
-            text = text.replace(old_age, "<strong>18+ ONLY.</strong> A developer API for fiction and writing tools. Not for "
-                                         "adult-content services. You are responsible for what you generate. The "
-                                         "acceptable-use policy applies.")
-        if name == "privacy.html":
-            for old, new in (
-                ("<p><strong>It does not cover the API.</strong> What the API stores will be written down in its own policy. "
-                 "Until then, nothing is promised about it, here or anywhere on this site.</p>",
-                 '<p><strong>It does not cover the API.</strong> The API has its own page: '
-                 '<a href="api-privacy.html">API privacy</a>. In one line: we do not store or log what you write to the '
-                 'model, or what it writes back.</p>'),
-                ("<p>This page will change when the API gets its own policy. The date at the top changes with it.</p>",
-                 "<p>This page will change. The date at the top changes with it.</p>")):
-                assert old in text, "privacy.html API sentence changed: update build.py"
-                text = text.replace(old, new)
-        return text
-    p = OUT / "legal" / "privacy.html"
-    p.write_text(legal_fix("privacy.html", p.read_text()))
     import acceptable_use as au
     (OUT / "legal" / "acceptable-use.html").write_text(
         page("legal", "Acceptable use - verdantbloom.bar",
@@ -397,6 +365,13 @@ def build():
     # API privacy notice (api_privacy.py): numbers come from the same live sources as the rest.
     api_body = ap.BODY.format(asof=ASOF_TXT, operator_sentence=operator_sentence, idle_min=idle_min,
                               max_life_h=MAX_LIFE_H, session_days=SESSION_DAYS)
+    import privacy as pv
+    (OUT / "legal" / "privacy.html").write_text(
+        page("legal", "Privacy - verdantbloom.bar",
+             "What verdantbloom.bar keeps when you browse, open an account, log in and pay. No scripts, no cookies "
+             "beyond login, no analytics.",
+             pv.BODY.format(asof=ASOF_TXT, operator_sentence=operator_sentence, login_min=LOGIN_MIN,
+                            session_days=SESSION_DAYS), depth=1))
     import law_enforcement as lawe
     (OUT / "legal" / "law-enforcement.html").write_text(
         page("legal", "Law enforcement and legal requests - verdantbloom.bar",
@@ -414,8 +389,6 @@ def build():
         "pricing.html": page("pricing", "Prices - verdantbloom.bar",
                              f"Six levels, free to ${max(lv['tab_usd'] for _, lv in levels)} a month. {usd(in_per_m)} in / {usd(out_per_m)} out per million tokens.",
                              PRICING, "pricing.html"),
-        "pours.html": page("pours", "The pour list - verdantbloom.bar", "What is on tap.", GONE("THE POUR LIST")),
-        "fine-print.html": page("fine-print", "The fine print - verdantbloom.bar", "Where the fine print went.", GONE("THE FINE PRINT")),
         "404.html": page("notfound", "Not found - verdantbloom.bar", "Not found.", NOTFOUND),
     }
     for name, doc in pages.items():

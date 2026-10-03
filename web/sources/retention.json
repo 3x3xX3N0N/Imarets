@@ -1,4 +1,5 @@
 {
  "max_life_s": 21600,
- "session_ttl_days": 30
+ "session_ttl_days": 30,
+ "login_ttl_min": 15
 }

@@ -21,7 +21,7 @@ TS=$(date +%s)
 # page links them; --delete is not used so a rollback copy is the only thing that changes the tree shape.
 ssh "$BOX" "cp -a $LIVE $LIVE.bak-web-$TS"
 rsync -a "$WEB/dist/" "$BOX:$LIVE/"
-for p in / /index.html /pricing.html /pours.html /fine-print.html /legal/terms.html /facts.json /api/health; do
+for p in / /index.html /pricing.html /legal/privacy.html /legal/terms.html /styles/app.css /facts.json /api/health; do
   printf "%-20s %s\n" "$p" "$(curl -s -o /dev/null -w '%{http_code}' https://verdantbloom.bar$p)"
 done
 echo "deployed (backup $LIVE.bak-web-$TS; rollback: bash web/deploy_web.sh --rollback $TS)"

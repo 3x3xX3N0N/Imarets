@@ -34,6 +34,7 @@ o['idle_s'] = int(sys.argv[1]); print(json.dumps(o, indent=1, sort_keys=True))" 
 # Defaults are the code's own defaults (podctl MAX_LIFE_S 21600, site SESSION_TTL_DAYS 30).
 ML=$(ssh "$BOX" 'grep -E "^VB_MAX_LIFE_S=" /opt/podctl/podctl.env | cut -d= -f2 || true' </dev/null | tr -dc 0-9); ML=${ML:-21600}
 SD=$(ssh "$BOX" 'grep -E "^SESSION_TTL_DAYS=" /opt/litellm-gateway/site.env | cut -d= -f2 || true' </dev/null | tr -dc 0-9); SD=${SD:-30}
-printf '{\n "max_life_s": %s,\n "session_ttl_days": %s\n}\n' "$ML" "$SD" > "$OUT/retention.json"
+LM=$(ssh "$BOX" 'grep -E "^LOGIN_TTL_MIN=" /opt/litellm-gateway/site.env | cut -d= -f2 || true' </dev/null | tr -dc 0-9); LM=${LM:-15}
+printf '{\n "max_life_s": %s,\n "session_ttl_days": %s,\n "login_ttl_min": %s\n}\n' "$ML" "$SD" "$LM" > "$OUT/retention.json"
 date -u +%Y-%m-%dT%H:%M:%SZ > "$OUT/exported_at"
 ls -la "$OUT"
