@@ -150,7 +150,7 @@ def page(name, title, desc, body, current=None, depth=0):
 <li><a href="{up}legal/acceptable-use.html">ACCEPTABLE USE</a></li>
 <li><a href="{up}legal/privacy.html">PRIVACY</a></li>
 <li><a href="{up}legal/api-privacy.html">API PRIVACY</a></li>
-<li><a href="{up}legal/terms.html">TERMS (STUB)</a></li>
+<li><a href="{up}legal/terms.html">TERMS</a></li>
 </ul></nav>
 </div>
 </footer>
@@ -341,6 +341,7 @@ def build():
         assert foot in text, f"{name}: footer privacy link moved: update build.py"
         text = text.replace('PRIVACY</a></li><li><a href="terms.html"',
                             'PRIVACY</a></li><li><a href="api-privacy.html">API PRIVACY</a></li><li><a href="terms.html"', 1)
+        text = text.replace("TERMS (STUB - NEEDS COUNSEL BEFORE PAYMENTS OPEN)", "TERMS").replace("TERMS (STUB)", "TERMS")
         if name == "privacy.html":
             for old, new in (
                 ("<p><strong>It does not cover the API.</strong> What the API stores will be written down in its own policy. "
@@ -356,18 +357,21 @@ def build():
     for f in ("acceptable-use.html", "privacy.html"):
         p = OUT / "legal" / f
         p.write_text(legal_fix(f, p.read_text()))
-    terms = (RES / "legal" / "terms.html").read_text()
-    old = ("Cold pours take about 30 seconds because taps scale to zero when the bar is quiet. "
-           "A tap goes cold 60 seconds after your last request.")
-    assert old in terms, "terms.html cold-start sentence changed: update build.py"
-    terms = terms.replace(old, f"Cold pours take about {boot_med} seconds (up to {boot_p90}) because taps scale "
-                               f"to zero when the bar is quiet. A tap goes cold {idle_min} minutes after the last request.")
-    terms = legal_fix("terms.html", terms)
-    (OUT / "legal" / "terms.html").write_text(terms)
-    # API privacy notice (DRAFT, api_privacy.py): numbers come from the same live sources as the rest.
+    # Real terms (terms.py) replace the old stub; every number from the live sources.
     import api_privacy as ap
-    address = ", ".join(ap.ADDRESS_LINES)
-    api_body = ap.BODY.format(asof=ASOF_TXT, address=e(address), idle_min=idle_min,
+    import terms as tm
+    address_clause = (", " + e(", ".join(ap.ADDRESS_LINES))) if ap.ADDRESS_FINAL else ""
+    paid = [(lid, lv) for lid, lv in levels if lv["tab_usd"] > 0]
+    level_prices = ", ".join(f"{LEVEL_NAME[lid]} ${lv['tab_usd']}" for lid, lv in paid)
+    terms_body = tm.BODY.format(asof=ASOF_TXT, address_clause=address_clause, tap=e(TAP), level_prices=level_prices,
+                                rate_in=usd(in_per_m), rate_out=usd(out_per_m), min_warm=usd(warm_min),
+                                min_cold=usd(cold_min), idle_min=idle_min, boot_med=boot_med, boot_p90=boot_p90)
+    (OUT / "legal" / "terms.html").write_text(
+        page("legal", "Terms - verdantbloom.bar",
+             "The terms for verdantbloom.bar and its API: accounts, levels, the tab, renewal, refunds, and what is not promised.",
+             terms_body, depth=1))
+    # API privacy notice (api_privacy.py): numbers come from the same live sources as the rest.
+    api_body = ap.BODY.format(asof=ASOF_TXT, address_clause=address_clause, idle_min=idle_min,
                               max_life_h=MAX_LIFE_H, session_days=SESSION_DAYS)
     (OUT / "legal" / "api-privacy.html").write_text(
         page("legal", "API privacy - verdantbloom.bar",

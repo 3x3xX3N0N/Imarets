@@ -1,4 +1,4 @@
-"""API privacy notice (legal/api-privacy.html). DRAFT until the operator approves it and a lawyer has read it.
+"""API privacy notice (legal/api-privacy.html). LIVE since 2026-10-03; not yet read by a lawyer.
 
 Every sentence here was checked against the running code on 2026-10-03 (see the verdantbloom super-repo
 RULES.md rule 6 and host/podctl/test_private.py). If the code changes what it stores, this file changes
@@ -7,14 +7,15 @@ PO box number arrives.
 """
 
 # The PO box number and the 4-digit box extension are not known yet. Keep the placeholder visible
-# (check.py fails on it once ADDRESS_FINAL is True) rather than printing a made-up number.
+# (check.py fails on it once ADDRESS_FINAL is True) rather than printing a made-up number. While False, the live pages show no
+# postal address at all (only the email); set the real lines and ADDRESS_FINAL = True to print it.
 ADDRESS_LINES = ["PO Box [number pending]", "Bryn Athyn, PA 19009-[box extension pending]"]
 ADDRESS_FINAL = False
 
 BODY = """<div class="vb-wrap">
 <article class="vb-prose">
 <h1>API privacy</h1>
-<p>As of {asof}. <strong>Draft.</strong> This page covers the API at <code>api.verdantbloom.bar</code>: your account,
+<p>As of {asof}. This page covers the API at <code>api.verdantbloom.bar</code>: your account,
 your keys, your tab, and every request you send. The <a href="privacy.html">website privacy page</a> covers the
 landing page and its forms.</p>
 
@@ -24,7 +25,7 @@ reply, not a summary, not a sample, not a hash of either. We keep what we need t
 tab: who you are, which key, when, how many tokens, how long the GPU was busy, and what it cost.</p>
 
 <h2>2. Who</h2>
-<p>verdantbloom.bar, {address}. Contact: <code>bloom@verdantbloom.bar</code>.</p>
+<p>verdantbloom.bar, a business{address_clause}. Contact: <code>bloom@verdantbloom.bar</code>.</p>
 
 <h2>3. What we never keep</h2>
 <ul>
@@ -45,8 +46,8 @@ deleted when the server is shut down, which happens after {idle_min} minutes wit
 <tbody>
 <tr><td>Your email address, account id, level, and whether the account is active</td><td>To log you in, run your level's limits, and write to you about your account</td><td>While the account exists</td></tr>
 <tr><td>Your keys: name, first few characters, when made, when last used, when revoked. Never the key itself: only a one-way hash.</td><td>To check a key on every request, and to show you your keys</td><td>While the account exists</td></tr>
-<tr><td>Each request's meter: time, key, model, tokens in and out, GPU busy and idle milliseconds, the charge, and whether it succeeded</td><td>To charge your tab correctly and show you your usage</td><td>As long as tax and accounting rules require (see 6)</td></tr>
-<tr><td>Your tab: payments in, charges out, refunds</td><td>It is your tab</td><td>As long as tax and accounting rules require</td></tr>
+<tr><td>Each request's meter: time, key, model, tokens in and out, GPU busy and idle milliseconds, the charge, and whether it succeeded</td><td>To charge your tab correctly and show you your usage</td><td>At least seven years (see 6)</td></tr>
+<tr><td>Your tab: payments in, charges out, refunds</td><td>It is your tab</td><td>At least seven years</td></tr>
 <tr><td>Daily request and speech counters</td><td>Your level's daily limits</td><td>Per day; old days are not used</td></tr>
 <tr><td>Login links and sessions, as one-way hashes, with a salted hash of the network address that asked</td><td>So a link works once, and to slow down abuse</td><td>Links expire within the hour; sessions after {session_days} days</td></tr>
 </tbody>
@@ -71,8 +72,7 @@ and no email addresses.</li>
 
 <h2>6. How long</h2>
 <p>Account, key and tab records last while your account exists. Billing records (meters, payments, refunds) are kept
-as long as tax and accounting rules require us to keep them, then deleted. <em>[Draft: the exact period, likely seven
-years in the US, to be confirmed.]</em></p>
+for at least seven years, because tax and accounting rules require us to be able to show them.</p>
 
 <h2>7. Your choices</h2>
 <p>Write to <code>bloom@verdantbloom.bar</code> from your account's address to see what we hold about you, correct it,

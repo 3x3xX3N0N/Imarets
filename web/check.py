@@ -107,7 +107,26 @@ else:
     if api_privacy.ADDRESS_FINAL and "pending]" in ap_text:
         bad("legal/api-privacy.html: ADDRESS_FINAL but the address still says pending")
     if not api_privacy.ADDRESS_FINAL:
-        print("note: api-privacy address is a placeholder (PO box pending); DRAFT page")
+        print("note: postal address not printed yet (PO box number pending: set api_privacy.ADDRESS_LINES + ADDRESS_FINAL)")
+    if "Draft" in ap_text or "[Draft" in ap_text:
+        bad("legal/api-privacy.html: still says Draft")
+
+# Terms: the real ones, numbers from the live sources, nothing left of the stub.
+tp = DIST / "legal" / "terms.html"
+t_text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", tp.read_text())))
+for lid, lv in g["levels"].items():
+    if lv["tab_usd"] and f"${lv['tab_usd']}" not in t_text:
+        bad(f"legal/terms.html: {lid} price ${lv['tab_usd']} missing")
+eta_t = json.loads((WEB / "sources" / "eta.json").read_text())
+for want in (f"for {round(eta_t['idle_s'] / 60)} minutes it is shut down", f"about {facts['cold_start_median_s']} seconds",
+             "Unused tab does not roll over", "Renewal is off unless you turn it on", "18 or older"):
+    if want not in t_text:
+        bad(f"legal/terms.html: missing {want!r}")
+if re.search(r"\{[a-z_]+\}", tp.read_text()):
+    bad("legal/terms.html: unfilled {placeholder}")
+for p in pages:
+    if re.search(r"STUB|NEEDS COUNSEL", p.read_text()):
+        bad(f"{p.relative_to(DIST)}: still says STUB / NEEDS COUNSEL")
 for p in pages:
     if p.name == "api-privacy.html":
         continue
