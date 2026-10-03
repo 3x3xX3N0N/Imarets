@@ -151,6 +151,7 @@ def page(name, title, desc, body, current=None, depth=0):
 <li><a href="{up}legal/privacy.html">PRIVACY</a></li>
 <li><a href="{up}legal/api-privacy.html">API PRIVACY</a></li>
 <li><a href="{up}legal/terms.html">TERMS</a></li>
+<li><a href="{up}legal/law-enforcement.html">LAW ENFORCEMENT</a></li>
 </ul></nav>
 </div>
 </footer>
@@ -396,6 +397,12 @@ def build():
     # API privacy notice (api_privacy.py): numbers come from the same live sources as the rest.
     api_body = ap.BODY.format(asof=ASOF_TXT, operator_sentence=operator_sentence, idle_min=idle_min,
                               max_life_h=MAX_LIFE_H, session_days=SESSION_DAYS)
+    import law_enforcement as lawe
+    (OUT / "legal" / "law-enforcement.html").write_text(
+        page("legal", "Law enforcement and legal requests - verdantbloom.bar",
+             "How verdantbloom.bar answers subpoenas, court orders, warrants and emergency requests, and what it holds: "
+             "no prompts or replies, ever.",
+             lawe.BODY.format(asof=ASOF_TXT), depth=1))
     (OUT / "legal" / "api-privacy.html").write_text(
         page("legal", "API privacy - verdantbloom.bar",
              "What the verdantbloom.bar API keeps: accounts, keys, meters and money. Never the text of a request or a reply.",

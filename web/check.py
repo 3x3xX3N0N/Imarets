@@ -127,6 +127,19 @@ for want in (f"for {round(eta_t['idle_s'] / 60)} minutes it is shut down", f"abo
         bad(f"legal/terms.html: missing {want!r}")
 if re.search(r"\{[a-z_]+\}", tp.read_text()):
     bad("legal/terms.html: unfilled {placeholder}")
+# Legal-process page (law_enforcement.py, contracts/legal-process.md): the no-content line and a working form.
+le_raw = (DIST / "legal" / "law-enforcement.html").read_text()
+le_text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", le_raw)))
+for want in ("We do not store the content of anything sent to or produced by the API", "2703(f)", "2702(c)(4)",
+             "bloom@verdantbloom.bar"):
+    if want not in le_text:
+        bad(f"legal/law-enforcement.html: missing {want!r}")
+if 'action="/api/legal/request"' not in le_raw:
+    bad("legal/law-enforcement.html: form does not post to /api/legal/request")
+for field in ("kind", "agency", "name", "email", "phone", "jurisdiction", "case_ref", "identifiers", "date_from",
+              "date_to", "details", "attest", "website"):
+    if f'name="{field}"' not in le_raw:
+        bad(f"legal/law-enforcement.html: form lacks field {field}")
 # Positioning (acceptable_use.py): a developer API, not an adult-content service. These lines stay put.
 au_text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", (DIST / "legal" / "acceptable-use.html").read_text())))
 for want in ("3. Not for adult-content services", "sexual gratification", "It is not an adult-content service"):
