@@ -6,3 +6,4 @@ build/
 kotlin-js-store/*.lock.bak
 .kotlin/
 node_modules/
+__pycache__/
