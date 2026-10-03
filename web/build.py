@@ -139,7 +139,7 @@ def page(name, title, desc, body, current=None, depth=0):
 <footer class="vb-foot">
 <div class="vb-wrap vb-foot__grid">
 <div class="vb-stack">
-<p class="vb-foot__age"><strong>18+ ONLY.</strong> A fiction-writing and developer API. The model writes dark fiction, horror and violence if asked. You are responsible for what you generate. The acceptable-use policy applies.</p>
+<p class="vb-foot__age"><strong>18+ ONLY.</strong> A developer API for fiction and writing tools. Not for adult-content services. You are responsible for what you generate. The acceptable-use policy applies.</p>
 <p>Prices and limits as of <time class="vb-asof" datetime="{ASOF_ISO}">{ASOF_TXT}</time>, taken from the live rate card and the gateway's own rules. When they change, this page changes with them.</p>
 <p><strong>verdantbloom.bar is a business, not a charity.</strong></p>
 </div>
@@ -207,22 +207,33 @@ MODEL_CARD = f"""<article class="vb-pour" id="pour/{e(TAP)}" data-pour-id="{e(TA
 <dl class="vb-facts">
 <div class="vb-facts__row"><dt>BASE</dt><dd>{e(model["base"])}</dd></div>
 <div class="vb-facts__row"><dt>QUANT</dt><dd>{e(model["quant"])}</dd></div>
-<div class="vb-facts__row"><dt>ON THE LABEL</dt><dd>{e(model["on_the_label"])}</dd></div>
 <div class="vb-facts__row"><dt>THINKING</dt><dd>{"off unless you ask" if thinking_default is False else "on"}</dd></div>
 <div class="vb-facts__row"><dt>COLD POUR</dt><dd>about {boot_med} s, up to {boot_p90} s</dd></div>
 </dl>
 <p class="vb-pour__note">{e(model["note"])}</p>
 <p class="vb-pour__order"><code>"model": "{e(TAP)}"</code></p>
-<p class="vb-pour__links"><a href="https://huggingface.co/{e(model["hf_repo"])}" rel="noopener noreferrer external">THE BOTTLE ON HUGGING FACE</a></p>
+<p class="vb-pour__links"><a href="https://huggingface.co/{e(model["hf_repo"])}" rel="noopener noreferrer external">MODEL CARD ON HUGGING FACE</a></p>
 </article>"""
 
 walkin = g["levels"]["walkin"]
 
 INDEX = f"""<div class="vb-wrap vb-pagehead">
 <h1>OPEN A TAB.</h1>
-<p class="vb-lede">An abliterated dark fiction model on its own GPU. One OpenAI-compatible endpoint. Pay by the month, drink by the token.</p>
+<p class="vb-lede">A developer API for fiction and writing tools. One open-weight model behind an OpenAI-compatible endpoint, with speech. Pay by the month, billed by the token.</p>
 <p><a class="vb-btn vb-btn--primary" href="{ACCOUNT}">OPEN A TAB</a> <a class="vb-btn" href="pricing.html">SEE THE PRICES</a></p>
 </div>
+
+<section id="for" class="vb-section" aria-labelledby="for-title">
+<div class="vb-wrap vb-stack">
+<h2 id="for-title">WHAT IT'S FOR</h2>
+<ul class="vb-stack">
+<li><strong>Writing tools.</strong> Drafting, rewriting and continuing long-form fiction: novels, short stories, scripts, interactive fiction.</li>
+<li><strong>Games and worlds.</strong> NPC dialogue, quest and lore text, world-building, narrated text adventures.</li>
+<li><strong>Your own software.</strong> Any OpenAI client, a key per app, metered per request, nothing stored.</li>
+</ul>
+<p class="vb-fine">Not for adult-content services: see the <a href="legal/acceptable-use.html">acceptable-use policy</a>.</p>
+</div>
+</section>
 
 <section id="tap" class="vb-section vb-section--tint-2" aria-labelledby="tap-title">
 <div class="vb-wrap vb-stack-lg">
@@ -308,7 +319,7 @@ PRICING = f"""<div class="vb-wrap vb-pagehead">
 <dt>Is there a bigger context?</dt><dd>The model can hold far more; the levels stop at {k(max(lv["context"] for _, lv in levels))} until longer prompts are measured.</dd>
 <dt>Top-ups?</dt><dd>Not sold yet. When your tab is dry, it refills at the start of the month.</dd>
 <dt>Do I get a GPU to myself?</dt><dd>No. The tap is shared; that's what keeps the minimum low.</dd>
-<dt>Is this an adult site?</dt><dd>No. It is a fiction-writing and developer API, 18 and over, with an <a href="legal/acceptable-use.html">acceptable-use policy</a>.</dd>
+<dt>Is this an adult site?</dt><dd>No. It is a developer API for fiction and writing tools, 18 and over. Building an adult-content service on it is not allowed: see the <a href="legal/acceptable-use.html">acceptable-use policy</a>.</dd>
 </dl>
 <p><a class="vb-btn vb-btn--primary" href="{ACCOUNT}">OPEN A TAB</a></p>
 </div>
@@ -332,8 +343,7 @@ def build():
     shutil.copytree(RES / "styles", OUT / "styles")
     shutil.copytree(RES / "fonts", OUT / "fonts")
     (OUT / "legal").mkdir()
-    for f in ("acceptable-use.html", "privacy.html"):
-        shutil.copy(RES / "legal" / f, OUT / "legal" / f)
+    shutil.copy(RES / "legal" / "privacy.html", OUT / "legal" / "privacy.html")
     # The old site's legal pages: add the API privacy link to their own footers, and replace the website
     # privacy page's "the API has no policy yet" lines now that it does (legal/api-privacy.html).
     def legal_fix(name, text):
@@ -342,6 +352,13 @@ def build():
         text = text.replace('PRIVACY</a></li><li><a href="terms.html"',
                             'PRIVACY</a></li><li><a href="api-privacy.html">API PRIVACY</a></li><li><a href="terms.html"', 1)
         text = text.replace("TERMS (STUB - NEEDS COUNSEL BEFORE PAYMENTS OPEN)", "TERMS").replace("TERMS (STUB)", "TERMS")
+        old_age = ("<strong>18+ ONLY.</strong>A fiction-writing and developer API. Some of these bottles write graphic horror "
+                   "and violence; their makers&#x27; labels say so. You are responsible for what you generate. The "
+                   "acceptable-use policy applies.")
+        if old_age in text:
+            text = text.replace(old_age, "<strong>18+ ONLY.</strong> A developer API for fiction and writing tools. Not for "
+                                         "adult-content services. You are responsible for what you generate. The "
+                                         "acceptable-use policy applies.")
         if name == "privacy.html":
             for old, new in (
                 ("<p><strong>It does not cover the API.</strong> What the API stores will be written down in its own policy. "
@@ -354,9 +371,13 @@ def build():
                 assert old in text, "privacy.html API sentence changed: update build.py"
                 text = text.replace(old, new)
         return text
-    for f in ("acceptable-use.html", "privacy.html"):
-        p = OUT / "legal" / f
-        p.write_text(legal_fix(f, p.read_text()))
+    p = OUT / "legal" / "privacy.html"
+    p.write_text(legal_fix("privacy.html", p.read_text()))
+    import acceptable_use as au
+    (OUT / "legal" / "acceptable-use.html").write_text(
+        page("legal", "Acceptable use - verdantbloom.bar",
+             "What the verdantbloom.bar API may and may not be used for. A developer API for fiction and writing tools; not for adult-content services.",
+             au.BODY.format(asof=ASOF_TXT), depth=1))
     # Real terms (terms.py) replace the old stub; every number from the live sources.
     import api_privacy as ap
     import terms as tm
@@ -381,7 +402,7 @@ def build():
              api_body, depth=1))
     pages = {
         "index.html": page("index", "verdantbloom.bar - open a tab",
-                           f"An abliterated dark fiction model behind one OpenAI-compatible endpoint. Levels from free to ${max(lv['tab_usd'] for _, lv in levels)} a month.",
+                           f"A developer API for fiction and writing tools: one open-weight model behind an OpenAI-compatible endpoint. Levels from free to ${max(lv['tab_usd'] for _, lv in levels)} a month.",
                            INDEX, "index.html"),
         "pricing.html": page("pricing", "Prices - verdantbloom.bar",
                              f"Six levels, free to ${max(lv['tab_usd'] for _, lv in levels)} a month. {usd(in_per_m)} in / {usd(out_per_m)} out per million tokens.",

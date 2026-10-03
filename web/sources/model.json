@@ -8,7 +8,10 @@
   "hf_file_size": 16810722816,
   "base": "Qwen3.8 27B",
   "quant": "Q4_K_M",
-  "on_the_label": "Uncensored",
-  "note": "Qwen3.8 27B with the maker's Fable Fusion training folded into a Cold Fusion build. Its maker calls it lightly uncensored. A thinking model, served with thinking off unless you ask for it. It reads images you send it.",
-  "voice": {"name": "Kokoro", "voices": 54, "default": "af_heart"}
+  "note": "Qwen3.8 27B, fine-tuned by its maker for long-form fiction. It refuses less than the base model, so it will write dark themes such as horror and violence when a story needs them. A thinking model, served with thinking off unless you ask for it. It reads images you send it.",
+  "voice": {
+    "name": "Kokoro",
+    "voices": 54,
+    "default": "af_heart"
+  }
 }

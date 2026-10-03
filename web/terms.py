@@ -18,7 +18,8 @@ of these terms. Questions: <code>bloom@verdantbloom.bar</code>.</p>
 
 <h2>1. Who and what</h2>
 <p>{operator_sentence} We sell metered access to an OpenAI-compatible text API running open-weight language models on
-rented GPUs. It is a fiction-writing and developer API. Today it serves one model, <code>{tap}</code>, plus free
+rented GPUs. It is a developer API for fiction and writing tools, and it is not for adult-content services
+(see the acceptable-use policy, section 3). Today it serves one model, <code>{tap}</code>, plus free
 text-to-speech. We may add, replace or retire models; what is served is always listed on the
 <a href="../pricing.html">prices page</a>.</p>
 
@@ -123,8 +124,8 @@ itself, or something on our website, infringes your copyright or other rights, w
 <h2>12. Suspension and closing</h2>
 <ul>
 <li>We may suspend an account while we look into a suspected breach of these terms or the acceptable-use policy, and
-close it if the breach is real. An account closed for a breach of the acceptable-use policy's &ldquo;Never&rdquo; section
-gets no refund.</li>
+close it if the breach is real. An account closed for a breach of section 2 (&ldquo;Never&rdquo;) or section 3
+(&ldquo;Not for adult-content services&rdquo;) of the acceptable-use policy gets no refund.</li>
 <li>You can stop at any time: turn off renewal, revoke your keys, or write to us to close your account.</li>
 <li>When an account closes, its keys stop working at once and any remaining tab is lost, except as section 7 or the law
 says otherwise. Sections 5 (charges already made), 7, 9 to 11 and 13 to 18 still apply after an account is closed.</li>

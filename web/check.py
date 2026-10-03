@@ -127,6 +127,22 @@ for want in (f"for {round(eta_t['idle_s'] / 60)} minutes it is shut down", f"abo
         bad(f"legal/terms.html: missing {want!r}")
 if re.search(r"\{[a-z_]+\}", tp.read_text()):
     bad("legal/terms.html: unfilled {placeholder}")
+# Positioning (acceptable_use.py): a developer API, not an adult-content service. These lines stay put.
+au_text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", (DIST / "legal" / "acceptable-use.html").read_text())))
+for want in ("3. Not for adult-content services", "sexual gratification", "It is not an adult-content service"):
+    if want not in au_text:
+        bad(f"legal/acceptable-use.html: missing {want!r}")
+for p in pages:
+    raw = p.read_text()
+    if "Not for adult-content services" not in raw:
+        bad(f"{p.relative_to(DIST)}: footer lost 'Not for adult-content services'")
+    # Marketing copy must not sell the model on refusals removed; the HF repo name is linked, not repeated.
+    vis = re.sub(r'href="[^"]*"', "", raw)
+    if p.name == "acceptable-use.html":   # the policy has to name what it bans
+        vis = vis.split("3. Not for adult-content services")[0]
+    for word in ("abliterat", "Uncensored", "uncensored", "NSFW", "erotic", "spicy", "no limits", "no filter"):
+        if word in vis:
+            bad(f"{p.relative_to(DIST)}: says {word!r} (positioning: developer API, see acceptable_use.py)")
 for p in pages:
     if re.search(r"STUB|NEEDS COUNSEL", p.read_text()):
         bad(f"{p.relative_to(DIST)}: still says STUB / NEEDS COUNSEL")
