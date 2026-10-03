@@ -108,6 +108,8 @@ else:
         bad("legal/api-privacy.html: ADDRESS_FINAL but the address still says pending")
     if not api_privacy.ADDRESS_FINAL:
         print("note: postal address not printed yet (PO box number pending: set api_privacy.ADDRESS_LINES + ADDRESS_FINAL)")
+    if not api_privacy.OPERATOR_NAME:
+        print("note: no operator name on terms/privacy yet (set api_privacy.OPERATOR_NAME)")
     if "Draft" in ap_text or "[Draft" in ap_text:
         bad("legal/api-privacy.html: still says Draft")
 
@@ -119,7 +121,8 @@ for lid, lv in g["levels"].items():
         bad(f"legal/terms.html: {lid} price ${lv['tab_usd']} missing")
 eta_t = json.loads((WEB / "sources" / "eta.json").read_text())
 for want in (f"for {round(eta_t['idle_s'] / 60)} minutes it is shut down", f"about {facts['cold_start_median_s']} seconds",
-             "Unused tab does not roll over", "Renewal is off unless you turn it on", "18 or older"):
+             "Unused tab does not roll over", "Renewal is off unless you turn it on", "18 or older",
+             "lowered to the limit", "sanctions", "write to bloom@verdantbloom.bar first"):
     if want not in t_text:
         bad(f"legal/terms.html: missing {want!r}")
 if re.search(r"\{[a-z_]+\}", tp.read_text()):

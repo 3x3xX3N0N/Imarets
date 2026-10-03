@@ -6,6 +6,11 @@ FIRST. Placeholders in {braces} are filled by build.py; ADDRESS stays visibly un
 PO box number arrives.
 """
 
+# The legal person behind the service (sole proprietor's full name, or the registered company), shown as
+# "verdantbloom.bar is operated by <name>." on the terms and privacy pages. None until the operator gives it:
+# the pages then say "verdantbloom.bar is a business." and check.py prints a note.
+OPERATOR_NAME = None
+
 # The PO box number and the 4-digit box extension are not known yet. Keep the placeholder visible
 # (check.py fails on it once ADDRESS_FINAL is True) rather than printing a made-up number. While False, the live pages show no
 # postal address at all (only the email); set the real lines and ADDRESS_FINAL = True to print it.
@@ -25,7 +30,7 @@ reply, not a summary, not a sample, not a hash of either. We keep what we need t
 tab: who you are, which key, when, how many tokens, how long the GPU was busy, and what it cost.</p>
 
 <h2>2. Who</h2>
-<p>verdantbloom.bar, a business{address_clause}. Contact: <code>bloom@verdantbloom.bar</code>.</p>
+<p>{operator_sentence} Contact: <code>bloom@verdantbloom.bar</code>.</p>
 
 <h2>3. What we never keep</h2>
 <ul>

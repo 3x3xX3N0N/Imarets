@@ -360,10 +360,12 @@ def build():
     # Real terms (terms.py) replace the old stub; every number from the live sources.
     import api_privacy as ap
     import terms as tm
-    address_clause = (", " + e(", ".join(ap.ADDRESS_LINES))) if ap.ADDRESS_FINAL else ""
+    address_clause_txt = (", " + ", ".join(ap.ADDRESS_LINES)) if ap.ADDRESS_FINAL else ""
+    operator_sentence = (f"verdantbloom.bar is operated by {e(ap.OPERATOR_NAME)}{e(address_clause_txt)}." if ap.OPERATOR_NAME
+                         else f"verdantbloom.bar (&ldquo;we&rdquo;) is a business{e(address_clause_txt)}.")
     paid = [(lid, lv) for lid, lv in levels if lv["tab_usd"] > 0]
     level_prices = ", ".join(f"{LEVEL_NAME[lid]} ${lv['tab_usd']}" for lid, lv in paid)
-    terms_body = tm.BODY.format(asof=ASOF_TXT, address_clause=address_clause, tap=e(TAP), level_prices=level_prices,
+    terms_body = tm.BODY.format(asof=ASOF_TXT, operator_sentence=operator_sentence, tap=e(TAP), level_prices=level_prices,
                                 rate_in=usd(in_per_m), rate_out=usd(out_per_m), min_warm=usd(warm_min),
                                 min_cold=usd(cold_min), idle_min=idle_min, boot_med=boot_med, boot_p90=boot_p90)
     (OUT / "legal" / "terms.html").write_text(
@@ -371,7 +373,7 @@ def build():
              "The terms for verdantbloom.bar and its API: accounts, levels, the tab, renewal, refunds, and what is not promised.",
              terms_body, depth=1))
     # API privacy notice (api_privacy.py): numbers come from the same live sources as the rest.
-    api_body = ap.BODY.format(asof=ASOF_TXT, address_clause=address_clause, idle_min=idle_min,
+    api_body = ap.BODY.format(asof=ASOF_TXT, operator_sentence=operator_sentence, idle_min=idle_min,
                               max_life_h=MAX_LIFE_H, session_days=SESSION_DAYS)
     (OUT / "legal" / "api-privacy.html").write_text(
         page("legal", "API privacy - verdantbloom.bar",
