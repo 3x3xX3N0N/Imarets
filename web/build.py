@@ -125,6 +125,8 @@ def page(name, title, desc, body, current=None, depth=0):
 <link rel="stylesheet" href="{up}styles/type.css">
 <link rel="stylesheet" href="{up}styles/layout.css">
 <link rel="stylesheet" href="{up}styles/components.css">
+<link rel="stylesheet" href="{up}styles/app.css">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="{up}styles/print.css" media="print">
 </head>
 <body>
@@ -340,7 +342,15 @@ def build():
     OUT.mkdir(parents=True)
     shutil.copytree(RES / "styles", OUT / "styles")
     shutil.copytree(RES / "fonts", OUT / "fonts")
-    shutil.copy(WEB / "app.css", OUT / "styles" / "app.css")   # site-api's HTML pages (/api/account, /api/login)
+    shutil.copy(WEB / "app.css", OUT / "styles" / "app.css")   # site-api's HTML pages + pre.vb-code scrolling
+    shutil.copy(WEB / "favicon.svg", OUT / "favicon.svg")
+    (OUT / "robots.txt").write_text("User-agent: *\nDisallow: /api/\nSitemap: https://verdantbloom.bar/sitemap.xml\n")
+    urls = ["", "pricing.html", "legal/terms.html", "legal/privacy.html", "legal/api-privacy.html",
+            "legal/acceptable-use.html", "legal/law-enforcement.html"]
+    (OUT / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + "".join(f"<url><loc>https://verdantbloom.bar/{u}</loc><lastmod>{ASOF_ISO}</lastmod></url>\n" for u in urls)
+        + "</urlset>\n")
     (OUT / "legal").mkdir()
     import acceptable_use as au
     (OUT / "legal" / "acceptable-use.html").write_text(

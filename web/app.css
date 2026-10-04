@@ -1,3 +1,18 @@
+/* Site-wide additions (built pages too): long code lines scroll inside their box on narrow screens
+   instead of pushing the whole page sideways. */
+pre.vb-code { overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; }
+:not(pre) > code { overflow-wrap: anywhere; }
+/* The one-row header (layout.css, from 720px) needs ~840px for wordmark + four links; between 720 and
+   880px keep the two-row phone header so OPEN A TAB isn't pushed off the right edge. */
+@media (min-width: 720px) and (max-width: 879.98px) {
+    .vb-top__row { grid-template-columns: 1fr; gap: 0; }
+    .vb-nav { display: block; }
+    .vb-nav ul { display: grid; grid-template-columns: repeat(4, 1fr); border-top: var(--vb-hair) solid var(--vb-rule-dim); }
+    .vb-nav li, .vb-nav li:nth-child(odd) { border: 0; border-right: var(--vb-hair) solid var(--vb-rule-dim); }
+    .vb-nav li:last-child { border-right: 0; }
+    .vb-nav a { padding-inline: var(--vb-s3); justify-content: center; }
+}   /* long inline URLs wrap instead of widening the page */
+
 /* app.css - styles for the site-api's HTML pages (/api/account, /api/login, form answers).
    Those pages are plain HTML from the Rust site-api (no classes on their forms and tables); this file gives
    them the site's look, scoped to .vb-app so nothing else changes. Built by web/build.py. */

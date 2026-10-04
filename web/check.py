@@ -156,8 +156,12 @@ for name in ("pours.html", "fine-print.html"):
 for p in pages:
     if p.name != "404.html" and "mailto:bloom@verdantbloom.bar" not in p.read_text():
         bad(f"{p.relative_to(DIST)}: no contact address in the footer")
-if not (DIST / "styles" / "app.css").exists():
-    bad("styles/app.css missing (site-api pages use it)")
+for f in ("styles/app.css", "favicon.svg", "robots.txt", "sitemap.xml"):
+    if not (DIST / f).exists():
+        bad(f"{f} missing")
+for loc in re.findall(r"<loc>https://verdantbloom.bar/([^<]*)</loc>", (DIST / "sitemap.xml").read_text()):
+    if not (DIST / (loc or "index.html")).exists():
+        bad(f"sitemap.xml: {loc} does not exist")
 # Positioning (acceptable_use.py): a developer API, not an adult-content service. These lines stay put.
 au_text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", (DIST / "legal" / "acceptable-use.html").read_text())))
 for want in ("3. Not for adult-content services", "sexual gratification", "It is not an adult-content service"):
